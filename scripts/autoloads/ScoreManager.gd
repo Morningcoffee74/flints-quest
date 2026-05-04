@@ -1,12 +1,12 @@
 extends Node
 
-const POINTS_ENEMY_JUMP: int    = 100
-const POINTS_ENEMY_PUNCH: int   = 150
-const POINTS_BOSS: int          = 1000
-const POINTS_COIN: int          = 10
-const POINTS_SPECIAL_BLOCK: int = 50
-const POINTS_LEVEL_COMPLETE: int   = 500
-const POINTS_LEVEL_NO_DAMAGE: int  = 250
+const POINTS_ENEMY_JUMP: int    = 10
+const POINTS_ENEMY_PUNCH: int   = 15
+const POINTS_BOSS: int          = 100
+const POINTS_COIN: int          = 1
+const POINTS_SPECIAL_BLOCK: int = 5
+const POINTS_LEVEL_COMPLETE: int   = 50
+const POINTS_LEVEL_NO_DAMAGE: int  = 25
 
 var current_score: int = 0
 var coin_count: int = 0

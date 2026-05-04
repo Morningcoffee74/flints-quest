@@ -23,12 +23,14 @@
 
 ## Input
 
-| Actie | Toetsen |
-|-------|---------|
-| Bewegen | A/D of ←/→ |
-| Springen | Spatie of Z |
-| Boksen | X of Enter |
-| Pauze | Escape |
+| Actie | Toetsen | Gebruik |
+|-------|---------|---------|
+| Links/rechts | A/D of ←/→ | Lopen |
+| Omhoog | W of ↑ | Ladder beklimmen |
+| Omlaag | S of ↓ | Bukken (vogel ontwijken), ladder afdalen |
+| Springen | Spatie of Z | Springen |
+| Boksen | X of Enter | Aanvallen |
+| Pauze | Escape | Pauzemenu |
 
 ## Vijanden per wereld (world_config.gd)
 

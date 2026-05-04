@@ -11,6 +11,8 @@ func _register_input_actions() -> void:
 	var actions: Dictionary = {
 		"move_left":  [KEY_A, KEY_LEFT],
 		"move_right": [KEY_D, KEY_RIGHT],
+		"move_up":    [KEY_W, KEY_UP],
+		"move_down":  [KEY_S, KEY_DOWN],
 		"jump":       [KEY_SPACE, KEY_Z],
 		"punch":      [KEY_X, KEY_ENTER],
 		"pause":      [KEY_ESCAPE],
