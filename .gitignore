@@ -1,0 +1,14 @@
+# Godot 4 generated files
+.godot/
+*.translation
+
+# macOS
+.DS_Store
+
+# Export presets contain credentials
+export_presets.cfg
+
+# Mono/C# (niet van toepassing maar voor zekerheid)
+.mono/
+data_*/
+mono_crash.*.json
