@@ -1,0 +1,77 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/LevelBase.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="3"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(4000.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(240.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="3"]
+size = Vector2(200.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="4"]
+size = Vector2(280.0, 32.0)
+
+[node name="W1L1" type="Node2D"]
+script = ExtResource("1")
+level_width = 4000
+level_height = 720
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(200.0, 640.0)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Terrain"]
+position = Vector2(2000.0, 656.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="GroundShape" type="CollisionShape2D" parent="Terrain/Ground"]
+shape = SubResource("1")
+
+[node name="GroundVisual" type="Polygon2D" parent="Terrain/Ground"]
+polygon = PackedVector2Array(-2000, -16, 2000, -16, 2000, 16, -2000, 16)
+color = Color(0.35, 0.22, 0.1, 1.0)
+
+[node name="Platform1" type="StaticBody2D" parent="Terrain"]
+position = Vector2(450.0, 480.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Platform1Shape" type="CollisionShape2D" parent="Terrain/Platform1"]
+shape = SubResource("2")
+
+[node name="Platform1Visual" type="Polygon2D" parent="Terrain/Platform1"]
+polygon = PackedVector2Array(-120, -16, 120, -16, 120, 16, -120, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="Platform2" type="StaticBody2D" parent="Terrain"]
+position = Vector2(750.0, 368.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Platform2Shape" type="CollisionShape2D" parent="Terrain/Platform2"]
+shape = SubResource("3")
+
+[node name="Platform2Visual" type="Polygon2D" parent="Terrain/Platform2"]
+polygon = PackedVector2Array(-100, -16, 100, -16, 100, 16, -100, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="Platform3" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1100.0, 432.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="Platform3Shape" type="CollisionShape2D" parent="Terrain/Platform3"]
+shape = SubResource("4")
+
+[node name="Platform3Visual" type="Polygon2D" parent="Terrain/Platform3"]
+polygon = PackedVector2Array(-140, -16, 140, -16, 140, 16, -140, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
