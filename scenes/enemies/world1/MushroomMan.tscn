@@ -1,0 +1,35 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/GroundEnemy.gd" id="1"]
+
+[sub_resource type="CapsuleShape2D" id="1"]
+radius = 10.0
+height = 8.0
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(30.0, 34.0)
+
+[node name="MushroomMan" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+base_health = 1
+base_speed = 40.0
+world_index = 1
+level_index = 1
+
+[node name="Sprite" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-10, -28, 10, -28, 10, 4, -10, 4)
+color = Color(0.9, 0.2, 0.15, 1.0)
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0.0, -14.0)
+shape = SubResource("1")
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 18
+
+[node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(0.0, -14.0)
+shape = SubResource("2")

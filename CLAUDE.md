@@ -49,7 +49,7 @@ Wereld 10 (Vulkaan): FireBat, LavaStone, FireSnake — Boss: FireMonster (eindba
 
 - [x] Fase 0: Setup — mappenstructuur, project.godot, autoloads, git
 - [x] Fase 1: Werkend skelet — speler beweging, test level, camera, HUD
-- [ ] Fase 2: Core gameplay — enemies, health, coins, power-ups, cabin
+- [x] Fase 2: Core gameplay — enemies, health, coins, power-ups, cabin
 - [ ] Fase 3: UI & navigatie — menus, profielen, wereldkaart, save/load
 - [ ] Fase 4: Wereld 1 volledig — 10 levels, boss, parallax, audio
 - [ ] Fase 5: Werelden 2-10

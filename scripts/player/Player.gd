@@ -3,24 +3,25 @@ extends CharacterBody2D
 
 enum State { IDLE, RUN, JUMP, FALL, CROUCH, CLIMB, PUNCH, HURT, DEAD }
 
-const SPEED        := 180.0
-const JUMP_VELOCITY := -420.0
-const CLIMB_SPEED  := 100.0
-const GRAVITY      := 980.0
-const PUNCH_DURATION   := 0.35
-const HURT_DURATION    := 0.5
+const SPEED             := 180.0
+const JUMP_VELOCITY     := -420.0
+const CLIMB_SPEED       := 100.0
+const GRAVITY           := 980.0
+const PUNCH_DURATION    := 0.35
+const HURT_DURATION     := 0.5
 const INVINCIBLE_DURATION := 1.5
 
 var state: State = State.IDLE
-var facing_right  := true
-var health        := 5
-var is_invincible := false
-var is_strong_punch := false
+var facing_right      := true
+var health            := 5
+var is_invincible     := false
+var is_strong_punch   := false
 
-var _punch_timer    := 0.0
-var _hurt_timer     := 0.0
-var _invincible_timer := 0.0
-var _on_ladder      := false
+var _punch_timer        := 0.0
+var _hurt_timer         := 0.0
+var _invincible_timer   := 0.0
+var _strong_punch_timer := 0.0
+var _on_ladder          := false
 
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var punch_hitbox: Area2D          = $PunchHitbox
@@ -29,7 +30,14 @@ signal health_changed(new_health: int)
 signal died
 
 func _ready() -> void:
+	add_to_group("player")
 	punch_hitbox.monitoring = false
+	punch_hitbox.area_entered.connect(_on_punch_area)
+
+func _on_punch_area(area: Area2D) -> void:
+	var parent := area.get_parent()
+	if parent is SpecialBlock:
+		parent.hit_by_punch()
 
 func _physics_process(delta: float) -> void:
 	_tick_timers(delta)
@@ -61,6 +69,11 @@ func _tick_timers(delta: float) -> void:
 		_invincible_timer -= delta
 		if _invincible_timer <= 0.0:
 			is_invincible = false
+
+	if _strong_punch_timer > 0.0:
+		_strong_punch_timer -= delta
+		if _strong_punch_timer <= 0.0:
+			is_strong_punch = false
 
 func _state_idle(delta: float) -> void:
 	_apply_gravity(delta)
@@ -158,7 +171,13 @@ func _transition(new_state: State) -> void:
 			velocity = Vector2(dir * 180.0, -200.0)
 		State.DEAD:
 			velocity = Vector2.ZERO
-			died.emit()
+			set_physics_process(false)
+			_play_death_animation()
+
+func _play_death_animation() -> void:
+	var tween := create_tween()
+	tween.tween_property(self, "modulate:a", 0.0, 1.0)
+	tween.tween_callback(died.emit)
 
 func _jump() -> void:
 	velocity.y = JUMP_VELOCITY
@@ -191,6 +210,14 @@ func take_damage() -> void:
 func heal(amount: int = 1) -> void:
 	health = min(health + amount, 5)
 	health_changed.emit(health)
+
+func activate_invincible(duration: float = 8.0) -> void:
+	is_invincible = true
+	_invincible_timer = max(_invincible_timer, duration)
+
+func activate_strong_punch(duration: float = 8.0) -> void:
+	is_strong_punch = true
+	_strong_punch_timer = max(_strong_punch_timer, duration)
 
 func enter_ladder() -> void:
 	_on_ladder = true
