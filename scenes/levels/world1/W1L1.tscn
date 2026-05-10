@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script"      path="res://scripts/levels/LevelBase.gd"             id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"               id="2"]
@@ -16,28 +16,39 @@
 size = Vector2(4000.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="2"]
-size = Vector2(240.0, 32.0)
+size = Vector2(200.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="3"]
 size = Vector2(200.0, 32.0)
 
 [sub_resource type="RectangleShape2D" id="4"]
-size = Vector2(280.0, 32.0)
+size = Vector2(240.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="5"]
+size = Vector2(160.0, 32.0)
+
+; --- Level layout (grond top = y640, max sprong ~154px met velocity -550) ---
+; Platform A: top y=530 (110px boven grond)  → bereikbaar vanaf grond
+; Platform B: top y=420 (110px boven A)      → bereikbaar vanaf A
+; Platform C: top y=310 (110px boven B)      → bereikbaar vanaf B
+; Platform D: top y=420 rechts (stepping stone) → bereikbaar vanaf grond
 
 [node name="W1L1" type="Node2D"]
 script = ExtResource("1")
-level_width = 4000
+level_width = 3200
 level_height = 720
+coins_needed_pct = 60
+enemies_needed = 2
 
 [node name="HUD" parent="." instance=ExtResource("3")]
 
 [node name="Player" parent="." instance=ExtResource("2")]
-position = Vector2(200.0, 640.0)
+position = Vector2(120.0, 640.0)
 
 [node name="Terrain" type="Node2D" parent="."]
 
 [node name="Ground" type="StaticBody2D" parent="Terrain"]
-position = Vector2(2000.0, 656.0)
+position = Vector2(1600.0, 656.0)
 collision_layer = 1
 collision_mask = 0
 
@@ -48,78 +59,93 @@ shape = SubResource("1")
 polygon = PackedVector2Array(-2000, -16, 2000, -16, 2000, 16, -2000, 16)
 color = Color(0.35, 0.22, 0.1, 1.0)
 
-[node name="Platform1" type="StaticBody2D" parent="Terrain"]
-position = Vector2(450.0, 480.0)
+[node name="PlatformA" type="StaticBody2D" parent="Terrain"]
+position = Vector2(380.0, 546.0)
 collision_layer = 1
 collision_mask = 0
 
-[node name="Platform1Shape" type="CollisionShape2D" parent="Terrain/Platform1"]
+[node name="PlatformAShape" type="CollisionShape2D" parent="Terrain/PlatformA"]
 shape = SubResource("2")
 
-[node name="Platform1Visual" type="Polygon2D" parent="Terrain/Platform1"]
-polygon = PackedVector2Array(-120, -16, 120, -16, 120, 16, -120, 16)
-color = Color(0.45, 0.3, 0.15, 1.0)
-
-[node name="Platform2" type="StaticBody2D" parent="Terrain"]
-position = Vector2(750.0, 368.0)
-collision_layer = 1
-collision_mask = 0
-
-[node name="Platform2Shape" type="CollisionShape2D" parent="Terrain/Platform2"]
-shape = SubResource("3")
-
-[node name="Platform2Visual" type="Polygon2D" parent="Terrain/Platform2"]
+[node name="PlatformAVisual" type="Polygon2D" parent="Terrain/PlatformA"]
 polygon = PackedVector2Array(-100, -16, 100, -16, 100, 16, -100, 16)
 color = Color(0.45, 0.3, 0.15, 1.0)
 
-[node name="Platform3" type="StaticBody2D" parent="Terrain"]
-position = Vector2(1100.0, 432.0)
+[node name="PlatformB" type="StaticBody2D" parent="Terrain"]
+position = Vector2(640.0, 436.0)
 collision_layer = 1
 collision_mask = 0
 
-[node name="Platform3Shape" type="CollisionShape2D" parent="Terrain/Platform3"]
+[node name="PlatformBShape" type="CollisionShape2D" parent="Terrain/PlatformB"]
+shape = SubResource("3")
+
+[node name="PlatformBVisual" type="Polygon2D" parent="Terrain/PlatformB"]
+polygon = PackedVector2Array(-100, -16, 100, -16, 100, 16, -100, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformC" type="StaticBody2D" parent="Terrain"]
+position = Vector2(900.0, 326.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformCShape" type="CollisionShape2D" parent="Terrain/PlatformC"]
 shape = SubResource("4")
 
-[node name="Platform3Visual" type="Polygon2D" parent="Terrain/Platform3"]
-polygon = PackedVector2Array(-140, -16, 140, -16, 140, 16, -140, 16)
+[node name="PlatformCVisual" type="Polygon2D" parent="Terrain/PlatformC"]
+polygon = PackedVector2Array(-120, -16, 120, -16, 120, 16, -120, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformD" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1200.0, 546.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformDShape" type="CollisionShape2D" parent="Terrain/PlatformD"]
+shape = SubResource("5")
+
+[node name="PlatformDVisual" type="Polygon2D" parent="Terrain/PlatformD"]
+polygon = PackedVector2Array(-80, -16, 80, -16, 80, 16, -80, 16)
 color = Color(0.45, 0.3, 0.15, 1.0)
 
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Wolf1" parent="Enemies" instance=ExtResource("4")]
-position = Vector2(620.0, 640.0)
+position = Vector2(550.0, 640.0)
 
 [node name="MushroomMan1" parent="Enemies" instance=ExtResource("5")]
-position = Vector2(1300.0, 640.0)
+position = Vector2(1050.0, 640.0)
+
+[node name="MushroomMan2" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(1350.0, 640.0)
 
 [node name="Crow1" parent="Enemies" instance=ExtResource("6")]
-position = Vector2(900.0, 320.0)
+position = Vector2(760.0, 370.0)
 
 [node name="Objects" type="Node2D" parent="."]
 
 [node name="Coin1" parent="Objects" instance=ExtResource("7")]
-position = Vector2(300.0, 620.0)
+position = Vector2(280.0, 624.0)
 
 [node name="Coin2" parent="Objects" instance=ExtResource("7")]
-position = Vector2(450.0, 454.0)
+position = Vector2(380.0, 520.0)
 
 [node name="Coin3" parent="Objects" instance=ExtResource("7")]
-position = Vector2(510.0, 454.0)
+position = Vector2(640.0, 410.0)
 
 [node name="Coin4" parent="Objects" instance=ExtResource("7")]
-position = Vector2(750.0, 342.0)
+position = Vector2(900.0, 300.0)
 
 [node name="Coin5" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1100.0, 406.0)
+position = Vector2(1200.0, 520.0)
 
 [node name="SpecialBlock1" parent="Objects" instance=ExtResource("8")]
-position = Vector2(350.0, 624.0)
+position = Vector2(200.0, 624.0)
 
 [node name="PowerPurple1" parent="Objects" instance=ExtResource("10")]
-position = Vector2(560.0, 454.0)
+position = Vector2(430.0, 520.0)
 
 [node name="PowerBlue1" parent="Objects" instance=ExtResource("11")]
-position = Vector2(1100.0, 350.0)
+position = Vector2(950.0, 300.0)
 
 [node name="Cabin" parent="." instance=ExtResource("9")]
-position = Vector2(1600.0, 640.0)
+position = Vector2(1700.0, 640.0)

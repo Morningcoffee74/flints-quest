@@ -4,7 +4,7 @@ extends CharacterBody2D
 enum State { IDLE, RUN, JUMP, FALL, CROUCH, CLIMB, PUNCH, HURT, DEAD }
 
 const SPEED             := 180.0
-const JUMP_VELOCITY     := -420.0
+const JUMP_VELOCITY     := -550.0
 const CLIMB_SPEED       := 100.0
 const GRAVITY           := 980.0
 const PUNCH_DURATION    := 0.35
