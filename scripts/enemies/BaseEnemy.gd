@@ -3,8 +3,6 @@ extends CharacterBody2D
 
 @export var base_health: int   = 1
 @export var base_speed: float  = 60.0
-@export var world_index: int   = 1
-@export var level_index: int   = 1
 
 var health: int  = 1
 var speed: float = 60.0
@@ -12,7 +10,9 @@ var speed: float = 60.0
 signal died
 
 func _ready() -> void:
-	var difficulty := 1.0 + (world_index - 1) * 0.15 + (level_index - 1) * 0.02
+	var w := GameManager.current_world
+	var l := GameManager.current_level
+	var difficulty := 1.0 + (w - 1) * 0.15 + (l - 1) * 0.02
 	health = base_health
 	speed  = base_speed * difficulty
 	add_to_group("enemies")
@@ -26,7 +26,6 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body is Player:
 		return
 	var player := body as Player
-	# Stomp: player moving strongly downward and positioned above enemy center
 	if player.velocity.y > 150.0 and player.global_position.y < global_position.y - 5.0:
 		_take_hit(player)
 	else:

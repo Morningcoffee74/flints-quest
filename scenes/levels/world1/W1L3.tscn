@@ -1,0 +1,214 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Script"      path="res://scripts/levels/LevelBase.gd"             id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"               id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn"                      id="3"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/world1/Wolf.tscn"         id="4"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/world1/MushroomMan.tscn"  id="5"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/world1/Crow.tscn"         id="6"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Coin.tscn"                id="7"]
+[ext_resource type="PackedScene" path="res://scenes/objects/SpecialBlock.tscn"        id="8"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Cabin.tscn"               id="9"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockPurple.tscn"    id="10"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockBlue.tscn"      id="11"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(4000.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="2"]
+size = Vector2(200.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="3"]
+size = Vector2(200.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="4"]
+size = Vector2(160.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="5"]
+size = Vector2(200.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="6"]
+size = Vector2(240.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="7"]
+size = Vector2(200.0, 32.0)
+
+[sub_resource type="RectangleShape2D" id="8"]
+size = Vector2(160.0, 32.0)
+
+[node name="W1L3" type="Node2D"]
+script = ExtResource("1")
+level_width = 3600
+level_height = 720
+coins_needed_pct = 55
+enemies_needed = 4
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(120.0, 640.0)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1800.0, 656.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="GroundShape" type="CollisionShape2D" parent="Terrain/Ground"]
+shape = SubResource("1")
+
+[node name="GroundVisual" type="Polygon2D" parent="Terrain/Ground"]
+polygon = PackedVector2Array(-2000, -16, 2000, -16, 2000, 16, -2000, 16)
+color = Color(0.35, 0.22, 0.1, 1.0)
+
+[node name="PlatformA" type="StaticBody2D" parent="Terrain"]
+position = Vector2(420.0, 546.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformAShape" type="CollisionShape2D" parent="Terrain/PlatformA"]
+shape = SubResource("2")
+
+[node name="PlatformAVisual" type="Polygon2D" parent="Terrain/PlatformA"]
+polygon = PackedVector2Array(-100, -16, 100, -16, 100, 16, -100, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformB" type="StaticBody2D" parent="Terrain"]
+position = Vector2(750.0, 436.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformBShape" type="CollisionShape2D" parent="Terrain/PlatformB"]
+shape = SubResource("3")
+
+[node name="PlatformBVisual" type="Polygon2D" parent="Terrain/PlatformB"]
+polygon = PackedVector2Array(-100, -16, 100, -16, 100, 16, -100, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformC" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1060.0, 326.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformCShape" type="CollisionShape2D" parent="Terrain/PlatformC"]
+shape = SubResource("4")
+
+[node name="PlatformCVisual" type="Polygon2D" parent="Terrain/PlatformC"]
+polygon = PackedVector2Array(-80, -16, 80, -16, 80, 16, -80, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformD" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1400.0, 436.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformDShape" type="CollisionShape2D" parent="Terrain/PlatformD"]
+shape = SubResource("5")
+
+[node name="PlatformDVisual" type="Polygon2D" parent="Terrain/PlatformD"]
+polygon = PackedVector2Array(-100, -16, 100, -16, 100, 16, -100, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformE" type="StaticBody2D" parent="Terrain"]
+position = Vector2(1800.0, 546.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformEShape" type="CollisionShape2D" parent="Terrain/PlatformE"]
+shape = SubResource("6")
+
+[node name="PlatformEVisual" type="Polygon2D" parent="Terrain/PlatformE"]
+polygon = PackedVector2Array(-120, -16, 120, -16, 120, 16, -120, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformF" type="StaticBody2D" parent="Terrain"]
+position = Vector2(2200.0, 436.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformFShape" type="CollisionShape2D" parent="Terrain/PlatformF"]
+shape = SubResource("7")
+
+[node name="PlatformFVisual" type="Polygon2D" parent="Terrain/PlatformF"]
+polygon = PackedVector2Array(-100, -16, 100, -16, 100, 16, -100, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="PlatformG" type="StaticBody2D" parent="Terrain"]
+position = Vector2(2600.0, 326.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="PlatformGShape" type="CollisionShape2D" parent="Terrain/PlatformG"]
+shape = SubResource("8")
+
+[node name="PlatformGVisual" type="Polygon2D" parent="Terrain/PlatformG"]
+polygon = PackedVector2Array(-80, -16, 80, -16, 80, 16, -80, 16)
+color = Color(0.45, 0.3, 0.15, 1.0)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Wolf1" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(600.0, 640.0)
+
+[node name="Wolf2" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(1650.0, 640.0)
+
+[node name="Mushroom1" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(920.0, 640.0)
+
+[node name="Mushroom2" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(1200.0, 640.0)
+
+[node name="Mushroom3" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(1950.0, 640.0)
+
+[node name="Mushroom4" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(2350.0, 640.0)
+
+[node name="Crow1" parent="Enemies" instance=ExtResource("6")]
+position = Vector2(1060.0, 270.0)
+
+[node name="Crow2" parent="Enemies" instance=ExtResource("6")]
+position = Vector2(2600.0, 270.0)
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="Coin1" parent="Objects" instance=ExtResource("7")]
+position = Vector2(280.0, 624.0)
+
+[node name="Coin2" parent="Objects" instance=ExtResource("7")]
+position = Vector2(420.0, 520.0)
+
+[node name="Coin3" parent="Objects" instance=ExtResource("7")]
+position = Vector2(750.0, 410.0)
+
+[node name="Coin4" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1060.0, 300.0)
+
+[node name="Coin5" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1400.0, 410.0)
+
+[node name="Coin6" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1800.0, 520.0)
+
+[node name="Coin7" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2200.0, 410.0)
+
+[node name="Coin8" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2600.0, 300.0)
+
+[node name="SpecialBlock1" parent="Objects" instance=ExtResource("8")]
+position = Vector2(200.0, 624.0)
+
+[node name="SpecialBlock2" parent="Objects" instance=ExtResource("8")]
+position = Vector2(1150.0, 300.0)
+
+[node name="PowerPurple1" parent="Objects" instance=ExtResource("10")]
+position = Vector2(470.0, 520.0)
+
+[node name="PowerBlue1" parent="Objects" instance=ExtResource("11")]
+position = Vector2(2650.0, 300.0)
+
+[node name="Cabin" parent="." instance=ExtResource("9")]
+position = Vector2(3200.0, 640.0)
