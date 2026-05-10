@@ -5,6 +5,7 @@
 [node name="LevelComplete" type="CanvasLayer"]
 layer = 10
 script = ExtResource("1")
+process_mode = 3
 
 [node name="Dimmer" type="ColorRect" parent="."]
 anchors_preset = 15

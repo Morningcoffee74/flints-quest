@@ -38,8 +38,8 @@ func load_profile(profile_name: String) -> void:
 		profile_data = _new_profile(profile_name)
 		SaveSystem.save_profile(profile_name, profile_data)
 
-func _new_profile(name: String) -> Dictionary:
-	var data: Dictionary = {"name": name, "total_score": 0, "worlds": {}}
+func _new_profile(pname: String) -> Dictionary:
+	var data: Dictionary = {"name": pname, "total_score": 0, "worlds": {}}
 	for w in range(1, 11):
 		var world_levels: Dictionary = {}
 		for l in range(1, 11):

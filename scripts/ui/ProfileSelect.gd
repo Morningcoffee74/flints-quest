@@ -38,14 +38,14 @@ func _refresh_profiles() -> void:
 		_profile_list.add_child(row)
 
 func _on_create_pressed() -> void:
-	var name := _name_input.text.strip_edges()
-	if name.length() < 1 or name.length() > 20:
+	var pname := _name_input.text.strip_edges()
+	if pname.length() < 1 or pname.length() > 20:
 		_error_label.text = "Naam moet 1–20 tekens zijn."
 		return
-	if SaveSystem.profile_exists(name):
-		_error_label.text = "Profiel '%s' bestaat al." % name
+	if SaveSystem.profile_exists(pname):
+		_error_label.text = "Profiel '%s' bestaat al." % pname
 		return
-	GameManager.create_profile(name)
+	GameManager.create_profile(pname)
 	GameManager.go_to_world_map()
 
 func _on_profile_selected(profile_name: String) -> void:

@@ -4,9 +4,7 @@ extends Node2D
 @export var level_width:  int = 4000
 @export var level_height: int = 720
 
-## Unlock cabin als dit percentage muntjes verzameld is (0 = geen eis)
 @export var coins_needed_pct: int = 0
-## Unlock cabin als dit aantal vijanden verslagen is (0 = geen eis)
 @export var enemies_needed: int = 0
 
 @onready var player: Player    = $Player
@@ -52,7 +50,7 @@ func _setup_pause_menu() -> void:
 		return
 	_pause_menu = packed.instantiate() as CanvasLayer
 	if _pause_menu == null:
-		push_error("LevelBase: PauseMenu.tscn is geen CanvasLayer")
+		push_error("LevelBase: PauseMenu is geen CanvasLayer")
 		return
 	_pause_menu.hide()
 	add_child(_pause_menu)
@@ -76,7 +74,7 @@ func _update_cabin() -> void:
 	var no_requirement := coins_needed_pct == 0 and enemies_needed == 0
 
 	var coins_met := coins_needed_pct > 0 and \
-		(_total_coins == 0 or _coins_got * 100 / _total_coins >= coins_needed_pct)
+		(_total_coins == 0 or float(_coins_got) * 100.0 / _total_coins >= coins_needed_pct)
 
 	var enemies_met := enemies_needed > 0 and _enemies_killed >= enemies_needed
 
@@ -96,6 +94,7 @@ func _on_enemy_killed() -> void:
 func _on_player_died() -> void:
 	_level_done = true
 	await get_tree().create_timer(0.8).timeout
+	get_tree().paused = true
 	var packed: PackedScene = load("res://scenes/ui/GameOver.tscn")
 	if packed:
 		add_child(packed.instantiate())
@@ -107,6 +106,7 @@ func _on_level_completed() -> void:
 	var final_score := ScoreManager.finalize_level()
 	GameManager.complete_level(GameManager.current_world, GameManager.current_level, final_score)
 	await get_tree().create_timer(0.4).timeout
+	get_tree().paused = true
 	var packed: PackedScene = load("res://scenes/ui/LevelComplete.tscn")
 	if packed:
 		add_child(packed.instantiate())
