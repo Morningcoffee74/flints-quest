@@ -43,11 +43,15 @@ Als je **Git** hebt:
 
 ## Besturing
 
-| Actie       | Toetsen             |
-|-------------|---------------------|
-| Lopen       | A / D of ← / →      |
-| Springen    | Spatie of Z         |
-| Boksen      | X of Enter          |
-| Bukken      | S of ↓              |
-| Ladder op   | W of ↑              |
-| Pauzeren    | Escape              |
+| Actie                              | Toetsen        |
+|------------------------------------|----------------|
+| Lopen                              | A / D of ← / → |
+| Springen                           | Spatie of Z    |
+| Boksen                             | X of Enter     |
+| Bukken *(op de grond)*             | S of ↓         |
+| Ladder op                          | W of ↑         |
+| Ladder af *(als je op een ladder staat)* | S of ↓   |
+| Pauzeren                           | Escape         |
+
+> **S / ↓** doet twee dingen afhankelijk van de situatie:  
+> op de grond = bukken (vogels ontwijken), aan een ladder = omlaag klimmen.
