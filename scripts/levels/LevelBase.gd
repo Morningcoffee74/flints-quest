@@ -60,7 +60,7 @@ func _setup_pause_menu() -> void:
 func _input(event: InputEvent) -> void:
 	if _level_done or _pause_menu == null:
 		return
-	if event.is_action_just_pressed("pause"):
+	if event is InputEventKey and event.is_action_just_pressed("pause"):
 		get_viewport().set_input_as_handled()
 		if _pause_menu.visible:
 			_pause_menu.hide()
