@@ -43,15 +43,22 @@ func _ready() -> void:
 		($Cabin as Area2D).level_completed.connect(_on_level_completed)
 
 	_update_cabin()
+	_setup_pause_menu()
 
-	# Pauzemenu klaar zetten (verborgen)
-	var pause_scene := load("res://scenes/ui/PauseMenu.tscn") as PackedScene
-	_pause_menu = pause_scene.instantiate() as CanvasLayer
+func _setup_pause_menu() -> void:
+	var packed: PackedScene = load("res://scenes/ui/PauseMenu.tscn")
+	if packed == null:
+		push_error("LevelBase: kon PauseMenu.tscn niet laden")
+		return
+	_pause_menu = packed.instantiate() as CanvasLayer
+	if _pause_menu == null:
+		push_error("LevelBase: PauseMenu.tscn is geen CanvasLayer")
+		return
 	_pause_menu.hide()
 	add_child(_pause_menu)
 
 func _input(event: InputEvent) -> void:
-	if _level_done:
+	if _level_done or _pause_menu == null:
 		return
 	if event.is_action_just_pressed("pause"):
 		get_viewport().set_input_as_handled()
@@ -89,9 +96,9 @@ func _on_enemy_killed() -> void:
 func _on_player_died() -> void:
 	_level_done = true
 	await get_tree().create_timer(0.8).timeout
-	var go_scene := load("res://scenes/ui/GameOver.tscn") as PackedScene
-	var go_node := go_scene.instantiate() as CanvasLayer
-	add_child(go_node)
+	var packed: PackedScene = load("res://scenes/ui/GameOver.tscn")
+	if packed:
+		add_child(packed.instantiate())
 
 func _on_level_completed() -> void:
 	if not _cabin_open or _level_done:
@@ -100,6 +107,6 @@ func _on_level_completed() -> void:
 	var final_score := ScoreManager.finalize_level()
 	GameManager.complete_level(GameManager.current_world, GameManager.current_level, final_score)
 	await get_tree().create_timer(0.4).timeout
-	var lc_scene := load("res://scenes/ui/LevelComplete.tscn") as PackedScene
-	var lc_node := lc_scene.instantiate() as CanvasLayer
-	add_child(lc_node)
+	var packed: PackedScene = load("res://scenes/ui/LevelComplete.tscn")
+	if packed:
+		add_child(packed.instantiate())
