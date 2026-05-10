@@ -76,14 +76,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("move_left") or event.is_action_pressed("move_up"):
 		_set_focus((_focus_idx - 1 + _playable.size()) % _playable.size())
-		get_viewport().set_input_as_handled()
+		accept_event()
 	elif event.is_action_pressed("move_right") or event.is_action_pressed("move_down"):
 		_set_focus((_focus_idx + 1) % _playable.size())
-		get_viewport().set_input_as_handled()
+		accept_event()
 	elif event.is_action_pressed("jump") or event.is_action_pressed("punch"):
 		var level := _playable[_focus_idx] + 1
 		_on_level_pressed(_world, level)
-		get_viewport().set_input_as_handled()
+		accept_event()
 
 func _set_focus(idx: int) -> void:
 	# Reset vorige focus-kleur

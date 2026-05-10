@@ -23,7 +23,7 @@ func _register_input_actions() -> void:
 			InputMap.add_action(action)
 			for keycode: int in actions[action]:
 				var event := InputEventKey.new()
-				event.physical_keycode = keycode
+				event.physical_keycode = keycode as Key
 				InputMap.action_add_event(action, event)
 
 func create_profile(profile_name: String) -> void:
