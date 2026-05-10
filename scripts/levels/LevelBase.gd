@@ -17,6 +17,8 @@ var _total_coins:    int  = 0
 var _coins_got:      int  = 0
 var _enemies_killed: int  = 0
 var _cabin_open:     bool = false
+var _level_done:     bool = false
+var _pause_menu: CanvasLayer = null
 
 func _ready() -> void:
 	ScoreManager.reset_level()
@@ -29,7 +31,6 @@ func _ready() -> void:
 	hud.connect_player(player)
 	player.died.connect(_on_player_died)
 
-	# Muntjes en vijanden tellen
 	_total_coins = get_tree().get_nodes_in_group("coins").size()
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		(enemy as BaseEnemy).died.connect(_on_enemy_killed)
@@ -43,6 +44,24 @@ func _ready() -> void:
 
 	_update_cabin()
 
+	# Pauzemenu klaar zetten (verborgen)
+	var pause_scene := load("res://scenes/ui/PauseMenu.tscn") as PackedScene
+	_pause_menu = pause_scene.instantiate() as CanvasLayer
+	_pause_menu.hide()
+	add_child(_pause_menu)
+
+func _input(event: InputEvent) -> void:
+	if _level_done:
+		return
+	if event.is_action_just_pressed("pause"):
+		get_viewport().set_input_as_handled()
+		if _pause_menu.visible:
+			_pause_menu.hide()
+			get_tree().paused = false
+		else:
+			_pause_menu.show()
+			get_tree().paused = true
+
 func _update_cabin() -> void:
 	if _cabin_open:
 		return
@@ -54,7 +73,6 @@ func _update_cabin() -> void:
 
 	var enemies_met := enemies_needed > 0 and _enemies_killed >= enemies_needed
 
-	# Geen eis → altijd open; anders: OF-conditie (muntjes OF vijanden)
 	var should_open := no_requirement or coins_met or enemies_met
 
 	if should_open and not _cabin_open:
@@ -69,13 +87,19 @@ func _on_enemy_killed() -> void:
 	_update_cabin()
 
 func _on_player_died() -> void:
+	_level_done = true
 	await get_tree().create_timer(0.8).timeout
-	get_tree().reload_current_scene()
+	var go_scene := load("res://scenes/ui/GameOver.tscn") as PackedScene
+	var go_node := go_scene.instantiate() as CanvasLayer
+	add_child(go_node)
 
 func _on_level_completed() -> void:
-	if not _cabin_open:
-		return  # Eis nog niet gehaald — niets doen
-	ScoreManager.finalize_level()
-	# TODO Fase 3: toon LevelComplete scherm
-	await get_tree().create_timer(1.5).timeout
-	get_tree().reload_current_scene()
+	if not _cabin_open or _level_done:
+		return
+	_level_done = true
+	var final_score := ScoreManager.finalize_level()
+	GameManager.complete_level(GameManager.current_world, GameManager.current_level, final_score)
+	await get_tree().create_timer(0.4).timeout
+	var lc_scene := load("res://scenes/ui/LevelComplete.tscn") as PackedScene
+	var lc_node := lc_scene.instantiate() as CanvasLayer
+	add_child(lc_node)
