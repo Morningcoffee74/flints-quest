@@ -10,6 +10,8 @@ const GRAVITY           := 980.0
 const PUNCH_DURATION    := 0.35
 const HURT_DURATION     := 0.5
 const INVINCIBLE_DURATION := 1.5
+const POWERUP_DURATION  := 8.0
+const SPEED_BOOST_MULT  := 1.5
 
 var state: State = State.IDLE
 var facing_right      := true
@@ -19,12 +21,16 @@ var is_strong_punch   := false
 
 var _punch_timer        := 0.0
 var _hurt_timer         := 0.0
-var _invincible_timer   := 0.0
-var _strong_punch_timer := 0.0
+var _invincible_timer   := 0.0   # korte onkwetsbaarheid na schade
+var _star_timer         := 0.0   # ster-power-up: onkwetsbaar
+var _speed_timer        := 0.0   # blauwe power-up: sneller lopen
+var _strong_punch_timer := 0.0   # oranje power-up: hard slaan
 var _on_ladder          := false
 
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var punch_hitbox: Area2D          = $PunchHitbox
+@onready var body_collision: CollisionShape2D   = $BodyCollision
+@onready var crouch_collision: CollisionShape2D = $CrouchCollision
 
 signal health_changed(new_health: int)
 signal died
@@ -65,15 +71,13 @@ func _tick_timers(delta: float) -> void:
 		if _hurt_timer <= 0.0 and state == State.HURT:
 			_transition(State.IDLE if is_on_floor() else State.FALL)
 
-	if _invincible_timer > 0.0:
-		_invincible_timer -= delta
-		if _invincible_timer <= 0.0:
-			is_invincible = false
-
-	if _strong_punch_timer > 0.0:
-		_strong_punch_timer -= delta
-		if _strong_punch_timer <= 0.0:
-			is_strong_punch = false
+	_invincible_timer   = maxf(0.0, _invincible_timer - delta)
+	_star_timer         = maxf(0.0, _star_timer - delta)
+	_speed_timer        = maxf(0.0, _speed_timer - delta)
+	_strong_punch_timer = maxf(0.0, _strong_punch_timer - delta)
+	is_invincible   = _invincible_timer > 0.0 or _star_timer > 0.0
+	is_strong_punch = _strong_punch_timer > 0.0
+	_update_powerup_tint()
 
 func _state_idle(delta: float) -> void:
 	_apply_gravity(delta)
@@ -157,12 +161,20 @@ func _state_hurt(delta: float) -> void:
 func _transition(new_state: State) -> void:
 	if state == new_state:
 		return
+	var old_state := state
 	state = new_state
+	if old_state == State.CROUCH and new_state != State.CROUCH:
+		body_collision.set_deferred("disabled", false)
+		crouch_collision.set_deferred("disabled", true)
 	match new_state:
+		State.CROUCH:
+			body_collision.set_deferred("disabled", true)
+			crouch_collision.set_deferred("disabled", false)
 		State.PUNCH:
 			_punch_timer = PUNCH_DURATION
 			punch_hitbox.scale.x = 1.0 if facing_right else -1.0
 			punch_hitbox.monitoring = true
+			AudioManager.play_sfx_by_name("punch")
 		State.HURT:
 			_hurt_timer = HURT_DURATION
 			_invincible_timer = INVINCIBLE_DURATION
@@ -181,6 +193,7 @@ func _play_death_animation() -> void:
 
 func _jump() -> void:
 	velocity.y = JUMP_VELOCITY
+	AudioManager.play_sfx_by_name("jump")
 	_transition(State.JUMP)
 
 func _apply_gravity(delta: float) -> void:
@@ -189,18 +202,20 @@ func _apply_gravity(delta: float) -> void:
 
 func _move_horizontal() -> void:
 	var dir := Input.get_axis("move_left", "move_right")
+	var top_speed := SPEED * (SPEED_BOOST_MULT if _speed_timer > 0.0 else 1.0)
 	if dir != 0.0:
 		facing_right = dir > 0.0
 		anim_sprite.flip_h = not facing_right
-		velocity.x = dir * SPEED
+		velocity.x = dir * top_speed
 	else:
-		velocity.x = move_toward(velocity.x, 0.0, SPEED)
+		velocity.x = move_toward(velocity.x, 0.0, top_speed)
 
 func take_damage() -> void:
 	if is_invincible or state == State.DEAD:
 		return
 	health -= 1
 	ScoreManager.register_damage()
+	AudioManager.play_sfx_by_name("hurt")
 	health_changed.emit(health)
 	if health <= 0:
 		_transition(State.DEAD)
@@ -211,13 +226,38 @@ func heal(amount: int = 1) -> void:
 	health = min(health + amount, 5)
 	health_changed.emit(health)
 
-func activate_invincible(duration: float = 8.0) -> void:
+func activate_invincible(duration: float = POWERUP_DURATION) -> void:
 	is_invincible = true
-	_invincible_timer = max(_invincible_timer, duration)
+	_star_timer = maxf(_star_timer, duration)
 
-func activate_strong_punch(duration: float = 8.0) -> void:
+func activate_speed(duration: float = POWERUP_DURATION) -> void:
+	_speed_timer = maxf(_speed_timer, duration)
+
+func activate_strong_punch(duration: float = POWERUP_DURATION) -> void:
 	is_strong_punch = true
-	_strong_punch_timer = max(_strong_punch_timer, duration)
+	_strong_punch_timer = maxf(_strong_punch_timer, duration)
+
+## Actieve power-ups voor de HUD: [{kind, left, total}].
+func get_active_powerups() -> Array:
+	var list: Array = []
+	if _star_timer > 0.0:
+		list.append({"kind": "star", "left": _star_timer, "total": POWERUP_DURATION})
+	if _speed_timer > 0.0:
+		list.append({"kind": "speed", "left": _speed_timer, "total": POWERUP_DURATION})
+	if _strong_punch_timer > 0.0:
+		list.append({"kind": "strong", "left": _strong_punch_timer, "total": POWERUP_DURATION})
+	return list
+
+## Kleurt de speler licht mee met de actiefste power-up.
+func _update_powerup_tint() -> void:
+	if _star_timer > 0.0:
+		anim_sprite.modulate = Color(1.3, 1.2, 0.6)
+	elif _speed_timer > 0.0:
+		anim_sprite.modulate = Color(0.7, 1.0, 1.4)
+	elif _strong_punch_timer > 0.0:
+		anim_sprite.modulate = Color(1.4, 0.9, 0.6)
+	else:
+		anim_sprite.modulate = Color.WHITE
 
 func enter_ladder() -> void:
 	_on_ladder = true

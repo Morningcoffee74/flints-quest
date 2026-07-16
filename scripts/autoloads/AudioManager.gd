@@ -2,12 +2,33 @@ extends Node
 
 const SFX_POOL_SIZE: int = 8
 
+## Bestanden die (nog) ontbreken worden stil overgeslagen; zie boodschappenlijst.md.
+const SFX_PATHS: Dictionary = {
+	"coin":      "res://assets/audio/sfx/coin.ogg",
+	"punch":     "res://assets/audio/sfx/punch.ogg",
+	"powerup":   "res://assets/audio/sfx/powerup.ogg",
+	"footstep":  "res://assets/audio/sfx/footstep_wood_001.ogg",
+	"jump":      "res://assets/audio/sfx/jump.ogg",
+	"hurt":      "res://assets/audio/sfx/hurt.ogg",
+	"enemy_die": "res://assets/audio/sfx/enemy_die.ogg",
+	"level_win": "res://assets/audio/sfx/level_win.ogg",
+	"game_over": "res://assets/audio/sfx/game_over.ogg",
+}
+
+const MUSIC_PATHS: Dictionary = {
+	"world1": "res://assets/audio/music/Living Voyage.mp3",
+}
+
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
+var _sfx_cache: Dictionary = {}
+var _music_cache: Dictionary = {}
+var _current_music: String = ""
 
 func _ready() -> void:
 	_music_player = AudioStreamPlayer.new()
 	_music_player.bus = "Master"
+	_music_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(_music_player)
 
 	for i in SFX_POOL_SIZE:
@@ -16,14 +37,35 @@ func _ready() -> void:
 		add_child(player)
 		_sfx_players.append(player)
 
+func play_music_by_name(music_name: String) -> void:
+	if _current_music == music_name and _music_player.playing:
+		return
+	var stream := _load_music(music_name)
+	if stream == null:
+		return
+	_current_music = music_name
+	if stream is AudioStreamMP3:
+		(stream as AudioStreamMP3).loop = true
+	elif stream is AudioStreamOggVorbis:
+		(stream as AudioStreamOggVorbis).loop = true
+	_music_player.stream = stream
+	_music_player.play()
+
 func play_music(stream: AudioStream) -> void:
 	if _music_player.stream == stream and _music_player.playing:
 		return
+	_current_music = ""
 	_music_player.stream = stream
 	_music_player.play()
 
 func stop_music() -> void:
+	_current_music = ""
 	_music_player.stop()
+
+func play_sfx_by_name(sfx_name: String) -> void:
+	var stream := _load_sfx(sfx_name)
+	if stream != null:
+		play_sfx(stream)
 
 func play_sfx(stream: AudioStream) -> void:
 	for player in _sfx_players:
@@ -31,3 +73,23 @@ func play_sfx(stream: AudioStream) -> void:
 			player.stream = stream
 			player.play()
 			return
+
+func _load_sfx(sfx_name: String) -> AudioStream:
+	if _sfx_cache.has(sfx_name):
+		return _sfx_cache[sfx_name]
+	var path: String = SFX_PATHS.get(sfx_name, "")
+	var stream: AudioStream = null
+	if path != "" and ResourceLoader.exists(path):
+		stream = load(path)
+	_sfx_cache[sfx_name] = stream
+	return stream
+
+func _load_music(music_name: String) -> AudioStream:
+	if _music_cache.has(music_name):
+		return _music_cache[music_name]
+	var path: String = MUSIC_PATHS.get(music_name, "")
+	var stream: AudioStream = null
+	if path != "" and ResourceLoader.exists(path):
+		stream = load(path)
+	_music_cache[music_name] = stream
+	return stream

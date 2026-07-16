@@ -4,7 +4,7 @@ const WORLDS: Array = [
 	{
 		"id": 1, "name": "Bos", "theme": "forest", "music": "world1",
 		"direction": "right",
-		"enemies": ["Wolf", "MushroomMan", "Crow"],
+		"enemies": ["Rat", "Snake", "Bat"],
 		"boss": "ForestBoss",
 	},
 	{

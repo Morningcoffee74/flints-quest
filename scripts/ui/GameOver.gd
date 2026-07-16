@@ -5,7 +5,8 @@ func _ready() -> void:
 	$Panel/VBox/MapButton.pressed.connect(_on_map)
 
 func _on_retry() -> void:
-	get_tree().reload_current_scene()
+	# Volledige nieuwe poging: reset levens en checkpoint, en heft de pauze op.
+	GameManager.go_to_level(GameManager.current_world, GameManager.current_level)
 
 func _on_map() -> void:
 	GameManager.go_to_world_map()

@@ -31,9 +31,24 @@ func _ready() -> void:
 	_world = GameManager.current_world
 	_title.text = "Wereld %d — %s" % [_world, _world_name(_world)]
 	_back_btn.pressed.connect(GameManager.go_to_main_menu)
+	_add_background(_world)
 	_build_map(_world)
 	if not _playable.is_empty():
 		_set_focus(0)
+
+## Toont assets/sprites/backgrounds/worldmap/world<N>.png als kaartachtergrond
+## indien aanwezig (zie docs/worldmap-achtergrond-prompt.md).
+func _add_background(world: int) -> void:
+	var path := "res://assets/sprites/backgrounds/worldmap/world%d.png" % world
+	if not ResourceLoader.exists(path, "Texture2D"):
+		return
+	var bg := TextureRect.new()
+	bg.texture = load(path)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	add_child(bg)
+	move_child(bg, 0)
 
 func _build_map(world: int) -> void:
 	var lines := _LineDrawer.new(LEVEL_POSITIONS)

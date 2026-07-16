@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/GroundEnemy.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/common/Snake/Snake_walk.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="walk0"]
+atlas = ExtResource("2")
+region = Rect2(14, 33, 34, 15)
+
+[sub_resource type="AtlasTexture" id="walk1"]
+atlas = ExtResource("2")
+region = Rect2(62, 33, 34, 15)
+
+[sub_resource type="AtlasTexture" id="walk2"]
+atlas = ExtResource("2")
+region = Rect2(110, 33, 34, 15)
+
+[sub_resource type="AtlasTexture" id="walk3"]
+atlas = ExtResource("2")
+region = Rect2(158, 33, 34, 15)
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("walk0")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk2")
+}, {
+"duration": 1.0,
+"texture": SubResource("walk3")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 7.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="body"]
+radius = 16.0
+height = 72.0
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(88.0, 36.0)
+
+[node name="Snake" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+base_health = 1
+base_speed = 40.0
+stomp_immune = true
+sprite_faces_right = false
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0.0, -22.0)
+scale = Vector2(3.0, 3.0)
+sprite_frames = SubResource("frames")
+animation = &"walk"
+autoplay = "walk"
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0.0, -16.0)
+rotation = 1.5707964
+shape = SubResource("body")
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 18
+
+[node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(0.0, -18.0)
+shape = SubResource("hurt")

@@ -6,6 +6,10 @@ extends Node2D
 
 @export var coins_needed_pct: int = 0
 @export var enemies_needed: int = 0
+## Als true moeten BEIDE eisen gehaald worden (indien > 0); anders is één genoeg.
+@export var require_both: bool = false
+
+const FALL_MARGIN := 120.0
 
 @onready var player: Player    = $Player
 @onready var hud               = $HUD
@@ -17,6 +21,7 @@ var _enemies_killed: int  = 0
 var _cabin_open:     bool = false
 var _level_done:     bool = false
 var _pause_menu: CanvasLayer = null
+var _start_position: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	ScoreManager.reset_level()
@@ -24,7 +29,11 @@ func _ready() -> void:
 	_camera.limit_left   = 0
 	_camera.limit_right  = level_width
 	_camera.limit_top    = -200
-	_camera.limit_bottom = level_height + 100
+	_camera.limit_bottom = level_height + 48
+
+	_start_position = player.global_position
+	if GameManager.respawn_point.is_finite():
+		player.global_position = GameManager.respawn_point
 
 	hud.connect_player(player)
 	player.died.connect(_on_player_died)
@@ -42,6 +51,26 @@ func _ready() -> void:
 
 	_update_cabin()
 	_setup_pause_menu()
+	AudioManager.play_music_by_name("world%d" % GameManager.current_world)
+
+func _physics_process(_delta: float) -> void:
+	if _level_done:
+		return
+	if player.state != Player.State.DEAD \
+			and player.global_position.y > level_height + FALL_MARGIN:
+		_on_player_fell()
+
+func _on_player_fell() -> void:
+	player.take_damage()
+	if player.state == Player.State.DEAD:
+		return
+	player.global_position = _respawn_position()
+	player.velocity = Vector2.ZERO
+
+func _respawn_position() -> Vector2:
+	if GameManager.respawn_point.is_finite():
+		return GameManager.respawn_point
+	return _start_position
 
 func _setup_pause_menu() -> void:
 	var packed: PackedScene = load("res://scenes/ui/PauseMenu.tscn")
@@ -78,7 +107,13 @@ func _update_cabin() -> void:
 
 	var enemies_met := enemies_needed > 0 and _enemies_killed >= enemies_needed
 
-	var should_open := no_requirement or coins_met or enemies_met
+	var should_open: bool
+	if no_requirement:
+		should_open = true
+	elif require_both and coins_needed_pct > 0 and enemies_needed > 0:
+		should_open = coins_met and enemies_met
+	else:
+		should_open = coins_met or enemies_met
 
 	if should_open and not _cabin_open:
 		_cabin_open = true
@@ -94,6 +129,10 @@ func _on_enemy_killed() -> void:
 func _on_player_died() -> void:
 	_level_done = true
 	await get_tree().create_timer(0.8).timeout
+	if GameManager.lose_life() > 0:
+		get_tree().reload_current_scene()
+		return
+	AudioManager.play_sfx_by_name("game_over")
 	get_tree().paused = true
 	var packed: PackedScene = load("res://scenes/ui/GameOver.tscn")
 	if packed:
@@ -103,6 +142,7 @@ func _on_level_completed() -> void:
 	if not _cabin_open or _level_done:
 		return
 	_level_done = true
+	AudioManager.play_sfx_by_name("level_win")
 	var final_score := ScoreManager.finalize_level()
 	GameManager.complete_level(GameManager.current_world, GameManager.current_level, final_score)
 	await get_tree().create_timer(0.4).timeout

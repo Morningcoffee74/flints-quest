@@ -1,0 +1,74 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/DiveEnemy.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/common/Bat/Bat_Fly.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="fly0"]
+atlas = ExtResource("2")
+region = Rect2(22, 23, 20, 20)
+
+[sub_resource type="AtlasTexture" id="fly1"]
+atlas = ExtResource("2")
+region = Rect2(86, 23, 20, 20)
+
+[sub_resource type="AtlasTexture" id="fly2"]
+atlas = ExtResource("2")
+region = Rect2(150, 23, 20, 20)
+
+[sub_resource type="AtlasTexture" id="fly3"]
+atlas = ExtResource("2")
+region = Rect2(214, 23, 20, 20)
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("fly0")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly1")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly2")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly3")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 8.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="body"]
+radius = 13.0
+height = 34.0
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(48.0, 36.0)
+
+[node name="Bat" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+base_health = 1
+base_speed = 55.0
+sine_amplitude = 35.0
+sine_frequency = 2.2
+patrol_range = 180.0
+sprite_faces_right = false
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(3.0, 3.0)
+sprite_frames = SubResource("frames")
+animation = &"fly"
+autoplay = "fly"
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("body")
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 18
+
+[node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("hurt")

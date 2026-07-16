@@ -1,9 +1,13 @@
 extends Node
 
+const LIVES_PER_LEVEL: int = 3
+
 var current_profile: String = ""
 var current_world: int = 1
 var current_level: int = 1
 var profile_data: Dictionary = {}
+var lives: int = LIVES_PER_LEVEL
+var respawn_point: Vector2 = Vector2.INF  # INF = geen checkpoint bereikt
 
 func _ready() -> void:
 	_register_input_actions()
@@ -96,8 +100,15 @@ func get_level_highscore(world: int, level: int) -> int:
 func go_to_level(world: int, level: int) -> void:
 	current_world = world
 	current_level = level
+	lives = LIVES_PER_LEVEL
+	respawn_point = Vector2.INF
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/levels/world%d/W%dL%d.tscn" % [world, world, level])
+
+## Trekt een leven af; geeft het resterende aantal terug.
+func lose_life() -> int:
+	lives -= 1
+	return lives
 
 func go_to_world_map() -> void:
 	get_tree().paused = false

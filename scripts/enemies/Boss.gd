@@ -4,11 +4,15 @@ extends BaseEnemy
 const GRAVITY      := 980.0
 const ATTACK_RANGE := 110.0
 const ARM_DURATION := 0.6
+const PROJECTILE_INTERVAL := 2.2
+
+const PROJECTILE_SCENE := preload("res://scenes/enemies/BossProjectile.tscn")
 
 var _phase2    := false
 var _attack_cd := 3.0
 var _arm_active := false
 var _arm_timer  := 0.0
+var _projectile_cd := 0.0
 
 func _ready() -> void:
 	super._ready()
@@ -23,6 +27,12 @@ func _physics_process(delta: float) -> void:
 		velocity.y += GRAVITY * delta
 
 	_attack_cd = max(0.0, _attack_cd - delta)
+
+	if _phase2:
+		_projectile_cd -= delta
+		if _projectile_cd <= 0.0:
+			_drop_projectile()
+			_projectile_cd = PROJECTILE_INTERVAL
 
 	if _arm_active:
 		_arm_timer -= delta
@@ -40,6 +50,11 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+## De boss is niet te pletten: elk lichaamscontact doet de speler pijn.
+func _on_body_entered(body: Node2D) -> void:
+	if body is Player:
+		(body as Player).take_damage()
+
 func _begin_arm_attack(direction: float) -> void:
 	_arm_active = true
 	_arm_timer  = ARM_DURATION
@@ -54,26 +69,34 @@ func _end_arm_attack() -> void:
 		if has_node(arm):
 			(get_node(arm) as Area2D).monitoring = false
 
+func _drop_projectile() -> void:
+	var player := _get_player()
+	if player == null:
+		return
+	var projectile := PROJECTILE_SCENE.instantiate() as Node2D
+	projectile.global_position = Vector2(player.global_position.x, global_position.y - 260.0)
+	get_parent().add_child(projectile)
+
 func _on_arm_hit(body: Node2D) -> void:
 	if body is Player:
 		(body as Player).take_damage()
 
+## Sterke klap doet 2 schade (geen one-shot zoals bij gewone vijanden).
 func _take_hit(stomper: Player = null, instant_kill: bool = false) -> void:
-	if instant_kill:
-		health = 0
-	else:
-		health -= 1
+	health -= 2 if instant_kill else 1
 
 	if not _phase2 and health <= base_health / 2:
 		_phase2 = true
 		speed  *= 1.6
+		_projectile_cd = 1.0
 		modulate = Color(1.0, 0.55, 0.55)
 
 	if health <= 0:
 		_die(stomper)
 
-func _die(stomper: Player = null) -> void:
+func _die(_stomper: Player = null) -> void:
 	ScoreManager.add_points(ScoreManager.POINTS_BOSS)
+	AudioManager.play_sfx_by_name("enemy_die")
 	died.emit()
 	queue_free()
 

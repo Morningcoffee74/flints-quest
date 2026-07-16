@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/world1/back.png" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/world1/far.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/world1/middle.png" id="3"]
+
+[node name="ParallaxBG" type="ParallaxBackground"]
+
+[node name="BackLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.2, 0.0)
+motion_mirroring = Vector2(1728.0, 0.0)
+
+[node name="BackSprite" type="Sprite2D" parent="BackLayer"]
+texture_repeat = 2
+scale = Vector2(3.0, 3.0)
+centered = false
+texture = ExtResource("1")
+region_enabled = true
+region_rect = Rect2(0, 0, 576, 240)
+
+[node name="FarLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.5, 0.0)
+motion_mirroring = Vector2(2112.0, 0.0)
+
+[node name="FarSprite" type="Sprite2D" parent="FarLayer"]
+texture_repeat = 2
+scale = Vector2(3.0, 3.0)
+centered = false
+texture = ExtResource("2")
+region_enabled = true
+region_rect = Rect2(0, 0, 704, 240)
+
+[node name="MiddleLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.8, 0.0)
+motion_mirroring = Vector2(2304.0, 0.0)
+
+[node name="MiddleSprite" type="Sprite2D" parent="MiddleLayer"]
+texture_repeat = 2
+scale = Vector2(3.0, 3.0)
+centered = false
+texture = ExtResource("3")
+region_enabled = true
+region_rect = Rect2(0, 0, 768, 240)
