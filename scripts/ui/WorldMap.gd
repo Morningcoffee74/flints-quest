@@ -6,9 +6,9 @@ extends Control
 ## moet overeenkomen met WorldConfig.WORLDS[world-1]["levels"].
 const LEVEL_POSITIONS: Dictionary = {
 	1: [
-		Vector2(120, 560), Vector2(250, 530), Vector2(380, 490), Vector2(490, 430),
-		Vector2(570, 350), Vector2(650, 270), Vector2(760, 220), Vector2(890, 240),
-		Vector2(1020, 290), Vector2(1140, 330),
+		Vector2(166, 288), Vector2(283, 248), Vector2(410, 255), Vector2(511, 302),
+		Vector2(604, 368), Vector2(691, 438), Vector2(815, 499), Vector2(928, 488),
+		Vector2(1038, 431), Vector2(1141, 373),
 	],
 	2: [
 		Vector2(161, 293), Vector2(267, 293), Vector2(380, 311), Vector2(490, 356),
@@ -57,10 +57,17 @@ const LEVEL_POSITIONS: Dictionary = {
 	],
 }
 
-const DOT_DONE   := Color(0.2, 0.8, 0.2)
-const DOT_OPEN   := Color(0.9, 0.8, 0.1)
-const DOT_LOCKED := Color(0.4, 0.4, 0.4)
-const DOT_FOCUS  := Color(1.0, 1.0, 1.0)
+const DOT_SIZE := 46.0
+
+const DOT_DONE   := Color(0.25, 0.75, 0.3, 0.9)
+const DOT_OPEN   := Color(0.95, 0.8, 0.15, 0.9)
+const DOT_LOCKED := Color(0.25, 0.25, 0.25, 0.75)
+const DOT_FOCUS  := Color(1.0, 1.0, 1.0, 0.95)
+
+const DOT_BORDER_DONE   := Color(0.1, 0.4, 0.15, 1.0)
+const DOT_BORDER_OPEN   := Color(0.5, 0.35, 0.05, 1.0)
+const DOT_BORDER_LOCKED := Color(0.05, 0.05, 0.05, 1.0)
+const DOT_BORDER_FOCUS  := Color(1.0, 0.85, 0.3, 1.0)
 
 @onready var _title:    Label   = $VBox/TitleLabel
 @onready var _back_btn: Button  = $VBox/BackButton
@@ -113,19 +120,17 @@ func _build_map(world: int) -> void:
 		var completed := GameManager.is_level_completed(world, level)
 		var unlocked  := exists and GameManager.is_level_unlocked(world, level)
 
-		var btn := Button.new()
-		btn.text = str(level)
-		btn.custom_minimum_size = Vector2(44, 44)
-		btn.position = pos - Vector2(22, 22)
+		var btn := _make_dot_button(level)
+		btn.position = pos - Vector2(DOT_SIZE, DOT_SIZE) / 2.0
 		btn.disabled = not unlocked
 
 		if completed:
-			btn.modulate = DOT_DONE
+			_style_dot(btn, DOT_DONE, DOT_BORDER_DONE)
 		elif unlocked:
-			btn.modulate = DOT_OPEN
+			_style_dot(btn, DOT_OPEN, DOT_BORDER_OPEN)
 			_playable.append(i)
 		else:
-			btn.modulate = DOT_LOCKED
+			_style_dot(btn, DOT_LOCKED, DOT_BORDER_LOCKED)
 
 		if unlocked:
 			btn.pressed.connect(_on_level_pressed.bind(world, level))
@@ -152,19 +157,43 @@ func _unhandled_input(event: InputEvent) -> void:
 		_on_level_pressed(_world, level)
 		accept_event()
 
+## Bouwt een ronde level-marker (i.p.v. het standaard vierkante Button-uiterlijk)
+## via een StyleBoxFlat met corner_radius = straal, zodat hij als een cirkel
+## op de clearing van de wereldkaart-achtergrond past.
+func _make_dot_button(level: int) -> Button:
+	var btn := Button.new()
+	btn.text = str(level)
+	btn.custom_minimum_size = Vector2(DOT_SIZE, DOT_SIZE)
+	btn.add_theme_font_size_override("font_size", 18)
+	btn.add_theme_color_override("font_color", Color.WHITE)
+	btn.add_theme_color_override("font_disabled_color", Color(0.85, 0.85, 0.85))
+	btn.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.6))
+	btn.add_theme_constant_override("shadow_offset_x", 1)
+	btn.add_theme_constant_override("shadow_offset_y", 1)
+	return btn
+
+func _style_dot(btn: Button, fill: Color, border: Color) -> void:
+	var style := StyleBoxFlat.new()
+	style.bg_color = fill
+	style.border_color = border
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(int(DOT_SIZE / 2.0))
+	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
+		btn.add_theme_stylebox_override(state, style)
+
 func _set_focus(idx: int) -> void:
 	# Reset vorige focus-kleur
 	if not _playable.is_empty():
 		var old_i := _playable[_focus_idx]
 		var old_level := old_i + 1
 		if GameManager.is_level_completed(_world, old_level):
-			_buttons[old_i].modulate = DOT_DONE
+			_style_dot(_buttons[old_i], DOT_DONE, DOT_BORDER_DONE)
 		else:
-			_buttons[old_i].modulate = DOT_OPEN
+			_style_dot(_buttons[old_i], DOT_OPEN, DOT_BORDER_OPEN)
 
 	_focus_idx = idx
 	var new_i := _playable[idx]
-	_buttons[new_i].modulate = DOT_FOCUS
+	_style_dot(_buttons[new_i], DOT_FOCUS, DOT_BORDER_FOCUS)
 	_buttons[new_i].grab_focus()
 
 func _on_level_pressed(world: int, level: int) -> void:
