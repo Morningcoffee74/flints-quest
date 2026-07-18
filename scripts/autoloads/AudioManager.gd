@@ -17,6 +17,7 @@ const SFX_PATHS: Dictionary = {
 
 const MUSIC_PATHS: Dictionary = {
 	"world1": "res://assets/audio/music/Living Voyage.mp3",
+	"menu":   "res://assets/audio/music/music-theme.mp3",
 }
 
 const SETTINGS_PATH := "user://settings.json"

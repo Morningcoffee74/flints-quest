@@ -4,6 +4,7 @@ func _ready() -> void:
 	$VBoxContainer/NewGameButton.pressed.connect(_on_new_game)
 	$VBoxContainer/LoadGameButton.pressed.connect(_on_load_game)
 	$VBoxContainer/SettingsButton.pressed.connect(_on_settings)
+	AudioManager.play_music_by_name("menu")
 
 func _on_new_game() -> void:
 	get_tree().change_scene_to_file("res://scenes/ui/ProfileSelect.tscn")

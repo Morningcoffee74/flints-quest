@@ -13,6 +13,7 @@ var _pending_delete: String = ""
 
 func _ready() -> void:
 	_back_btn.pressed.connect(GameManager.go_to_main_menu)
+	AudioManager.play_music_by_name("menu")
 
 	_music_slider.value = AudioManager.get_bus_volume("Music")
 	_music_mute.button_pressed = AudioManager.get_bus_mute("Music")

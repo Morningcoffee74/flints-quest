@@ -84,6 +84,7 @@ func _ready() -> void:
 	_back_btn.pressed.connect(GameManager.go_to_world_select)
 	_add_background(_world)
 	_build_map(_world)
+	AudioManager.play_music_by_name("menu")
 	if not _playable.is_empty():
 		_set_focus(0)
 

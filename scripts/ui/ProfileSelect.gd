@@ -10,6 +10,7 @@ func _ready() -> void:
 	_create_btn.pressed.connect(_on_create_pressed)
 	_back_btn.pressed.connect(GameManager.go_to_main_menu)
 	_refresh_profiles()
+	AudioManager.play_music_by_name("menu")
 
 func _refresh_profiles() -> void:
 	for child in _profile_list.get_children():

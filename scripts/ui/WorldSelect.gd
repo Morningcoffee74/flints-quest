@@ -26,6 +26,7 @@ func _ready() -> void:
 	_grayscale_material = ShaderMaterial.new()
 	_grayscale_material.shader = shader
 	_build_grid()
+	AudioManager.play_music_by_name("menu")
 
 func _build_grid() -> void:
 	for w in range(1, 11):
