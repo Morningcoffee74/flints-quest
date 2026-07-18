@@ -54,6 +54,12 @@ pixel-art. Vervang t.z.t. door pixel-art versies (16–32px):
 - Stekels/spikes-tegel
 - Huisje/cabin (nu een bruine polygon)
 - Extra tegels wereld 1 (de huidige tileset is klein: 1 grondblok + 3 pilaren)
+- Buk/kruip-sprite voor de speler (`assets/sprites/player/Crouch.png`, zelfde
+  formaat als de andere speler-sheets). Bukken (S/↓) werkt al functioneel
+  (verkleinde hitbox, ontwijkt vleermuizen), maar hergebruikt nu de
+  spring-pose als animatie omdat er nog geen eigen hurk-frame is — pas
+  `"crouch"`-animatie aan in `scenes/player/player_frames.tres` zodra het
+  sheet er is.
 
 ### 5. Werelden 2–10 (pas bij Fase 5)
 
