@@ -38,3 +38,14 @@ func profile_exists(profile_name: String) -> bool:
 
 func delete_profile(profile_name: String) -> void:
 	DirAccess.remove_absolute(SAVE_DIR + profile_name + ".json")
+
+func rename_profile(old_name: String, new_name: String) -> bool:
+	if old_name == new_name or profile_exists(new_name):
+		return false
+	var data := load_profile(old_name)
+	if data.is_empty():
+		return false
+	data["name"] = new_name
+	save_profile(new_name, data)
+	DirAccess.remove_absolute(SAVE_DIR + old_name + ".json")
+	return true

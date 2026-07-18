@@ -46,7 +46,8 @@ func _new_profile(pname: String) -> Dictionary:
 	var data: Dictionary = {"name": pname, "total_score": 0, "worlds": {}}
 	for w in range(1, 11):
 		var world_levels: Dictionary = {}
-		for l in range(1, 11):
+		var level_count: int = WorldConfig.WORLDS[w - 1]["levels"]
+		for l in range(1, level_count + 1):
 			world_levels[str(l)] = {"completed": false, "highscore": 0}
 		data["worlds"][str(w)] = {"levels": world_levels}
 	return data
@@ -84,13 +85,14 @@ func is_world_unlocked(world: int) -> bool:
 	if profile_data.is_empty():
 		return false
 	var prev := world - 1
-	if not is_level_completed(prev, 10):
+	var prev_levels: int = WorldConfig.WORLDS[prev - 1]["levels"]
+	if not is_level_completed(prev, prev_levels):
 		return false
 	var count := 0
-	for l in range(1, 11):
+	for l in range(1, prev_levels + 1):
 		if is_level_completed(prev, l):
 			count += 1
-	return count >= 9
+	return count >= prev_levels - 1
 
 func get_level_highscore(world: int, level: int) -> int:
 	if profile_data.is_empty():
@@ -110,10 +112,21 @@ func lose_life() -> int:
 	lives -= 1
 	return lives
 
-func go_to_world_map() -> void:
+func go_to_world_map(world: int = current_world) -> void:
+	current_world = world
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/WorldMap.tscn")
+
+func go_to_world_select() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/ui/WorldSelect.tscn")
 
 func go_to_main_menu() -> void:
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
+
+## Samengestelde snelheidsopbouw: elke wereld begint 10% hoger dan de vorige,
+## en elk level binnen een wereld draagt ook 10% bij (i.p.v. per-wereld te
+## resetten), tot een plafond van 2x de basissnelheid.
+func get_speed_difficulty() -> float:
+	return minf(2.0, pow(1.1, (current_world - 1) + (current_level - 1)))

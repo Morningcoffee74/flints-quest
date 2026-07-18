@@ -19,6 +19,8 @@ const MUSIC_PATHS: Dictionary = {
 	"world1": "res://assets/audio/music/Living Voyage.mp3",
 }
 
+const SETTINGS_PATH := "user://settings.json"
+
 var _music_player: AudioStreamPlayer
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _sfx_cache: Dictionary = {}
@@ -27,15 +29,17 @@ var _current_music: String = ""
 
 func _ready() -> void:
 	_music_player = AudioStreamPlayer.new()
-	_music_player.bus = "Master"
+	_music_player.bus = "Music"
 	_music_player.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(_music_player)
 
 	for i in SFX_POOL_SIZE:
 		var player := AudioStreamPlayer.new()
-		player.bus = "Master"
+		player.bus = "SFX"
 		add_child(player)
 		_sfx_players.append(player)
+
+	_load_settings()
 
 func play_music_by_name(music_name: String) -> void:
 	if _current_music == music_name and _music_player.playing:
@@ -93,3 +97,60 @@ func _load_music(music_name: String) -> AudioStream:
 		stream = load(path)
 	_music_cache[music_name] = stream
 	return stream
+
+## Los van spelprofielen: geladen bij het opstarten, vóór er een profiel gekozen is.
+func set_bus_volume(bus_name: String, linear: float) -> void:
+	_apply_bus_volume(bus_name, linear)
+	_save_settings()
+
+func set_bus_mute(bus_name: String, muted: bool) -> void:
+	_apply_bus_mute(bus_name, muted)
+	_save_settings()
+
+func _apply_bus_volume(bus_name: String, linear: float) -> void:
+	var idx := AudioServer.get_bus_index(bus_name)
+	if idx >= 0:
+		AudioServer.set_bus_volume_db(idx, linear_to_db(clampf(linear, 0.0, 1.0)))
+
+func _apply_bus_mute(bus_name: String, muted: bool) -> void:
+	var idx := AudioServer.get_bus_index(bus_name)
+	if idx >= 0:
+		AudioServer.set_bus_mute(idx, muted)
+
+func get_bus_volume(bus_name: String) -> float:
+	var idx := AudioServer.get_bus_index(bus_name)
+	return db_to_linear(AudioServer.get_bus_volume_db(idx)) if idx >= 0 else 1.0
+
+func get_bus_mute(bus_name: String) -> bool:
+	var idx := AudioServer.get_bus_index(bus_name)
+	return AudioServer.is_bus_mute(idx) if idx >= 0 else false
+
+func _load_settings() -> void:
+	if not FileAccess.file_exists(SETTINGS_PATH):
+		return
+	var file := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
+	if not file:
+		return
+	var data: Variant = JSON.parse_string(file.get_as_text())
+	if not (data is Dictionary):
+		return
+	var d: Dictionary = data
+	if d.has("music_volume"):
+		_apply_bus_volume("Music", d["music_volume"])
+	if d.has("sfx_volume"):
+		_apply_bus_volume("SFX", d["sfx_volume"])
+	if d.has("music_muted"):
+		_apply_bus_mute("Music", d["music_muted"])
+	if d.has("sfx_muted"):
+		_apply_bus_mute("SFX", d["sfx_muted"])
+
+func _save_settings() -> void:
+	var data := {
+		"music_volume": get_bus_volume("Music"),
+		"sfx_volume":   get_bus_volume("SFX"),
+		"music_muted":  get_bus_mute("Music"),
+		"sfx_muted":    get_bus_mute("SFX"),
+	}
+	var file := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(data, "\t"))

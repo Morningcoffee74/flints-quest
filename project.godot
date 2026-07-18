@@ -8,6 +8,10 @@
 
 config_version=5
 
+[audio]
+
+buses/default_bus_layout="res://default_bus_layout.tres"
+
 [animation]
 
 compatibility/default_parent_skeleton_in_mesh_instance_3d=true
@@ -26,6 +30,7 @@ GameManager="*res://scripts/autoloads/GameManager.gd"
 SaveSystem="*res://scripts/autoloads/SaveSystem.gd"
 AudioManager="*res://scripts/autoloads/AudioManager.gd"
 ScoreManager="*res://scripts/autoloads/ScoreManager.gd"
+WorldConfig="*res://data/world_config.gd"
 
 [display]
 

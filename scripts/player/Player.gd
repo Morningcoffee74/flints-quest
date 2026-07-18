@@ -26,6 +26,7 @@ var _star_timer         := 0.0   # ster-power-up: onkwetsbaar
 var _speed_timer        := 0.0   # blauwe power-up: sneller lopen
 var _strong_punch_timer := 0.0   # oranje power-up: hard slaan
 var _on_ladder          := false
+var _speed_difficulty   := 1.0   # samengestelde wereld/level-opbouw, zie GameManager.get_speed_difficulty()
 
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var punch_hitbox: Area2D          = $PunchHitbox
@@ -34,11 +35,13 @@ var _on_ladder          := false
 
 signal health_changed(new_health: int)
 signal died
+signal powerup_activated(kind: String)
 
 func _ready() -> void:
 	add_to_group("player")
 	punch_hitbox.monitoring = false
 	punch_hitbox.area_entered.connect(_on_punch_area)
+	_speed_difficulty = GameManager.get_speed_difficulty()
 
 func _on_punch_area(area: Area2D) -> void:
 	var parent := area.get_parent()
@@ -202,7 +205,7 @@ func _apply_gravity(delta: float) -> void:
 
 func _move_horizontal() -> void:
 	var dir := Input.get_axis("move_left", "move_right")
-	var top_speed := SPEED * (SPEED_BOOST_MULT if _speed_timer > 0.0 else 1.0)
+	var top_speed := SPEED * _speed_difficulty * (SPEED_BOOST_MULT if _speed_timer > 0.0 else 1.0)
 	if dir != 0.0:
 		facing_right = dir > 0.0
 		anim_sprite.flip_h = not facing_right
@@ -229,13 +232,20 @@ func heal(amount: int = 1) -> void:
 func activate_invincible(duration: float = POWERUP_DURATION) -> void:
 	is_invincible = true
 	_star_timer = maxf(_star_timer, duration)
+	powerup_activated.emit("star")
 
 func activate_speed(duration: float = POWERUP_DURATION) -> void:
 	_speed_timer = maxf(_speed_timer, duration)
+	powerup_activated.emit("speed")
 
 func activate_strong_punch(duration: float = POWERUP_DURATION) -> void:
 	is_strong_punch = true
 	_strong_punch_timer = maxf(_strong_punch_timer, duration)
+	powerup_activated.emit("strong")
+
+## Voor de loop-animatie: laat het lopen zichtbaar sneller aanvoelen tijdens de boost.
+func is_speed_boosted() -> bool:
+	return _speed_timer > 0.0
 
 ## Actieve power-ups voor de HUD: [{kind, left, total}].
 func get_active_powerups() -> Array:

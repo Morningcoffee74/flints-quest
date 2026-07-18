@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script"      path="res://scripts/levels/LevelBase.gd"             id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"               id="2"]
@@ -19,9 +19,12 @@
 [ext_resource type="PackedScene" path="res://scenes/objects/Checkpoint.tscn"          id="17"]
 [ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockOrange.tscn"    id="18"]
 
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(32.0, 300.0)
+
 [node name="W1L1" type="Node2D"]
 script = ExtResource("1")
-level_width = 11616
+level_width = 10144
 level_height = 720
 coins_needed_pct = 40
 enemies_needed = 3
@@ -38,39 +41,36 @@ position = Vector2(120.0, 640.0)
 scale = Vector2(2.0, 2.0)
 tile_set = ExtResource("13")
 script = ExtResource("14")
-solid_rects = Array[Rect2i]([Rect2i(0, 20, 78, 4), Rect2i(81, 20, 75, 4), Rect2i(160, 20, 117, 4), Rect2i(281, 20, 82, 4), Rect2i(42, 17, 4, 1), Rect2i(115, 17, 4, 1), Rect2i(122, 14, 4, 1), Rect2i(245, 17, 4, 1)])
+solid_rects = Array[Rect2i]([Rect2i(0, 20, 86, 4), Rect2i(89, 20, 64, 4), Rect2i(157, 20, 84, 4), Rect2i(245, 20, 72, 4), Rect2i(121, 17, 4, 1)])
 
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Rat1" parent="Enemies" instance=ExtResource("4")]
-position = Vector2(640.0, 640.0)
+position = Vector2(1216.0, 640.0)
 
 [node name="Rat2" parent="Enemies" instance=ExtResource("4")]
-position = Vector2(3104.0, 640.0)
+position = Vector2(3328.0, 640.0)
 
 [node name="Rat3" parent="Enemies" instance=ExtResource("4")]
-position = Vector2(5632.0, 640.0)
+position = Vector2(5504.0, 640.0)
 
 [node name="Rat4" parent="Enemies" instance=ExtResource("4")]
-position = Vector2(8448.0, 640.0)
+position = Vector2(7264.0, 640.0)
+
+[node name="Rat5" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(9248.0, 640.0)
 
 [node name="Snake1" parent="Enemies" instance=ExtResource("5")]
-position = Vector2(2080.0, 640.0)
+position = Vector2(2336.0, 640.0)
 
 [node name="Snake2" parent="Enemies" instance=ExtResource("5")]
-position = Vector2(4608.0, 640.0)
+position = Vector2(4544.0, 640.0)
 
 [node name="Snake3" parent="Enemies" instance=ExtResource("5")]
-position = Vector2(7392.0, 640.0)
+position = Vector2(6464.0, 640.0)
 
 [node name="Snake4" parent="Enemies" instance=ExtResource("5")]
-position = Vector2(9600.0, 640.0)
-
-[node name="Bat1" parent="Enemies" instance=ExtResource("6")]
-position = Vector2(4032.0, 320.0)
-
-[node name="Bat2" parent="Enemies" instance=ExtResource("6")]
-position = Vector2(10496.0, 256.0)
+position = Vector2(8416.0, 640.0)
 
 [node name="Objects" type="Node2D" parent="."]
 
@@ -87,148 +87,123 @@ position = Vector2(208.0, 616.0)
 position = Vector2(272.0, 616.0)
 
 [node name="Coin5" parent="Objects" instance=ExtResource("7")]
-position = Vector2(336.0, 616.0)
+position = Vector2(720.0, 616.0)
 
 [node name="Coin6" parent="Objects" instance=ExtResource("7")]
-position = Vector2(400.0, 616.0)
+position = Vector2(784.0, 616.0)
 
 [node name="Coin7" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1360.0, 488.0)
+position = Vector2(848.0, 616.0)
 
 [node name="Coin8" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1424.0, 488.0)
+position = Vector2(912.0, 616.0)
 
 [node name="Coin9" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1616.0, 616.0)
+position = Vector2(976.0, 616.0)
 
 [node name="Coin10" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1680.0, 616.0)
+position = Vector2(1040.0, 616.0)
 
 [node name="Coin11" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1744.0, 616.0)
+position = Vector2(1872.0, 616.0)
 
 [node name="Coin12" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1808.0, 616.0)
+position = Vector2(1936.0, 616.0)
 
 [node name="Coin13" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3696.0, 488.0)
+position = Vector2(2000.0, 616.0)
 
 [node name="Coin14" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3760.0, 488.0)
+position = Vector2(2064.0, 616.0)
 
 [node name="Coin15" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3920.0, 392.0)
+position = Vector2(2128.0, 616.0)
 
 [node name="Coin16" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3984.0, 392.0)
+position = Vector2(3888.0, 488.0)
 
 [node name="Coin17" parent="Objects" instance=ExtResource("7")]
-position = Vector2(4176.0, 616.0)
+position = Vector2(3952.0, 488.0)
 
 [node name="Coin18" parent="Objects" instance=ExtResource("7")]
-position = Vector2(4240.0, 616.0)
+position = Vector2(4144.0, 616.0)
 
 [node name="Coin19" parent="Objects" instance=ExtResource("7")]
-position = Vector2(4304.0, 616.0)
+position = Vector2(4208.0, 616.0)
 
 [node name="Coin20" parent="Objects" instance=ExtResource("7")]
-position = Vector2(4368.0, 616.0)
+position = Vector2(4272.0, 616.0)
 
 [node name="Coin21" parent="Objects" instance=ExtResource("7")]
-position = Vector2(6192.0, 584.0)
+position = Vector2(4336.0, 616.0)
 
 [node name="Coin22" parent="Objects" instance=ExtResource("7")]
-position = Vector2(6256.0, 584.0)
+position = Vector2(6064.0, 616.0)
 
 [node name="Coin23" parent="Objects" instance=ExtResource("7")]
-position = Vector2(6320.0, 584.0)
+position = Vector2(6128.0, 616.0)
 
 [node name="Coin24" parent="Objects" instance=ExtResource("7")]
-position = Vector2(6960.0, 616.0)
+position = Vector2(6192.0, 616.0)
 
 [node name="Coin25" parent="Objects" instance=ExtResource("7")]
-position = Vector2(7024.0, 616.0)
+position = Vector2(6256.0, 616.0)
 
 [node name="Coin26" parent="Objects" instance=ExtResource("7")]
-position = Vector2(7088.0, 616.0)
+position = Vector2(7920.0, 616.0)
 
 [node name="Coin27" parent="Objects" instance=ExtResource("7")]
-position = Vector2(7152.0, 616.0)
+position = Vector2(7984.0, 616.0)
 
 [node name="Coin28" parent="Objects" instance=ExtResource("7")]
-position = Vector2(7856.0, 488.0)
+position = Vector2(8048.0, 616.0)
 
 [node name="Coin29" parent="Objects" instance=ExtResource("7")]
-position = Vector2(7920.0, 488.0)
+position = Vector2(8112.0, 616.0)
 
 [node name="Coin30" parent="Objects" instance=ExtResource("7")]
-position = Vector2(9072.0, 616.0)
+position = Vector2(8176.0, 616.0)
 
 [node name="Coin31" parent="Objects" instance=ExtResource("7")]
-position = Vector2(9136.0, 616.0)
+position = Vector2(8240.0, 616.0)
 
 [node name="Coin32" parent="Objects" instance=ExtResource("7")]
-position = Vector2(9200.0, 616.0)
+position = Vector2(8944.0, 616.0)
 
 [node name="Coin33" parent="Objects" instance=ExtResource("7")]
-position = Vector2(9264.0, 616.0)
+position = Vector2(9008.0, 616.0)
 
 [node name="Coin34" parent="Objects" instance=ExtResource("7")]
-position = Vector2(9328.0, 616.0)
+position = Vector2(9072.0, 616.0)
 
 [node name="Coin35" parent="Objects" instance=ExtResource("7")]
-position = Vector2(9392.0, 616.0)
-
-[node name="Coin36" parent="Objects" instance=ExtResource("7")]
-position = Vector2(10160.0, 616.0)
-
-[node name="Coin37" parent="Objects" instance=ExtResource("7")]
-position = Vector2(10224.0, 616.0)
-
-[node name="Coin38" parent="Objects" instance=ExtResource("7")]
-position = Vector2(10288.0, 616.0)
-
-[node name="Coin39" parent="Objects" instance=ExtResource("7")]
-position = Vector2(10352.0, 616.0)
-
-[node name="Coin40" parent="Objects" instance=ExtResource("7")]
-position = Vector2(10416.0, 616.0)
-
-[node name="Coin41" parent="Objects" instance=ExtResource("7")]
-position = Vector2(10480.0, 616.0)
+position = Vector2(9136.0, 616.0)
 
 [node name="SpecialBlock1" parent="Objects" instance=ExtResource("8")]
-position = Vector2(416.0, 624.0)
+position = Vector2(1024.0, 624.0)
 
 [node name="SpecialBlock2" parent="Objects" instance=ExtResource("8")]
-position = Vector2(5440.0, 624.0)
+position = Vector2(5344.0, 624.0)
 
 [node name="Power1" parent="Objects" instance=ExtResource("10")]
-position = Vector2(3264.0, 560.0)
+position = Vector2(3488.0, 560.0)
 
 [node name="Power2" parent="Objects" instance=ExtResource("11")]
-position = Vector2(7904.0, 464.0)
-
-[node name="Spikes1" parent="Objects" instance=ExtResource("15")]
-position = Vector2(6320.0, 640.0)
-width = 96
-variant = "small_wood"
-
-[node name="Spikes2" parent="Objects" instance=ExtResource("15")]
-position = Vector2(6544.0, 640.0)
-width = 96
-variant = "small_wood"
-
-[node name="Spikes3" parent="Objects" instance=ExtResource("15")]
-position = Vector2(6768.0, 640.0)
-width = 96
-variant = "small_wood"
+position = Vector2(7392.0, 560.0)
 
 [node name="Checkpoint1" parent="." instance=ExtResource("17")]
-position = Vector2(4544.0, 640.0)
+position = Vector2(4480.0, 640.0)
 
 [node name="Checkpoint2" parent="." instance=ExtResource("17")]
-position = Vector2(8448.0, 640.0)
+position = Vector2(7264.0, 640.0)
 
 [node name="Cabin" parent="." instance=ExtResource("9")]
-position = Vector2(11424.0, 640.0)
+position = Vector2(9952.0, 640.0)
+
+[node name="CabinWall" type="StaticBody2D" parent="."]
+position = Vector2(10016.0, 490.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CabinWall"]
+shape = SubResource("1")

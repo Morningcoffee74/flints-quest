@@ -26,7 +26,7 @@ func _refresh_profiles() -> void:
 	for pname in profiles:
 		var row := HBoxContainer.new()
 		var play_btn := Button.new()
-		play_btn.text = pname
+		play_btn.text = "%s   (%s)" % [pname, _summarize_progress(pname)]
 		play_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		play_btn.pressed.connect(_on_profile_selected.bind(pname))
 		var del_btn := Button.new()
@@ -37,6 +37,27 @@ func _refresh_profiles() -> void:
 		row.add_child(del_btn)
 		_profile_list.add_child(row)
 
+## Hoogst bereikte wereld/level + totaalscore, voor het profieloverzicht.
+func _summarize_progress(pname: String) -> String:
+	var data := SaveSystem.load_profile(pname)
+	if data.is_empty():
+		return "nog niet gespeeld"
+	var best_world := 1
+	var best_level := 0
+	for w in range(1, 11):
+		var wdata: Dictionary = data.get("worlds", {}).get(str(w), {})
+		var levels: Dictionary = wdata.get("levels", {})
+		for lkey: String in levels:
+			if levels[lkey].get("completed", false):
+				var l := lkey.to_int()
+				if w > best_world or (w == best_world and l > best_level):
+					best_world = w
+					best_level = l
+	var score: int = data.get("total_score", 0)
+	if best_level == 0:
+		return "score %d" % score
+	return "wereld %d level %d · score %d" % [best_world, best_level, score]
+
 func _on_create_pressed() -> void:
 	var pname := _name_input.text.strip_edges()
 	if pname.length() < 1 or pname.length() > 20:
@@ -46,11 +67,11 @@ func _on_create_pressed() -> void:
 		_error_label.text = "Profiel '%s' bestaat al." % pname
 		return
 	GameManager.create_profile(pname)
-	GameManager.go_to_world_map()
+	GameManager.go_to_world_select()
 
 func _on_profile_selected(profile_name: String) -> void:
 	GameManager.load_profile(profile_name)
-	GameManager.go_to_world_map()
+	GameManager.go_to_world_select()
 
 func _on_delete_pressed(profile_name: String) -> void:
 	SaveSystem.delete_profile(profile_name)

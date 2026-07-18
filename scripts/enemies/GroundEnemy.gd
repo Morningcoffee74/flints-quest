@@ -5,6 +5,10 @@ const GRAVITY       := 980.0
 const DETECT_RANGE  := 220.0
 const LUNGE_TIME    := 0.4
 const LUNGE_COOLDOWN := 2.5
+const FLEE_TIME     := 0.6
+## Binnen deze afstand van de speler zou sign(dx) heen-en-weer flikkeren
+## (bv. wanneer de speler er recht boven staat); dan gewoon stilstaan.
+const CHASE_DEAD_ZONE := 8.0
 
 ## Als true sprint de vijand kort op de speler af zodra die gezien wordt.
 @export var lunge_enabled: bool = false
@@ -13,6 +17,8 @@ var _patrol_dir := 1.0
 var _lunge_timer := 0.0
 var _lunge_cd := 0.0
 var _lunge_dir := 1.0
+var _flee_timer := 0.0
+var _flee_dir := 1.0
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -20,7 +26,13 @@ func _physics_process(delta: float) -> void:
 
 	_lunge_cd = maxf(0.0, _lunge_cd - delta)
 
-	if _lunge_timer > 0.0:
+	if _flee_timer > 0.0:
+		_flee_timer -= delta
+		velocity.x = _flee_dir * speed * 1.3
+		if not _ground_ahead(_flee_dir):
+			_flee_timer = 0.0
+			velocity.x = 0.0
+	elif _lunge_timer > 0.0:
 		_lunge_timer -= delta
 		velocity.x = _lunge_dir * speed * 2.5
 		if not _ground_ahead(_lunge_dir):
@@ -36,9 +48,13 @@ func _physics_process(delta: float) -> void:
 			_lunge_cd = LUNGE_COOLDOWN
 			velocity.x = _lunge_dir * speed * 2.5
 		elif sees_player:
-			velocity.x = sign(player.global_position.x - global_position.x) * speed * 1.3
-			if not _ground_ahead(sign(velocity.x)):
+			var dx := player.global_position.x - global_position.x
+			if absf(dx) < CHASE_DEAD_ZONE:
 				velocity.x = 0.0
+			else:
+				velocity.x = sign(dx) * speed * 1.3
+				if not _ground_ahead(sign(velocity.x)):
+					velocity.x = 0.0
 		else:
 			if not _ground_ahead(_patrol_dir):
 				_patrol_dir *= -1.0
@@ -49,6 +65,15 @@ func _physics_process(delta: float) -> void:
 
 	if is_on_wall():
 		_patrol_dir *= -1.0
+
+## Na een mislukte stomp op een stomp_immune-vijand (bv. de slang) even
+## wegrennen van de speler i.p.v. te blijven jitteren op de dead-zone-rand.
+func _start_flee(player: Player) -> void:
+	_flee_dir = sign(global_position.x - player.global_position.x)
+	if _flee_dir == 0.0:
+		_flee_dir = 1.0
+	_flee_timer = FLEE_TIME
+	_lunge_timer = 0.0
 
 ## Voorkomt dat grondvijanden van randen aflopen (en in ravijnen verdwijnen).
 func _ground_ahead(dir: float) -> bool:

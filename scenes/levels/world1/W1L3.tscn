@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script"      path="res://scripts/levels/LevelBase.gd"             id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"               id="2"]
@@ -18,6 +18,9 @@
 [ext_resource type="PackedScene" path="res://scenes/objects/Ladder.tscn"              id="16"]
 [ext_resource type="PackedScene" path="res://scenes/objects/Checkpoint.tscn"          id="17"]
 [ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockOrange.tscn"    id="18"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(32.0, 300.0)
 
 [node name="W1L3" type="Node2D"]
 script = ExtResource("1")
@@ -138,16 +141,16 @@ position = Vector2(4240.0, 616.0)
 position = Vector2(4304.0, 616.0)
 
 [node name="Coin20" parent="Objects" instance=ExtResource("7")]
-position = Vector2(4976.0, 584.0)
+position = Vector2(5104.0, 520.0)
 
 [node name="Coin21" parent="Objects" instance=ExtResource("7")]
-position = Vector2(5040.0, 584.0)
+position = Vector2(5328.0, 520.0)
 
 [node name="Coin22" parent="Objects" instance=ExtResource("7")]
-position = Vector2(5104.0, 584.0)
+position = Vector2(5552.0, 520.0)
 
 [node name="Coin23" parent="Objects" instance=ExtResource("7")]
-position = Vector2(5168.0, 584.0)
+position = Vector2(5776.0, 520.0)
 
 [node name="Coin24" parent="Objects" instance=ExtResource("7")]
 position = Vector2(6928.0, 328.0)
@@ -265,3 +268,11 @@ position = Vector2(9632.0, 640.0)
 
 [node name="Cabin" parent="." instance=ExtResource("9")]
 position = Vector2(13440.0, 640.0)
+
+[node name="CabinWall" type="StaticBody2D" parent="."]
+position = Vector2(13504.0, 490.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CabinWall"]
+shape = SubResource("1")

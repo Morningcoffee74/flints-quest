@@ -20,7 +20,7 @@ func _ready() -> void:
 	var l := GameManager.current_level
 	var difficulty := 1.0 + (w - 1) * 0.15 + (l - 1) * 0.02
 	health = maxi(1, roundi(base_health * difficulty))
-	speed  = base_speed * difficulty
+	speed  = base_speed * GameManager.get_speed_difficulty()
 	add_to_group("enemies")
 	_sprite = get_node_or_null("Sprite") as AnimatedSprite2D
 
@@ -36,6 +36,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if player.velocity.y > 150.0 and player.global_position.y < global_position.y - 5.0:
 		if stomp_immune:
 			player.take_damage()
+			_start_flee(player)
 		else:
 			_take_hit(player)
 	else:
@@ -67,6 +68,11 @@ func _die(stomper: Player = null) -> void:
 	AudioManager.play_sfx_by_name("enemy_die")
 	died.emit()
 	queue_free()
+
+## Overschreven door subklassen die na een mislukte stomp-poging op een
+## stomp_immune-vijand even wegvluchten in plaats van te blijven jitteren.
+func _start_flee(_player: Player) -> void:
+	pass
 
 ## Draait de sprite mee met de horizontale bewegingsrichting.
 func _update_facing() -> void:

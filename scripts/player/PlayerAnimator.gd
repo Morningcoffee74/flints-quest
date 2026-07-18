@@ -20,3 +20,5 @@ func _process(_delta: float) -> void:
 		_:                   anim = &"idle"
 	if sprite_frames.has_animation(anim) and animation != anim:
 		play(anim)
+	# Blauwe power-up: loop-animatie merkbaar sneller zodat de boost ook voelt als sprinten.
+	speed_scale = 1.4 if player.is_speed_boosted() else 1.0

@@ -112,7 +112,9 @@ func _sr(periods: int, variant: String = "small_wood") -> void:
 	for i: int in periods:
 		var p := _cx + i * 7
 		L["spikes_g"].append([p + 4, 3, variant])
-	L["coin_rows"].append([_cx + 1, 18, periods])
+		# munt op sprong-hoogte boven de stekels i.p.v. op grondniveau ernaast
+		# (anders overlapt hij met de stekel-hitbox, zie _validate check 6)
+		L["coin_rows"].append([p + 5, 16, 1])
 	_cx += periods * 7 + 2
 
 func _ba(len_t: int, n: int) -> void:
@@ -232,6 +234,24 @@ func _validate() -> PackedStringArray:
 
 	if L["checkpoints"].size() < 1:
 		errs.append("level heeft geen checkpoint")
+
+	# 6. Munten mogen nooit op dezelfde hoogte overlappen met stekels.
+	for row: Array in L["coin_rows"]:
+		var cx0: int = row[0]
+		var crow: int = row[1]
+		var cx1: int = cx0 + maxi(0, row[2] - 1) * 2
+		if crow >= GROUND_Y - 2:
+			for sp: Array in L["spikes_g"]:
+				var sx0: int = sp[0]
+				var sx1: int = sp[0] + sp[1] - 1
+				if cx0 <= sx1 and sx0 <= cx1:
+					errs.append("munt(en) x=%d..%d rij %d overlapt stekels x=%d..%d" % [cx0, cx1, crow, sx0, sx1])
+		for sp: Array in L["spikes_p"]:
+			if sp[1] == crow:
+				var sx0: int = sp[0]
+				var sx1: int = sp[0] + sp[2] - 1
+				if cx0 <= sx1 and sx0 <= cx1:
+					errs.append("munt(en) x=%d..%d rij %d overlapt platform-stekels x=%d..%d" % [cx0, cx1, crow, sx0, sx1])
 	return errs
 
 func _on_ground(x: int, grounds: Array) -> bool:
@@ -286,13 +306,15 @@ func _write_level() -> void:
 	ext += '[ext_resource type="PackedScene" path="res://scenes/objects/Ladder.tscn"              id="16"]\n'
 	ext += '[ext_resource type="PackedScene" path="res://scenes/objects/Checkpoint.tscn"          id="17"]\n'
 	ext += '[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockOrange.tscn"    id="18"]\n'
-	var load_steps := 19
+	var load_steps := 20
 	if has_boss:
 		ext += '[ext_resource type="PackedScene" path="res://scenes/enemies/world1/ForestBoss.tscn"    id="19"]\n'
-		load_steps = 20
+		load_steps = 21
 
 	var s := "[gd_scene load_steps=%d format=3]\n\n" % load_steps
 	s += ext + "\n"
+	s += '[sub_resource type="RectangleShape2D" id="1"]\n'
+	s += "size = Vector2(32.0, 300.0)\n\n"
 
 	s += '[node name="W1L%d" type="Node2D"]\n' % n
 	s += 'script = ExtResource("1")\n'
@@ -395,7 +417,17 @@ func _write_level() -> void:
 		idx += 1
 
 	s += '[node name="Cabin" parent="." instance=ExtResource("9")]\n'
-	s += "position = Vector2(%d.0, 640.0)\n" % (int(L["cabin"]) * 32)
+	s += "position = Vector2(%d.0, 640.0)\n\n" % (int(L["cabin"]) * 32)
+
+	# Onzichtbare muur vlak na de cabin: voorkomt dat de speler voorbij het
+	# huisje doorloopt tot het einde van de grond en er alsnog af valt.
+	var wall_x: int = (int(L["cabin"]) + 2) * 32
+	s += '[node name="CabinWall" type="StaticBody2D" parent="."]\n'
+	s += "position = Vector2(%d.0, 490.0)\n" % wall_x
+	s += "collision_layer = 1\n"
+	s += "collision_mask = 0\n\n"
+	s += '[node name="CollisionShape2D" type="CollisionShape2D" parent="CabinWall"]\n'
+	s += 'shape = SubResource("1")\n'
 
 	var f := FileAccess.open(OUT_DIR + "W1L%d.tscn" % n, FileAccess.WRITE)
 	f.store_string(s)
@@ -407,25 +439,24 @@ func _write_level() -> void:
 func _levels() -> Array:
 	return [
 		{
-			# L1 — intro: rustig kennismaken met springen, trapjes en de drie vijanden
-			"n": 1, "pct": 40, "kills": 3, "both": false, "staart": 22,
+			# L1 — intro: rustig kennismaken met springen en de twee grondvijanden
+			# (geen stekels/vleermuizen — die komen pas in latere levels)
+			"n": 1, "pct": 40, "kills": 3, "both": false, "staart": 16,
 			"secties": [
-				["fl", 40, {"coins": 6, "rats": 1, "block": true}],
-				["st", [17]],
-				["fl", 30, {"snakes": 1, "coins": 4}],
+				["fl", 20, {"coins": 4}],
+				["fl", 36, {"coins": 6, "rats": 1, "block": true}],
+				["fl", 30, {"snakes": 1, "coins": 5}],
 				["gp", 3],
-				["fl", 32, {"rats": 1, "power": "purple"}],
-				["st", [17, 14], {"bat": true}],
-				["fl", 28, {"checkpoint": true, "snakes": 1, "coins": 4}],
+				["fl", 30, {"rats": 1, "power": "purple"}],
+				["st", [17]],
+				["fl", 26, {"checkpoint": true, "snakes": 1, "coins": 4}],
 				["gp", 4],
-				["fl", 32, {"rats": 1, "block": true}],
-				["sr", 3],
-				["fl", 28, {"snakes": 1, "coins": 4}],
-				["st", [17], {"power": "blue"}],
-				["fl", 26, {"rats": 1, "checkpoint": true}],
+				["fl", 30, {"rats": 1, "block": true}],
+				["fl", 26, {"snakes": 1, "coins": 4}],
+				["fl", 28, {"rats": 1, "checkpoint": true, "power": "blue"}],
 				["gp", 4],
-				["fl", 34, {"coins": 6, "snakes": 1}],
-				["ba", 26, 1],
+				["fl", 32, {"coins": 6, "snakes": 1}],
+				["fl", 24, {"rats": 1, "coins": 4}],
 			],
 		},
 		{

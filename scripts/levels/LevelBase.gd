@@ -122,6 +122,9 @@ func _update_cabin() -> void:
 	elif not should_open and has_node("Cabin"):
 		($Cabin as Area2D).modulate = Color(0.45, 0.45, 0.45, 1.0)
 
+	var coins_got_pct := 0 if _total_coins == 0 else int(_coins_got * 100.0 / _total_coins)
+	hud.set_cabin_progress(coins_got_pct, coins_needed_pct, _enemies_killed, enemies_needed, _cabin_open)
+
 func _on_enemy_killed() -> void:
 	_enemies_killed += 1
 	_update_cabin()
@@ -143,6 +146,7 @@ func _on_level_completed() -> void:
 		return
 	_level_done = true
 	AudioManager.play_sfx_by_name("level_win")
+	_spawn_fireworks()
 	var final_score := ScoreManager.finalize_level()
 	GameManager.complete_level(GameManager.current_world, GameManager.current_level, final_score)
 	await get_tree().create_timer(0.4).timeout
@@ -150,3 +154,34 @@ func _on_level_completed() -> void:
 	var packed: PackedScene = load("res://scenes/ui/LevelComplete.tscn")
 	if packed:
 		add_child(packed.instantiate())
+
+## Kleurrijke deeltjes-burst bij de cabin wanneer het level is afgerond.
+func _spawn_fireworks() -> void:
+	if not has_node("Cabin"):
+		return
+	var cabin := $Cabin as Area2D
+	var particles := CPUParticles2D.new()
+	particles.position = cabin.position + Vector2(0.0, -70.0)
+	particles.process_mode = Node.PROCESS_MODE_ALWAYS  # blijft animeren tijdens de pauze voor het LevelComplete-scherm
+	particles.one_shot = true
+	particles.emitting = true
+	particles.amount = 40
+	particles.lifetime = 1.0
+	particles.explosiveness = 1.0
+	particles.direction = Vector2.UP
+	particles.spread = 180.0
+	particles.gravity = Vector2(0.0, 200.0)
+	particles.initial_velocity_min = 120.0
+	particles.initial_velocity_max = 260.0
+	particles.scale_amount_min = 3.0
+	particles.scale_amount_max = 5.0
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 0.5, 1.0])
+	gradient.colors = PackedColorArray([
+		Color(1.0, 0.9, 0.2, 1.0),
+		Color(1.0, 0.3, 0.5, 1.0),
+		Color(0.3, 0.6, 1.0, 0.0),
+	])
+	particles.color_ramp = gradient
+	add_child(particles)
+	get_tree().create_timer(1.2, true).timeout.connect(particles.queue_free)

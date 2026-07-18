@@ -49,3 +49,7 @@ text = "Nieuw Spel"
 [node name="LoadGameButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200.0, 52.0)
 text = "Profiel Laden"
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(200.0, 52.0)
+text = "Instellingen"
