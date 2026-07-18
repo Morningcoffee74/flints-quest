@@ -25,18 +25,10 @@ func _refresh_profiles() -> void:
 		return
 
 	for pname in profiles:
-		var row := HBoxContainer.new()
 		var play_btn := Button.new()
 		play_btn.text = "%s   (%s)" % [pname, _summarize_progress(pname)]
-		play_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		play_btn.pressed.connect(_on_profile_selected.bind(pname))
-		var del_btn := Button.new()
-		del_btn.text = "X"
-		del_btn.custom_minimum_size = Vector2(36, 0)
-		del_btn.pressed.connect(_on_delete_pressed.bind(pname))
-		row.add_child(play_btn)
-		row.add_child(del_btn)
-		_profile_list.add_child(row)
+		_profile_list.add_child(play_btn)
 
 ## Hoogst bereikte wereld/level + totaalscore, voor het profieloverzicht.
 func _summarize_progress(pname: String) -> String:
@@ -73,7 +65,3 @@ func _on_create_pressed() -> void:
 func _on_profile_selected(profile_name: String) -> void:
 	GameManager.load_profile(profile_name)
 	GameManager.go_to_world_select()
-
-func _on_delete_pressed(profile_name: String) -> void:
-	SaveSystem.delete_profile(profile_name)
-	_refresh_profiles()
