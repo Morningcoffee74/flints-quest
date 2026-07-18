@@ -28,6 +28,9 @@ var _music_cache: Dictionary = {}
 var _current_music: String = ""
 
 func _ready() -> void:
+	_ensure_bus("Music")
+	_ensure_bus("SFX")
+
 	_music_player = AudioStreamPlayer.new()
 	_music_player.bus = "Music"
 	_music_player.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -40,6 +43,17 @@ func _ready() -> void:
 		_sfx_players.append(player)
 
 	_load_settings()
+
+## Maakt de bus aan als die nog niet bestaat, i.p.v. te leunen op een
+## project-brede default_bus_layout.tres (die bleek fragiel bij het openen
+## van het project in de editor).
+func _ensure_bus(bus_name: String) -> void:
+	if AudioServer.get_bus_index(bus_name) >= 0:
+		return
+	var idx := AudioServer.bus_count
+	AudioServer.add_bus(idx)
+	AudioServer.set_bus_name(idx, bus_name)
+	AudioServer.set_bus_send(idx, "Master")
 
 func play_music_by_name(music_name: String) -> void:
 	if _current_music == music_name and _music_player.playing:
