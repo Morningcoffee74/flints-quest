@@ -86,6 +86,12 @@ func _add_background(world: int) -> void:
 	var path := "res://assets/sprites/backgrounds/worldmap/world%d.png" % world
 	if not ResourceLoader.exists(path, "Texture2D"):
 		return
+	# De statische "Background" ColorRect (val-terug-kleur voor als er geen
+	# afbeelding is) zit boven op de kaart-achtergrond in de scene-boom en
+	# is ondoorzichtig — die moet weg zodra we een echte afbeelding tonen,
+	# anders overdekt hij hem volledig.
+	if has_node("Background"):
+		($Background as ColorRect).visible = false
 	var bg := TextureRect.new()
 	bg.texture = load(path)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
