@@ -1,7 +1,9 @@
 # Flint's Quest: Hearts and Houses
 
 2D side-scrolling platformer in Godot 4.4, geïnspireerd op Alex Kidd. Modern smooth 2D stijl.
-10 werelden × 10 levels = 100 levels totaal. Export target: macOS Apple Silicon (arm64).
+10 werelden, ±10 levels elk (aantal per wereld in `WorldConfig.WORLDS[w]["levels"]`,
+afgeleid uit het aantal clearings op de wereldkaart-achtergrond — de meeste werelden
+hebben er 10, een paar 11 of 12). Export target: macOS Apple Silicon (arm64).
 
 ## Projectstructuur
 
@@ -21,9 +23,9 @@
 - **Power-ups** (8s, aftelbalkje in HUD, PowerBlock.gd): paars = onkwetsbaar, blauw = snelheid ×1.5, oranje = hard slaan (2 schade op boss, one-shot op gewone vijand)
 - **Vijand-AI**: rat = lunge-sprint, slang = stomp-immuun (springen op kop = schade), vleermuis = duikaanval; health en snelheid schalen met difficulty; grondvijanden keren bij randen
 - **Vijand-bibliotheek**: sprites in `assets/sprites/enemies/common/` (9 sets: Bat, Rat, Snake, Hyena, Mummy, Scorpio, Slime, Vulture, Deceased), scenes in `scenes/enemies/common/` — herbruikbaar in alle werelden; bosses blijven per wereld (`scenes/enemies/world<N>/`)
-- **Difficulty**: `1.0 + (world-1)*0.15 + (level-1)*0.02` (W1L1=1.0×, W10L10=2.53×)
+- **Difficulty**: health/schade schaalt met `1.0 + (world-1)*0.15 + (level-1)*0.02` (W1L1=1.0×, W10L10=2.53×); snelheid (speler én vijanden) schaalt apart en samengesteld via `GameManager.get_speed_difficulty()` = `min(2.0, 1.1^((world-1)+(level-1)))`
 - **Levels**: runtime-geschilderde TileMapLayer via `scripts/levels/Terrain.gd` (solid_rects in tegels van 32px, grond-bovenkant = rij 20); top-tegels zijn one-way; gegenereerd met `tools/gen_levels_world1.gd` uit secties (flat/steps/gap/high-route/spike-run/bat-alley) — pas dáár levels aan en regenereer; een validatiepas dwingt sprongregels af (max 3 tegels omhoog, gat ≤5 vlak/≤4 stijgend, checkpoints/objecten boven vaste grond)
-- **Wereldkaart**: achtergrond per wereld optioneel via `assets/sprites/backgrounds/worldmap/world<N>.png` (tekenprompt: `docs/worldmap-achtergrond-prompt.md`)
+- **Wereldkaart**: achtergrond per wereld via `assets/sprites/backgrounds/worldmap/world<N>.png` (tekenprompt: `docs/worldmap-achtergrond-prompt.md`); clearing-coördinaten per wereld in `WorldMap.LEVEL_POSITIONS` (afgelezen zoals `docs/Claude-worldmap-coords-prompt.md` beschrijft); `WorldSelect.tscn` laat spelers tussen unlocked werelden wisselen (ProfileSelect → WorldSelect → WorldMap)
 - **Cabin-eis**: munten% en/of vijanden (LevelBase.require_both); latere levels eisen beide
 - **Save**: JSON in `user://profiles/<naam>.json` via SaveSystem autoload
 - **Input**: geregistreerd in GameManager._ready() — geen project.godot input sectie nodig
@@ -60,5 +62,6 @@ Wereld 10 (Vulkaan): FireBat, LavaStone, FireSnake — Boss: FireMonster (eindba
 - [x] Fase 3: UI & navigatie — menus, profielen, wereldkaart, save/load
 - [x] Fase 4: Wereld 1 volledig — 10 levels (11616–19200px, gaten/stekels/ladders/checkpoints), boss, parallax, audio gekoppeld
 - [ ] Fase 4b: ontbrekende assets — 5 SFX (zie boodschappenlijst.md); vijand-sprites W1 ✓ (Rat/Snake/Bat)
+- [x] Fase 4c: speelbaarheid-fixes na doorspelen W1 — generator (munten/stekels, korter L1), slangen-jitter/vlucht, samengestelde snelheidsopbouw, power-up duidelijkheid, cabin-voortgang/muur/vuurwerk, wereldkaart per wereld + WorldSelect, profieloverzicht + instellingenscherm
 - [ ] Fase 5: Werelden 2-10
 - [ ] Fase 6: Polish & macOS export
