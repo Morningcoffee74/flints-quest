@@ -41,6 +41,36 @@ func load_profile(profile_name: String) -> void:
 	if profile_data.is_empty():
 		profile_data = _new_profile(profile_name)
 		SaveSystem.save_profile(profile_name, profile_data)
+	elif _migrate_profile():
+		SaveSystem.save_profile(profile_name, profile_data)
+
+## Vult ontbrekende wereld/level-entries aan bij oudere profielen — bv. van
+## vóór een wereld meer levels kreeg dan de oorspronkelijke 10 (zie
+## WorldConfig.WORLDS[*]["levels"]). Zonder dit crasht is_level_completed()
+## op profielen die van vóór die uitbreiding dateren. Geeft true terug als er
+## iets is aangevuld, zodat de aanroeper weet of opslaan nodig is.
+func _migrate_profile() -> bool:
+	var changed := false
+	if not profile_data.has("worlds"):
+		profile_data["worlds"] = {}
+		changed = true
+	for w in range(1, 11):
+		var wkey := str(w)
+		if not profile_data["worlds"].has(wkey):
+			profile_data["worlds"][wkey] = {"levels": {}}
+			changed = true
+		var wdata: Dictionary = profile_data["worlds"][wkey]
+		if not wdata.has("levels"):
+			wdata["levels"] = {}
+			changed = true
+		var levels: Dictionary = wdata["levels"]
+		var level_count: int = WorldConfig.WORLDS[w - 1]["levels"]
+		for l in range(1, level_count + 1):
+			var lkey := str(l)
+			if not levels.has(lkey):
+				levels[lkey] = {"completed": false, "highscore": 0}
+				changed = true
+	return changed
 
 func _new_profile(pname: String) -> Dictionary:
 	var data: Dictionary = {"name": pname, "total_score": 0, "worlds": {}}
@@ -63,9 +93,7 @@ func complete_level(world: int, level: int, score: int) -> void:
 	SaveSystem.save_profile(current_profile, profile_data)
 
 func is_level_completed(world: int, level: int) -> bool:
-	if profile_data.is_empty():
-		return false
-	return profile_data["worlds"][str(world)]["levels"][str(level)].get("completed", false)
+	return _level_data(world, level).get("completed", false)
 
 func is_level_unlocked(world: int, level: int) -> bool:
 	if not is_world_unlocked(world):
@@ -95,9 +123,16 @@ func is_world_unlocked(world: int) -> bool:
 	return count >= prev_levels - 1
 
 func get_level_highscore(world: int, level: int) -> int:
+	return _level_data(world, level).get("highscore", 0)
+
+## Veilige toegang tot profile_data["worlds"][w]["levels"][l], ook als die
+## sleutel (nog) niet bestaat (bv. een ouder profiel dat nog niet is
+## gemigreerd) — voorkomt een crash i.p.v. een lege Dictionary terug te geven.
+func _level_data(world: int, level: int) -> Dictionary:
 	if profile_data.is_empty():
-		return 0
-	return profile_data["worlds"][str(world)]["levels"][str(level)].get("highscore", 0)
+		return {}
+	var wdata: Dictionary = profile_data.get("worlds", {}).get(str(world), {})
+	return wdata.get("levels", {}).get(str(level), {})
 
 func go_to_level(world: int, level: int) -> void:
 	current_world = world
