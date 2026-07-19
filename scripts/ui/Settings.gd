@@ -34,6 +34,10 @@ func _ready() -> void:
 
 	_refresh_profiles()
 
+	# Beginfocus zodat een gamepad meteen kan navigeren; op de muziekslider staan
+	# betekent dat links/rechts op de D-pad/stick het volume direct aanpast.
+	_music_slider.grab_focus.call_deferred()
+
 func _refresh_profiles() -> void:
 	for child in _profile_list.get_children():
 		child.queue_free()

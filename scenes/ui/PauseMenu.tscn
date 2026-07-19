@@ -42,15 +42,15 @@ theme_override_font_sizes/font_size = 26
 
 [node name="ResumeButton" type="Button" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0.0, 44.0)
-text = "Doorgaan"
+text = "Verder spelen"
 
 [node name="RestartButton" type="Button" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0.0, 44.0)
-text = "Herstarten"
+text = "Level opnieuw"
 
-[node name="MapButton" type="Button" parent="Panel/VBox"]
+[node name="HelpButton" type="Button" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0.0, 44.0)
-text = "Naar Wereldkaart"
+text = "Uitleg"
 
 [node name="MainMenuButton" type="Button" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0.0, 44.0)

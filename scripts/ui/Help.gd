@@ -30,7 +30,7 @@ Flint heeft een goed hart — letterlijk: hij heeft 5 hartjes, en hoe beter hij 
 [cell]Omlaag[/cell][cell]S, ↓, D-pad omlaag of linker-stick — bukken (ontwijk duikende vleermuizen) of een ladder afdalen[/cell]
 [cell]Springen[/cell][cell]Spatie, Z of A-knop (gamepad)[/cell]
 [cell]Boksen[/cell][cell]X, Enter of X-knop (gamepad)[/cell]
-[cell]Pauze[/cell][cell]Escape of Start-knop (gamepad)[/cell]
+[cell]Pauze[/cell][cell]Escape of de +-knop / Start-knop (gamepad)[/cell]
 [/table]
 Een Bluetooth-gamepad zoals een 8BitDo-controller werkt ook: verbind hem voordat je het spel start, dan werken de knoppen hierboven automatisch mee.
 
@@ -60,6 +60,17 @@ Je hoogste score per level én je totaalscore worden bewaard bij je profiel.
 [font_size=20]Profielen[/font_size]
 Je kunt meerdere spelprofielen aanmaken (handig als je met meerdere spelers bent) — kies of maak er een via 'Spel Spelen'. Elk profiel bewaart zijn eigen voortgang, scores en ontgrendelde werelden. Profielnamen aanpassen of verwijderen kan via Instellingen."""
 
+## Pixels per seconde waarmee het Uitleg-scherm met de gamepad (of pijltjes)
+## verticaal scrollt zolang omhoog/omlaag ingedrukt blijft.
+const SCROLL_SPEED := 700.0
+
+## Wordt gezet vóór add_child() als de Help als overlay bovenop een gepauzeerd
+## spel getoond wordt (vanuit het pauzemenu). In dat geval keert 'Terug' terug
+## naar het pauzemenu i.p.v. naar het hoofdmenu te wisselen.
+var overlay_mode: bool = false
+signal overlay_closed
+
+@onready var _scroll:      ScrollContainer = $ContentPanel/VBox/ScrollContainer
 @onready var _rich_text_1: RichTextLabel  = $ContentPanel/VBox/ScrollContainer/ContentVBox/TextBefore
 @onready var _powerup_box: VBoxContainer  = $ContentPanel/VBox/ScrollContainer/ContentVBox/PowerupBox
 @onready var _rich_text_2: RichTextLabel  = $ContentPanel/VBox/ScrollContainer/ContentVBox/TextAfter
@@ -69,8 +80,35 @@ func _ready() -> void:
 	_rich_text_1.text = HELP_TEXT_1
 	_build_powerup_rows()
 	_rich_text_2.text = HELP_TEXT_2
-	_back_btn.pressed.connect(func() -> void: get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn"))
-	AudioManager.play_music_by_name("menu")
+	_back_btn.pressed.connect(_on_back)
+	# Beginfocus zodat de gamepad meteen 'Terug' kan aanklikken; omhoog/omlaag
+	# scrollt de tekst (zie _process).
+	_back_btn.grab_focus.call_deferred()
+	if not overlay_mode:
+		AudioManager.play_music_by_name("menu")
+
+func _on_back() -> void:
+	if overlay_mode:
+		overlay_closed.emit()
+	else:
+		get_tree().change_scene_to_file("res://scenes/ui/MainMenu.tscn")
+
+## Scrollt de uitleg met de D-pad/stick (of pijltjestoetsen) zolang omhoog/omlaag
+## ingedrukt blijft — met maar één knop in beeld zou focusnavigatie anders niets
+## doen. Werkt ook tijdens de pauze (overlay-modus draait met PROCESS_MODE_ALWAYS).
+func _process(delta: float) -> void:
+	if _scroll == null:
+		return
+	var dir := Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+	if absf(dir) > 0.1:
+		_scroll.scroll_vertical += int(dir * SCROLL_SPEED * delta)
+
+## In overlay-modus sluit de B-/Annuleer-knop (of Escape) het Uitleg-scherm en
+## keert terug naar het pauzemenu.
+func _unhandled_input(event: InputEvent) -> void:
+	if overlay_mode and event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		_on_back()
 
 ## Bouwt per power-up een rij met het echte, gekleurde icoon i.p.v. platte
 ## BBCode-tekst — RichTextLabel's [img] kan geen kleur-modulatie toepassen,

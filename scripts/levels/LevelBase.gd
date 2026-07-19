@@ -93,13 +93,15 @@ func _input(event: InputEvent) -> void:
 	if _level_done or _pause_menu == null:
 		return
 	if event.is_action_pressed("pause") and not (event is InputEventKey and event.echo):
+		# Staat het Uitleg-scherm open, dan laat de +/pauze-knop dat met rust
+		# (sluiten gaat via 'Terug' in het Uitleg-scherm zelf).
+		if _pause_menu.is_help_open():
+			return
 		get_viewport().set_input_as_handled()
 		if _pause_menu.visible:
-			_pause_menu.hide()
-			get_tree().paused = false
+			_pause_menu.close()
 		else:
-			_pause_menu.show()
-			get_tree().paused = true
+			_pause_menu.open()
 
 func _update_cabin() -> void:
 	if _cabin_open:

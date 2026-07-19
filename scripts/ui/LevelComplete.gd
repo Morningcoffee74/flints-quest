@@ -17,6 +17,12 @@ func _ready() -> void:
 	$Panel/VBox/NextButton.pressed.connect(_on_next)
 	$Panel/VBox/MapButton.pressed.connect(_on_map)
 	$Panel/VBox/MainMenuButton.pressed.connect(_on_main_menu)
+	# Beginfocus zodat de gamepad meteen kan kiezen (op 'Volgend Level' als dat er
+	# is, anders op 'Naar Wereldkaart').
+	if has_next:
+		$Panel/VBox/NextButton.grab_focus.call_deferred()
+	else:
+		$Panel/VBox/MapButton.grab_focus.call_deferred()
 
 func _on_next() -> void:
 	GameManager.go_to_level(GameManager.current_world, GameManager.current_level + 1)

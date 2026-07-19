@@ -29,10 +29,19 @@ func _ready() -> void:
 	AudioManager.play_music_by_name("menu")
 
 func _build_grid() -> void:
+	var first_unlocked: Button = null
 	for w in range(1, 11):
 		var cfg: Dictionary = WorldConfig.WORLDS[w - 1]
 		var unlocked := GameManager.is_world_unlocked(w)
-		_grid.add_child(_build_world_cell(w, cfg, unlocked))
+		var cell := _build_world_cell(w, cfg, unlocked)
+		_grid.add_child(cell)
+		if unlocked and first_unlocked == null:
+			first_unlocked = cell
+	# Beginfocus op de eerste speelbare wereld zodat de gamepad meteen kan kiezen.
+	if first_unlocked != null:
+		first_unlocked.grab_focus.call_deferred()
+	else:
+		_back_btn.grab_focus.call_deferred()
 
 func _build_world_cell(world: int, cfg: Dictionary, unlocked: bool) -> Button:
 	var btn := Button.new()

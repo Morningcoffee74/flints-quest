@@ -22,13 +22,22 @@ func _refresh_profiles() -> void:
 		lbl.text = "Nog geen profielen."
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_profile_list.add_child(lbl)
+		# Nog geen profielen: zet de gamepad-focus op 'Aanmaken'.
+		_create_btn.grab_focus.call_deferred()
 		return
 
+	var first_btn: Button = null
 	for pname in profiles:
 		var play_btn := Button.new()
 		play_btn.text = "%s   (%s)" % [pname, _summarize_progress(pname)]
 		play_btn.pressed.connect(_on_profile_selected.bind(pname))
 		_profile_list.add_child(play_btn)
+		if first_btn == null:
+			first_btn = play_btn
+	# Beginfocus op het eerste profiel zodat de gamepad meteen kan kiezen; de
+	# naam-invoer (LineEdit) laten we bewust met rust — typen gaat met toetsenbord.
+	if first_btn != null:
+		first_btn.grab_focus.call_deferred()
 
 ## Hoogst bereikte wereld/level + totaalscore, voor het profieloverzicht.
 func _summarize_progress(pname: String) -> String:
