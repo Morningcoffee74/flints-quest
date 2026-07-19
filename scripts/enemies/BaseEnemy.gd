@@ -12,6 +12,10 @@ var health: int  = 1
 var speed: float = 60.0
 
 var _sprite: AnimatedSprite2D = null
+## Korte drempel zodat één klap maar één keer telt, ook als zowel de speler-kant
+## (Player._on_punch_area) als de vijand-kant (HurtBox.area_entered) dezelfde
+## klap oppikken.
+var _hit_cd: float = 0.0
 
 signal died
 
@@ -28,6 +32,24 @@ func _ready() -> void:
 		var hb := $HurtBox as Area2D
 		hb.body_entered.connect(_on_body_entered)
 		hb.area_entered.connect(_on_area_entered)
+
+func _process(delta: float) -> void:
+	if _hit_cd > 0.0:
+		_hit_cd -= delta
+
+## Aangeroepen vanuit Player._on_punch_area: de speler-kant vuurt betrouwbaar af
+## op het moment van slaan (de PunchHitbox zet dan monitoring aan, waardoor Godot
+## area_entered opnieuw afvuurt voor al-overlappende zones) — dus ook als je al
+## tegen de vijand aan staat.
+func hit_by_punch(strong: bool) -> void:
+	_take_hit(null, strong)
+
+## True (en start de cooldown) als deze klap mag tellen; anders False.
+func _can_register_hit() -> bool:
+	if _hit_cd > 0.0:
+		return false
+	_hit_cd = 0.2
+	return true
 
 func _on_body_entered(body: Node2D) -> void:
 	if not body is Player:
@@ -48,6 +70,8 @@ func _on_area_entered(area: Area2D) -> void:
 		_take_hit(null, player.is_strong_punch)
 
 func _take_hit(stomper: Player = null, instant_kill: bool = false) -> void:
+	if not _can_register_hit():
+		return
 	if instant_kill:
 		health = 0
 	else:

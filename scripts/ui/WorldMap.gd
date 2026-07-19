@@ -75,8 +75,7 @@ const DOT_BORDER_FOCUS  := Color(1.0, 0.85, 0.3, 1.0)
 
 var _world: int = 1
 var _buttons: Array[Button] = []
-var _playable: Array[int]   = []   # level-nummers die echt gespeeld kunnen worden
-var _focus_idx: int = 0            # index in _playable
+var _nav: Array[Control] = []   # focus-volgorde: speelbare bolletjes + de Terug-knop
 
 func _ready() -> void:
 	_world = GameManager.current_world
@@ -85,8 +84,10 @@ func _ready() -> void:
 	_add_background(_world)
 	_build_map(_world)
 	AudioManager.play_music_by_name("menu")
-	if not _playable.is_empty():
-		_set_focus(0)
+	# Beginfocus op het eerste speelbare bolletje (of de Terug-knop als er nog
+	# geen speelbaar level is) zodat de gamepad meteen kan navigeren.
+	if not _nav.is_empty():
+		_nav[0].grab_focus.call_deferred()
 
 ## Toont assets/sprites/backgrounds/worldmap/world<N>.png als kaartachtergrond
 ## indien aanwezig (zie docs/worldmap-achtergrond-prompt.md).
@@ -120,43 +121,63 @@ func _build_map(world: int) -> void:
 		var exists    := _scene_exists(world, level)
 		var completed := GameManager.is_level_completed(world, level)
 		var unlocked  := exists and GameManager.is_level_unlocked(world, level)
+		# Speelbaar = open OF al voltooid (voltooide levels mag je herspelen).
+		var navigable := exists and (completed or unlocked)
 
 		var btn := _make_dot_button(level)
 		btn.position = pos - Vector2(DOT_SIZE, DOT_SIZE) / 2.0
-		btn.disabled = not unlocked
+		btn.disabled = not navigable
+		btn.focus_mode = Control.FOCUS_ALL if navigable else Control.FOCUS_NONE
 
 		if completed:
 			_style_dot(btn, DOT_DONE, DOT_BORDER_DONE)
 		elif unlocked:
 			_style_dot(btn, DOT_OPEN, DOT_BORDER_OPEN)
-			_playable.append(i)
 		else:
 			_style_dot(btn, DOT_LOCKED, DOT_BORDER_LOCKED)
 
-		if unlocked:
+		if navigable:
 			btn.pressed.connect(_on_level_pressed.bind(world, level))
+			# Bolletje oplichten als de focus (gamepad/muis) erop staat, en terug
+			# naar de basiskleur zodra de focus weg is.
+			btn.focus_entered.connect(_on_dot_focus.bind(btn))
+			btn.focus_exited.connect(_on_dot_unfocus.bind(btn, level))
+			_nav.append(btn)
 		_buttons.append(btn)
 		_map_area.add_child(btn)
 
-	# Voltooide levels zijn ook herbespeelbaar → voeg ze toe achteraan _playable
-	for i in range(level_count):
-		var level := i + 1
-		if GameManager.is_level_completed(_world, level) and _scene_exists(_world, level):
-			_playable.append(i)
+	# De Terug-knop hoort ook bij de controller-navigatie.
+	_nav.append(_back_btn)
+	_wire_focus_chain()
 
-func _unhandled_input(event: InputEvent) -> void:
-	if _playable.is_empty():
+## Zet de focus-buren zo dat één druk op links/rechts (of omhoog/omlaag) precies
+## één stap zet — langs de speelbare bolletjes en de Terug-knop, met wrap-around.
+## Zonder expliciete buren deden Godot's geometrische focus-navigatie én de oude
+## kaart-eigen navigatie allebei mee, waardoor één druk soms 2-3 bolletjes
+## versprong.
+func _wire_focus_chain() -> void:
+	var n := _nav.size()
+	if n == 0:
 		return
-	if event.is_action_pressed("move_left") or event.is_action_pressed("move_up"):
-		_set_focus((_focus_idx - 1 + _playable.size()) % _playable.size())
-		accept_event()
-	elif event.is_action_pressed("move_right") or event.is_action_pressed("move_down"):
-		_set_focus((_focus_idx + 1) % _playable.size())
-		accept_event()
-	elif event.is_action_pressed("jump") or event.is_action_pressed("punch"):
-		var level := _playable[_focus_idx] + 1
-		_on_level_pressed(_world, level)
-		accept_event()
+	for i in range(n):
+		var here: Control = _nav[i]
+		var prev: Control = _nav[(i - 1 + n) % n]
+		var next: Control = _nav[(i + 1) % n]
+		here.focus_neighbor_left   = here.get_path_to(prev)
+		here.focus_neighbor_top    = here.get_path_to(prev)
+		here.focus_neighbor_right  = here.get_path_to(next)
+		here.focus_neighbor_bottom = here.get_path_to(next)
+		here.focus_next            = here.get_path_to(next)
+		here.focus_previous        = here.get_path_to(prev)
+
+func _on_dot_focus(btn: Button) -> void:
+	_style_dot(btn, DOT_FOCUS, DOT_BORDER_FOCUS)
+
+func _on_dot_unfocus(btn: Button, level: int) -> void:
+	if GameManager.is_level_completed(_world, level):
+		_style_dot(btn, DOT_DONE, DOT_BORDER_DONE)
+	else:
+		_style_dot(btn, DOT_OPEN, DOT_BORDER_OPEN)
 
 ## Bouwt een ronde level-marker (i.p.v. het standaard vierkante Button-uiterlijk)
 ## via een StyleBoxFlat met corner_radius = straal, zodat hij als een cirkel
@@ -181,21 +202,6 @@ func _style_dot(btn: Button, fill: Color, border: Color) -> void:
 	style.set_corner_radius_all(int(DOT_SIZE / 2.0))
 	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
 		btn.add_theme_stylebox_override(state, style)
-
-func _set_focus(idx: int) -> void:
-	# Reset vorige focus-kleur
-	if not _playable.is_empty():
-		var old_i := _playable[_focus_idx]
-		var old_level := old_i + 1
-		if GameManager.is_level_completed(_world, old_level):
-			_style_dot(_buttons[old_i], DOT_DONE, DOT_BORDER_DONE)
-		else:
-			_style_dot(_buttons[old_i], DOT_OPEN, DOT_BORDER_OPEN)
-
-	_focus_idx = idx
-	var new_i := _playable[idx]
-	_style_dot(_buttons[new_i], DOT_FOCUS, DOT_BORDER_FOCUS)
-	_buttons[new_i].grab_focus()
 
 func _on_level_pressed(world: int, level: int) -> void:
 	GameManager.go_to_level(world, level)

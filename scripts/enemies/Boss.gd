@@ -8,6 +8,11 @@ const PROJECTILE_INTERVAL := 2.2
 
 const PROJECTILE_SCENE := preload("res://scenes/enemies/BossProjectile.tscn")
 
+## De HUD toont hierop een levensbalk (huidige/max leven).
+signal boss_health_changed(current: int, max_health: int)
+
+var max_health: int = 1
+
 var _phase2    := false
 var _attack_cd := 3.0
 var _arm_active := false
@@ -16,6 +21,9 @@ var _projectile_cd := 0.0
 
 func _ready() -> void:
 	super._ready()
+	max_health = health
+	add_to_group("boss")
+	boss_health_changed.emit(health, max_health)
 	for arm in ["LeftArm", "RightArm"]:
 		if has_node(arm):
 			var a := get_node(arm) as Area2D
@@ -43,12 +51,23 @@ func _physics_process(delta: float) -> void:
 		var player := _get_player()
 		if player != null:
 			var dx := player.global_position.x - global_position.x
+			_face(sign(dx))
 			if abs(dx) < ATTACK_RANGE and _attack_cd <= 0.0:
 				_begin_arm_attack(sign(dx))
 			else:
 				velocity.x = sign(dx) * speed
+				_play_anim("walk")
 
 	move_and_slide()
+
+## Draait de sprite naar de speler (de tekening kijkt standaard naar rechts).
+func _face(direction: float) -> void:
+	if _sprite != null and direction != 0.0:
+		_sprite.flip_h = direction < 0.0
+
+func _play_anim(anim_name: String) -> void:
+	if _sprite != null and _sprite.animation != anim_name:
+		_sprite.play(anim_name)
 
 ## De boss is niet te pletten: elk lichaamscontact doet de speler pijn.
 func _on_body_entered(body: Node2D) -> void:
@@ -59,6 +78,9 @@ func _begin_arm_attack(direction: float) -> void:
 	_arm_active = true
 	_arm_timer  = ARM_DURATION
 	_attack_cd  = 1.6 if _phase2 else 2.5
+	_face(direction)
+	if _sprite != null:
+		_sprite.play("attack")   # her-spelen mag: elke aanval opnieuw vanaf frame 0
 	var arm_name := "RightArm" if direction > 0.0 else "LeftArm"
 	if has_node(arm_name):
 		(get_node(arm_name) as Area2D).monitoring = true
@@ -81,23 +103,45 @@ func _on_arm_hit(body: Node2D) -> void:
 	if body is Player:
 		(body as Player).take_damage()
 
-## Sterke klap doet 2 schade (geen one-shot zoals bij gewone vijanden).
+## Sterke klap (oranje power-up) doet 2 schade; een gewone klap 1 (geen one-shot
+## zoals bij gewone vijanden).
 func _take_hit(stomper: Player = null, instant_kill: bool = false) -> void:
-	health -= 2 if instant_kill else 1
+	if not _can_register_hit():
+		return
+	health = maxi(0, health - (2 if instant_kill else 1))
+	boss_health_changed.emit(health, max_health)
 
-	if not _phase2 and health <= base_health / 2:
+	if not _phase2 and health <= max_health / 2 and health > 0:
 		_phase2 = true
 		speed  *= 1.6
 		_projectile_cd = 1.0
-		modulate = Color(1.0, 0.55, 0.55)
+
+	_flash_hit()
 
 	if health <= 0:
 		_die(stomper)
 
+## Korte rode flits als bevestiging dat de klap raak was; keert terug naar de
+## fase-2-tint (roodachtig) of naar wit.
+func _flash_hit() -> void:
+	var base_col := Color(1.0, 0.55, 0.55) if _phase2 else Color.WHITE
+	modulate = Color(1.0, 0.25, 0.25)
+	var tween := create_tween()
+	tween.tween_property(self, "modulate", base_col, 0.2)
+
 func _die(_stomper: Player = null) -> void:
 	ScoreManager.add_points(ScoreManager.POINTS_BOSS)
 	AudioManager.play_sfx_by_name("enemy_die")
-	died.emit()
+	died.emit()  # opent meteen het huisje (LevelBase._on_boss_defeated)
+	# Stop verdere actie/schade en speel de dood-animatie voordat we verdwijnen.
+	set_physics_process(false)
+	_end_arm_attack()
+	if has_node("HurtBox"):
+		($HurtBox as Area2D).monitoring = false
+	modulate = Color.WHITE
+	if _sprite != null:
+		_sprite.play("death")
+		await _sprite.animation_finished
 	queue_free()
 
 func _get_player() -> Player:

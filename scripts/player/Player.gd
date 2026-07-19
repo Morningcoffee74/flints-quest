@@ -47,6 +47,9 @@ func _on_punch_area(area: Area2D) -> void:
 	var parent := area.get_parent()
 	if parent is SpecialBlock:
 		parent.hit_by_punch()
+	elif parent is BaseEnemy:
+		# Betrouwbare klap, ook op een eindbaas waar je vlak tegenaan staat.
+		(parent as BaseEnemy).hit_by_punch(is_strong_punch)
 
 func _physics_process(delta: float) -> void:
 	_tick_timers(delta)

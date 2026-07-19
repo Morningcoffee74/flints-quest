@@ -24,6 +24,10 @@ var _hearts: Array[TextureRect] = []
 var _player: Player = null
 var _powerup_rows: Dictionary = {}   # kind -> {row, bar}
 
+var _boss_box: VBoxContainer = null
+var _boss_bar: ProgressBar = null
+var _boss_pct: Label = null
+
 @onready var _score_label: Label = $Control/ScoreLabel
 @onready var _coin_label:  Label = $Control/CoinLabel
 @onready var _lives_label: Label = $Control/LivesLabel
@@ -101,8 +105,15 @@ func set_lives(lives: int) -> void:
 ## moet gebeuren i.p.v. te concluderen dat het huisje kapot is. Toont aantallen
 ## (net als bij vijanden), geen percentages — die zeggen een speler niets over
 ## hoeveel munten er nog te vinden zijn.
-func set_cabin_progress(coins_got: int, coins_needed: int, enemies_killed: int, enemies_needed: int, cabin_open: bool) -> void:
-	if cabin_open or (coins_needed <= 0 and enemies_needed <= 0):
+func set_cabin_progress(coins_got: int, coins_needed: int, enemies_killed: int, enemies_needed: int, cabin_open: bool, boss_active: bool = false) -> void:
+	if cabin_open:
+		_cabin_progress_label.text = ""
+		return
+	# Een levende eindbaas is de enige eis die telt zolang die er staat.
+	if boss_active:
+		_cabin_progress_label.text = "Versla de eindbaas!"
+		return
+	if coins_needed <= 0 and enemies_needed <= 0:
 		_cabin_progress_label.text = ""
 		return
 	var parts: Array[String] = []
@@ -111,6 +122,96 @@ func set_cabin_progress(coins_got: int, coins_needed: int, enemies_killed: int, 
 	if enemies_needed > 0:
 		parts.append("Vijanden %d/%d" % [enemies_killed, enemies_needed])
 	_cabin_progress_label.text = " · ".join(parts)
+
+## Levensbalk voor de eindbaas, midden bovenin. Wordt lui opgebouwd en pas
+## getoond zodra LevelBase een boss in het level vindt.
+func _build_boss_bar() -> void:
+	_boss_box = VBoxContainer.new()
+	_boss_box.visible = false
+	_boss_box.add_theme_constant_override("separation", 2)
+	_boss_box.anchor_left = 0.5
+	_boss_box.anchor_right = 0.5
+	_boss_box.offset_left = -230.0
+	_boss_box.offset_right = 230.0
+	_boss_box.offset_top = 16.0
+	_boss_box.grow_horizontal = Control.GROW_DIRECTION_BOTH
+
+	var title := Label.new()
+	title.text = "EINDBAAS"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
+	title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	title.add_theme_constant_override("shadow_offset_y", 1)
+	_boss_box.add_child(title)
+
+	_boss_bar = ProgressBar.new()
+	_boss_bar.min_value = 0.0
+	_boss_bar.max_value = 1.0
+	_boss_bar.value = 1.0
+	_boss_bar.show_percentage = false
+	_boss_bar.custom_minimum_size = Vector2(460, 22)
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(0.1, 0.1, 0.1, 0.85)
+	bg.set_corner_radius_all(5)
+	bg.set_border_width_all(2)
+	bg.border_color = Color(0, 0, 0, 0.8)
+	_boss_bar.add_theme_stylebox_override("background", bg)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = Color(0.85, 0.2, 0.2)
+	fill.set_corner_radius_all(5)
+	_boss_bar.add_theme_stylebox_override("fill", fill)
+	_boss_box.add_child(_boss_bar)
+
+	_boss_pct = Label.new()
+	_boss_pct.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_boss_pct.add_theme_font_size_override("font_size", 14)
+	_boss_pct.add_theme_color_override("font_color", Color.WHITE)
+	_boss_pct.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	_boss_pct.add_theme_constant_override("shadow_offset_y", 1)
+	_boss_box.add_child(_boss_pct)
+
+	$Control.add_child(_boss_box)
+
+func show_boss_bar() -> void:
+	if _boss_box == null:
+		_build_boss_bar()
+	_boss_box.visible = true
+
+## Wordt aangeroepen door de boss (boss_health_changed) en initieel door
+## LevelBase; toont resterend leven als balk plus "% verslagen".
+func set_boss_health(current: int, max_health: int) -> void:
+	if _boss_box == null:
+		_build_boss_bar()
+	_boss_box.visible = true
+	var frac := 0.0 if max_health <= 0 else float(current) / float(max_health)
+	_boss_bar.value = frac
+	var defeated := int(round((1.0 - frac) * 100.0))
+	_boss_pct.text = "%d%% verslagen" % defeated
+
+func hide_boss_bar() -> void:
+	if _boss_box != null:
+		_boss_box.visible = false
+
+## Korte instructie-popup (bv. hoe je de eindbaas verslaat) die na een paar
+## seconden vervaagt.
+func show_hint(text: String, duration: float = 6.0) -> void:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_color_override("font_color", Color(1.0, 0.95, 0.5))
+	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	label.add_theme_constant_override("shadow_offset_y", 1)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var vp_size := get_viewport().get_visible_rect().size
+	label.size = Vector2(640.0, 60.0)
+	label.position = Vector2(vp_size.x / 2.0 - 320.0, 120.0)
+	$Control.add_child(label)
+	var tween := create_tween()
+	tween.tween_interval(duration)
+	tween.tween_property(label, "modulate:a", 0.0, 0.6)
+	tween.tween_callback(label.queue_free)
 
 func _on_health_changed(new_health: int) -> void:
 	for i in _hearts.size():

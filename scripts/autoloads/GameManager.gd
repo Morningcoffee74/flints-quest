@@ -62,6 +62,27 @@ func _register_gamepad_events() -> void:
 		InputMap.action_add_event(action, motion_event)
 	for action: String in stick_axes:
 		InputMap.action_set_deadzone(action, 0.4)
+	_register_ui_gamepad_events()
+
+## Godot's ingebouwde menu-acties `ui_accept` (aanklikken) en `ui_cancel` (terug)
+## hebben standaard ALLEEN toetsenbord-events (Enter/Spatie/Escape) en geen
+## joypad-knop — terwijl `ui_up/down/left/right` wél een D-pad-binding hebben.
+## Daardoor kon je met de controller wel door een menu navigeren maar niets
+## bevestigen. We voegen hier de face buttons toe. Zowel de onderste (A/0) als
+## de rechter (B/1) knop bevestigt, zodat het werkt ongeacht of de 8BitDo in
+## Switch- of XInput-modus staat (die twee wisselen de fysieke A/B-knoppen om).
+func _register_ui_gamepad_events() -> void:
+	for button: int in [JOY_BUTTON_A, JOY_BUTTON_B]:
+		if not _action_has_joy_button("ui_accept", button):
+			var event := InputEventJoypadButton.new()
+			event.button_index = button as JoyButton
+			InputMap.action_add_event("ui_accept", event)
+
+func _action_has_joy_button(action: String, button: int) -> bool:
+	for event: InputEvent in InputMap.action_get_events(action):
+		if event is InputEventJoypadButton and (event as InputEventJoypadButton).button_index == button:
+			return true
+	return false
 
 func create_profile(profile_name: String) -> void:
 	profile_data = _new_profile(profile_name)

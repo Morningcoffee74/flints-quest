@@ -22,6 +22,9 @@ var _cabin_open:     bool = false
 var _level_done:     bool = false
 var _pause_menu: CanvasLayer = null
 var _start_position: Vector2 = Vector2.ZERO
+## True zolang er een nog-niet-verslagen eindbaas in het level staat. Dan blijft
+## het huisje dicht — een boss-level is pas uit als de boss verslagen is.
+var _boss_active: bool = false
 
 func _ready() -> void:
 	# Score/coin-telling wordt gereset in GameManager.go_to_level() (een echt
@@ -54,6 +57,7 @@ func _ready() -> void:
 	if has_node("Cabin"):
 		($Cabin as Area2D).level_completed.connect(_on_level_completed)
 
+	_setup_boss_bar()
 	_update_cabin()
 	_setup_pause_menu()
 	AudioManager.play_music_by_name("world%d" % GameManager.current_world)
@@ -76,6 +80,23 @@ func _respawn_position() -> Vector2:
 	if GameManager.respawn_point.is_finite():
 		return GameManager.respawn_point
 	return _start_position
+
+## Koppelt een eventuele eindbaas aan de HUD-levensbalk en toont een korte hint
+## hoe je 'm verslaat (boksen, niet op z'n kop springen).
+func _setup_boss_bar() -> void:
+	var bosses := get_tree().get_nodes_in_group("boss")
+	if bosses.is_empty():
+		return
+	var boss := bosses[0] as Boss
+	if boss == null:
+		return
+	_boss_active = true
+	boss.boss_health_changed.connect(hud.set_boss_health)
+	boss.died.connect(hud.hide_boss_bar)
+	boss.died.connect(_on_boss_defeated)
+	hud.show_boss_bar()
+	hud.set_boss_health(boss.health, boss.max_health)
+	hud.show_hint("Eindbaas! Boks 'm met de X-knop (Boks-knop) — op z'n kop springen helpt niet.", 7.0)
 
 func _setup_pause_menu() -> void:
 	var packed: PackedScene = load("res://scenes/ui/PauseMenu.tscn")
@@ -122,6 +143,12 @@ func _update_cabin() -> void:
 	else:
 		should_open = coins_met or enemies_met
 
+	# Een eindbaas is altijd een harde voorwaarde: zolang die leeft blijft het
+	# huisje dicht, ongeacht munten/vijanden. Zo moet je de boss (en dus de
+	# wereld) echt verslaan om verder te komen.
+	if _boss_active:
+		should_open = false
+
 	if should_open and not _cabin_open:
 		_cabin_open = true
 		if has_node("Cabin"):
@@ -133,7 +160,11 @@ func _update_cabin() -> void:
 	# level); voor de HUD rekenen we dat om naar een concreet aantal, want een
 	# los percentage zegt een speler niets over hoeveel munten dat zijn.
 	var coins_needed_count := 0 if coins_needed_pct <= 0 else int(ceil(coins_needed_pct / 100.0 * _total_coins))
-	hud.set_cabin_progress(_coins_got, coins_needed_count, _enemies_killed, enemies_needed, _cabin_open)
+	hud.set_cabin_progress(_coins_got, coins_needed_count, _enemies_killed, enemies_needed, _cabin_open, _boss_active)
+
+func _on_boss_defeated() -> void:
+	_boss_active = false
+	_update_cabin()
 
 func _on_enemy_killed() -> void:
 	_enemies_killed = ScoreManager.register_enemy_kill()
