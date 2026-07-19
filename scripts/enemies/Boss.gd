@@ -2,9 +2,9 @@ class_name Boss
 extends BaseEnemy
 
 const GRAVITY      := 980.0
-const ATTACK_RANGE := 110.0
+const ATTACK_RANGE := 130.0
 const ARM_DURATION := 0.6
-const PROJECTILE_INTERVAL := 2.2
+const PROJECTILE_INTERVAL := 1.8
 
 const PROJECTILE_SCENE := preload("res://scenes/enemies/BossProjectile.tscn")
 
@@ -77,7 +77,7 @@ func _on_body_entered(body: Node2D) -> void:
 func _begin_arm_attack(direction: float) -> void:
 	_arm_active = true
 	_arm_timer  = ARM_DURATION
-	_attack_cd  = 1.6 if _phase2 else 2.5
+	_attack_cd  = 1.2 if _phase2 else 1.9
 	_face(direction)
 	if _sprite != null:
 		_sprite.play("attack")   # her-spelen mag: elke aanval opnieuw vanaf frame 0

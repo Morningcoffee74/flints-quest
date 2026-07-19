@@ -4,32 +4,32 @@
 [ext_resource type="SpriteFrames" path="res://assets/sprites/enemies/common/Endboss/pumpkin_frames.tres" id="2"]
 
 [sub_resource type="RectangleShape2D" id="1"]
-size = Vector2(48.0, 80.0)
+size = Vector2(72.0, 120.0)
 
 [sub_resource type="RectangleShape2D" id="2"]
-size = Vector2(48.0, 80.0)
+size = Vector2(72.0, 120.0)
 
 [sub_resource type="RectangleShape2D" id="3"]
-size = Vector2(80.0, 36.0)
+size = Vector2(96.0, 44.0)
 
 [sub_resource type="RectangleShape2D" id="4"]
-size = Vector2(80.0, 36.0)
+size = Vector2(96.0, 44.0)
 
 [node name="ForestBoss" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 1
 script = ExtResource("1")
-base_health = 6
-base_speed = 45.0
+base_health = 8
+base_speed = 55.0
 sprite_faces_right = true
 
 [node name="BodyCollision" type="CollisionShape2D" parent="."]
-position = Vector2(0.0, -40.0)
+position = Vector2(0.0, -60.0)
 shape = SubResource("1")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
-position = Vector2(0.0, -18.0)
-scale = Vector2(2.2, 2.2)
+position = Vector2(0.0, -26.0)
+scale = Vector2(3.3, 3.3)
 sprite_frames = ExtResource("2")
 animation = &"walk"
 autoplay = "walk"
@@ -39,7 +39,7 @@ collision_layer = 4
 collision_mask = 18
 
 [node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
-position = Vector2(0.0, -40.0)
+position = Vector2(0.0, -60.0)
 shape = SubResource("2")
 
 [node name="LeftArm" type="Area2D" parent="."]
@@ -48,13 +48,8 @@ collision_mask = 2
 monitoring = false
 
 [node name="LeftArmShape" type="CollisionShape2D" parent="LeftArm"]
-position = Vector2(-64.0, -40.0)
+position = Vector2(-84.0, -60.0)
 shape = SubResource("3")
-
-[node name="LeftArmVisual" type="Polygon2D" parent="LeftArm"]
-position = Vector2(-64.0, -40.0)
-polygon = PackedVector2Array(-40, -18, 40, -18, 40, 18, -40, 18)
-color = Color(0.28, 0.16, 0.06, 1.0)
 
 [node name="RightArm" type="Area2D" parent="."]
 collision_layer = 0
@@ -62,10 +57,5 @@ collision_mask = 2
 monitoring = false
 
 [node name="RightArmShape" type="CollisionShape2D" parent="RightArm"]
-position = Vector2(64.0, -40.0)
+position = Vector2(84.0, -60.0)
 shape = SubResource("4")
-
-[node name="RightArmVisual" type="Polygon2D" parent="RightArm"]
-position = Vector2(64.0, -40.0)
-polygon = PackedVector2Array(-40, -18, 40, -18, 40, 18, -40, 18)
-color = Color(0.28, 0.16, 0.06, 1.0)

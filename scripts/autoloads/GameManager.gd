@@ -35,19 +35,27 @@ func _register_input_actions() -> void:
 ## Xinput-achtige joypad, dus D-pad/linker-stick en de standaard face buttons
 ## werken hiermee zonder dat de speler zelf iets hoeft in te stellen.
 func _register_gamepad_events() -> void:
+	# Knop-indeling volgt de fysieke posities van een Nintendo-stijl 8BitDo
+	# (SDL mapt op positie, niet op het opschrift):
+	#   bovenste knop "X" = JOY_BUTTON_Y (noord)  -> springen
+	#   rechter  knop "A" = JOY_BUTTON_B (oost)   -> slaan
+	#   linker   knop "Y" = JOY_BUTTON_X (west)   -> slaan (klassieke aanvalsknop)
+	# Slaan zit dus op beide zijknoppen; de onderste knop (JOY_BUTTON_A) blijft
+	# vrij in het spel maar bevestigt nog wél in menu's (zie ui_accept).
 	var button_actions: Dictionary = {
-		"move_left":  JOY_BUTTON_DPAD_LEFT,
-		"move_right": JOY_BUTTON_DPAD_RIGHT,
-		"move_up":    JOY_BUTTON_DPAD_UP,
-		"move_down":  JOY_BUTTON_DPAD_DOWN,
-		"jump":       JOY_BUTTON_A,
-		"punch":      JOY_BUTTON_X,
-		"pause":      JOY_BUTTON_START,
+		"move_left":  [JOY_BUTTON_DPAD_LEFT],
+		"move_right": [JOY_BUTTON_DPAD_RIGHT],
+		"move_up":    [JOY_BUTTON_DPAD_UP],
+		"move_down":  [JOY_BUTTON_DPAD_DOWN],
+		"jump":       [JOY_BUTTON_Y],
+		"punch":      [JOY_BUTTON_B, JOY_BUTTON_X],
+		"pause":      [JOY_BUTTON_START],
 	}
 	for action: String in button_actions:
-		var button_event := InputEventJoypadButton.new()
-		button_event.button_index = button_actions[action]
-		InputMap.action_add_event(action, button_event)
+		for button: int in button_actions[action]:
+			var button_event := InputEventJoypadButton.new()
+			button_event.button_index = button as JoyButton
+			InputMap.action_add_event(action, button_event)
 
 	var stick_axes: Dictionary = {
 		"move_left":  [JOY_AXIS_LEFT_X, -1.0],

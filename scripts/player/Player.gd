@@ -51,6 +51,30 @@ func _on_punch_area(area: Area2D) -> void:
 		# Betrouwbare klap, ook op een eindbaas waar je vlak tegenaan staat.
 		(parent as BaseEnemy).hit_by_punch(is_strong_punch)
 
+## Heldere veeg-boog vóór de speler bij het slaan, zodat de klap duidelijk
+## zichtbaar is (de kale boks-animatie was nauwelijks te zien). Oranje bij de
+## harde-klap-power-up, anders geel-wit.
+func _spawn_punch_fx() -> void:
+	var fx := Line2D.new()
+	fx.width = 6.0
+	fx.default_color = Color(1.0, 0.55, 0.1, 0.95) if is_strong_punch else Color(1.0, 1.0, 0.65, 0.95)
+	fx.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	fx.end_cap_mode = Line2D.LINE_CAP_ROUND
+	fx.joint_mode = Line2D.LINE_JOINT_ROUND
+	var pts := PackedVector2Array()
+	for i in range(9):
+		var a: float = lerpf(-1.0, 1.0, i / 8.0)
+		pts.append(Vector2(cos(a), sin(a)) * 26.0)
+	fx.points = pts
+	fx.z_index = 5
+	fx.position = Vector2(34.0 if facing_right else -34.0, -40.0)
+	fx.scale.x = 1.0 if facing_right else -1.0
+	add_child(fx)
+	var tween := create_tween()
+	tween.tween_property(fx, "scale", fx.scale * 1.5, 0.18)
+	tween.parallel().tween_property(fx, "modulate:a", 0.0, 0.18)
+	tween.tween_callback(fx.queue_free)
+
 func _physics_process(delta: float) -> void:
 	_tick_timers(delta)
 	match state:
@@ -180,6 +204,7 @@ func _transition(new_state: State) -> void:
 			_punch_timer = PUNCH_DURATION
 			punch_hitbox.scale.x = 1.0 if facing_right else -1.0
 			punch_hitbox.monitoring = true
+			_spawn_punch_fx()
 			AudioManager.play_sfx_by_name("punch")
 		State.HURT:
 			_hurt_timer = HURT_DURATION
