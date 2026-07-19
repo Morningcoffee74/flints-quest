@@ -10,6 +10,7 @@ const POINTS_LEVEL_NO_DAMAGE: int  = 25
 
 var current_score: int = 0
 var coin_count: int = 0
+var enemies_killed_this_level: int = 0
 var took_damage_this_level: bool = false
 var _play_score: int = 0
 
@@ -25,6 +26,12 @@ func add_coin() -> int:
 	add_points(POINTS_COIN)
 	coin_collected.emit(coin_count)
 	return coin_count
+
+## Telt door over een checkpoint-respawn heen (zie reset_level()), zodat de
+## cabin-voortgang niet terugvalt naar 0 na een dood met levens over.
+func register_enemy_kill() -> int:
+	enemies_killed_this_level += 1
+	return enemies_killed_this_level
 
 func register_damage() -> void:
 	took_damage_this_level = true
@@ -45,8 +52,13 @@ func get_level_breakdown() -> Dictionary:
 		"total": current_score,
 	}
 
+## Alleen aanroepen bij een echt nieuwe poging (GameManager.go_to_level) —
+## NIET bij een scene reload na een dood met levens over, anders verliest de
+## speler score/munten/gedode-vijanden-voortgang die al voor de checkpoint-
+## respawn was opgebouwd.
 func reset_level() -> void:
 	current_score = 0
 	coin_count = 0
+	enemies_killed_this_level = 0
 	took_damage_this_level = false
 	_play_score = 0

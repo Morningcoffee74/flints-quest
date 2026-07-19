@@ -24,7 +24,11 @@ var _pause_menu: CanvasLayer = null
 var _start_position: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
-	ScoreManager.reset_level()
+	# Score/coin-telling wordt gereset in GameManager.go_to_level() (een echt
+	# nieuwe poging), NIET hier — dit draait ook bij een scene reload na een
+	# dood met levens over, en dan moet de al opgebouwde voortgang blijven staan.
+	_coins_got      = ScoreManager.coin_count
+	_enemies_killed = ScoreManager.enemies_killed_this_level
 
 	_camera.limit_left   = 0
 	_camera.limit_right  = level_width
@@ -34,6 +38,7 @@ func _ready() -> void:
 	_start_position = player.global_position
 	if GameManager.respawn_point.is_finite():
 		player.global_position = GameManager.respawn_point
+	player.grant_spawn_invincibility()
 
 	hud.connect_player(player)
 	player.died.connect(_on_player_died)
@@ -122,11 +127,14 @@ func _update_cabin() -> void:
 	elif not should_open and has_node("Cabin"):
 		($Cabin as Area2D).modulate = Color(0.45, 0.45, 0.45, 1.0)
 
-	var coins_got_pct := 0 if _total_coins == 0 else int(_coins_got * 100.0 / _total_coins)
-	hud.set_cabin_progress(coins_got_pct, coins_needed_pct, _enemies_killed, enemies_needed, _cabin_open)
+	# coins_needed_pct blijft de interne eis (percentage van de munten in dit
+	# level); voor de HUD rekenen we dat om naar een concreet aantal, want een
+	# los percentage zegt een speler niets over hoeveel munten dat zijn.
+	var coins_needed_count := 0 if coins_needed_pct <= 0 else int(ceil(coins_needed_pct / 100.0 * _total_coins))
+	hud.set_cabin_progress(_coins_got, coins_needed_count, _enemies_killed, enemies_needed, _cabin_open)
 
 func _on_enemy_killed() -> void:
-	_enemies_killed += 1
+	_enemies_killed = ScoreManager.register_enemy_kill()
 	_update_cabin()
 
 func _on_player_died() -> void:

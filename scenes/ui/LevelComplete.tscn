@@ -21,9 +21,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -200.0
-offset_top = -180.0
+offset_top = -210.0
 offset_right = 200.0
-offset_bottom = 180.0
+offset_bottom = 210.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel"]
 anchors_preset = 15
@@ -66,3 +66,7 @@ text = "Volgend Level"
 [node name="MapButton" type="Button" parent="Panel/VBox"]
 custom_minimum_size = Vector2(0.0, 44.0)
 text = "Naar Wereldkaart"
+
+[node name="MainMenuButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0.0, 44.0)
+text = "Hoofdmenu"

@@ -10,7 +10,7 @@ const GRAVITY           := 980.0
 const PUNCH_DURATION    := 0.35
 const HURT_DURATION     := 0.5
 const INVINCIBLE_DURATION := 1.5
-const POWERUP_DURATION  := 8.0
+const POWERUP_DURATION  := 14.0
 const SPEED_BOOST_MULT  := 1.5
 
 var state: State = State.IDLE
@@ -268,6 +268,12 @@ func _update_powerup_tint() -> void:
 		anim_sprite.modulate = Color(1.4, 0.9, 0.6)
 	else:
 		anim_sprite.modulate = Color.WHITE
+
+## Korte onkwetsbaarheid bij (her)start/respawn, zodat een vijand die toevallig
+## op de checkpoint-plek staat niet meteen een hartje kost.
+func grant_spawn_invincibility(duration: float = INVINCIBLE_DURATION) -> void:
+	_invincible_timer = maxf(_invincible_timer, duration)
+	is_invincible = true
 
 func enter_ladder() -> void:
 	_on_ladder = true

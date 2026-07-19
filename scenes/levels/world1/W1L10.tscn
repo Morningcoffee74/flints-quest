@@ -25,7 +25,7 @@ size = Vector2(32.0, 300.0)
 
 [node name="W1L10" type="Node2D"]
 script = ExtResource("1")
-level_width = 6752
+level_width = 5408
 level_height = 720
 coins_needed_pct = 0
 enemies_needed = 1
@@ -42,21 +42,21 @@ position = Vector2(120.0, 640.0)
 scale = Vector2(2.0, 2.0)
 tile_set = ExtResource("13")
 script = ExtResource("14")
-solid_rects = Array[Rect2i]([Rect2i(0, 20, 211, 4), Rect2i(36, 17, 4, 1), Rect2i(115, 17, 4, 1)])
+solid_rects = Array[Rect2i]([Rect2i(0, 20, 169, 4), Rect2i(29, 17, 4, 1), Rect2i(91, 17, 4, 1)])
 
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Rat1" parent="Enemies" instance=ExtResource("4")]
-position = Vector2(544.0, 640.0)
+position = Vector2(416.0, 640.0)
 
 [node name="Rat2" parent="Enemies" instance=ExtResource("4")]
-position = Vector2(4192.0, 640.0)
+position = Vector2(3360.0, 640.0)
 
 [node name="Snake1" parent="Enemies" instance=ExtResource("5")]
-position = Vector2(1792.0, 640.0)
+position = Vector2(1472.0, 640.0)
 
 [node name="ForestBoss" parent="Enemies" instance=ExtResource("19")]
-position = Vector2(5632.0, 640.0)
+position = Vector2(4512.0, 640.0)
 
 [node name="Objects" type="Node2D" parent="."]
 
@@ -76,82 +76,74 @@ position = Vector2(272.0, 616.0)
 position = Vector2(336.0, 616.0)
 
 [node name="Coin6" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1168.0, 488.0)
+position = Vector2(944.0, 488.0)
 
 [node name="Coin7" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1232.0, 488.0)
+position = Vector2(1008.0, 488.0)
 
 [node name="Coin8" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1424.0, 616.0)
+position = Vector2(1200.0, 616.0)
 
 [node name="Coin9" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1488.0, 616.0)
+position = Vector2(1264.0, 616.0)
 
 [node name="Coin10" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1552.0, 616.0)
+position = Vector2(1328.0, 616.0)
 
 [node name="Coin11" parent="Objects" instance=ExtResource("7")]
-position = Vector2(1616.0, 616.0)
+position = Vector2(1392.0, 616.0)
 
 [node name="Coin12" parent="Objects" instance=ExtResource("7")]
-position = Vector2(2288.0, 520.0)
+position = Vector2(1872.0, 552.0)
 
 [node name="Coin13" parent="Objects" instance=ExtResource("7")]
-position = Vector2(2512.0, 520.0)
+position = Vector2(2160.0, 552.0)
 
 [node name="Coin14" parent="Objects" instance=ExtResource("7")]
-position = Vector2(2736.0, 520.0)
+position = Vector2(2320.0, 616.0)
 
 [node name="Coin15" parent="Objects" instance=ExtResource("7")]
-position = Vector2(2928.0, 616.0)
+position = Vector2(2384.0, 616.0)
 
 [node name="Coin16" parent="Objects" instance=ExtResource("7")]
-position = Vector2(2992.0, 616.0)
+position = Vector2(2448.0, 616.0)
 
 [node name="Coin17" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3056.0, 616.0)
+position = Vector2(2512.0, 616.0)
 
 [node name="Coin18" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3120.0, 616.0)
+position = Vector2(2928.0, 488.0)
 
 [node name="Coin19" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3696.0, 488.0)
-
-[node name="Coin20" parent="Objects" instance=ExtResource("7")]
-position = Vector2(3760.0, 488.0)
+position = Vector2(2992.0, 488.0)
 
 [node name="SpecialBlock1" parent="Objects" instance=ExtResource("8")]
-position = Vector2(352.0, 624.0)
+position = Vector2(288.0, 624.0)
 
 [node name="Power1" parent="Objects" instance=ExtResource("10")]
-position = Vector2(1216.0, 464.0)
+position = Vector2(992.0, 464.0)
 
 [node name="Power2" parent="Objects" instance=ExtResource("18")]
-position = Vector2(3744.0, 464.0)
+position = Vector2(2976.0, 464.0)
 
 [node name="Spikes1" parent="Objects" instance=ExtResource("15")]
-position = Vector2(2288.0, 640.0)
+position = Vector2(1904.0, 640.0)
 width = 96
 variant = "small_wood"
 
 [node name="Spikes2" parent="Objects" instance=ExtResource("15")]
-position = Vector2(2512.0, 640.0)
-width = 96
-variant = "small_wood"
-
-[node name="Spikes3" parent="Objects" instance=ExtResource("15")]
-position = Vector2(2736.0, 640.0)
+position = Vector2(2128.0, 640.0)
 width = 96
 variant = "small_wood"
 
 [node name="Checkpoint1" parent="." instance=ExtResource("17")]
-position = Vector2(3232.0, 640.0)
+position = Vector2(2528.0, 640.0)
 
 [node name="Cabin" parent="." instance=ExtResource("9")]
-position = Vector2(6560.0, 640.0)
+position = Vector2(5216.0, 640.0)
 
 [node name="CabinWall" type="StaticBody2D" parent="."]
-position = Vector2(6624.0, 490.0)
+position = Vector2(5280.0, 490.0)
 collision_layer = 1
 collision_mask = 0
 

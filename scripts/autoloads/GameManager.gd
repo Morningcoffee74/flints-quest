@@ -29,6 +29,39 @@ func _register_input_actions() -> void:
 				var event := InputEventKey.new()
 				event.physical_keycode = keycode as Key
 				InputMap.action_add_event(action, event)
+	_register_gamepad_events()
+
+## Bluetooth-gamepads (bv. 8BitDo) melden zich bij Godot als een generieke
+## Xinput-achtige joypad, dus D-pad/linker-stick en de standaard face buttons
+## werken hiermee zonder dat de speler zelf iets hoeft in te stellen.
+func _register_gamepad_events() -> void:
+	var button_actions: Dictionary = {
+		"move_left":  JOY_BUTTON_DPAD_LEFT,
+		"move_right": JOY_BUTTON_DPAD_RIGHT,
+		"move_up":    JOY_BUTTON_DPAD_UP,
+		"move_down":  JOY_BUTTON_DPAD_DOWN,
+		"jump":       JOY_BUTTON_A,
+		"punch":      JOY_BUTTON_X,
+		"pause":      JOY_BUTTON_START,
+	}
+	for action: String in button_actions:
+		var button_event := InputEventJoypadButton.new()
+		button_event.button_index = button_actions[action]
+		InputMap.action_add_event(action, button_event)
+
+	var stick_axes: Dictionary = {
+		"move_left":  [JOY_AXIS_LEFT_X, -1.0],
+		"move_right": [JOY_AXIS_LEFT_X, 1.0],
+		"move_up":    [JOY_AXIS_LEFT_Y, -1.0],
+		"move_down":  [JOY_AXIS_LEFT_Y, 1.0],
+	}
+	for action: String in stick_axes:
+		var motion_event := InputEventJoypadMotion.new()
+		motion_event.axis = stick_axes[action][0]
+		motion_event.axis_value = stick_axes[action][1]
+		InputMap.action_add_event(action, motion_event)
+	for action: String in stick_axes:
+		InputMap.action_set_deadzone(action, 0.4)
 
 func create_profile(profile_name: String) -> void:
 	profile_data = _new_profile(profile_name)
@@ -139,6 +172,7 @@ func go_to_level(world: int, level: int) -> void:
 	current_level = level
 	lives = LIVES_PER_LEVEL
 	respawn_point = Vector2.INF
+	ScoreManager.reset_level()
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/levels/world%d/W%dL%d.tscn" % [world, world, level])
 

@@ -16,9 +16,13 @@ func _ready() -> void:
 	$Panel/VBox/NextButton.visible = has_next
 	$Panel/VBox/NextButton.pressed.connect(_on_next)
 	$Panel/VBox/MapButton.pressed.connect(_on_map)
+	$Panel/VBox/MainMenuButton.pressed.connect(_on_main_menu)
 
 func _on_next() -> void:
 	GameManager.go_to_level(GameManager.current_world, GameManager.current_level + 1)
 
 func _on_map() -> void:
 	GameManager.go_to_world_map()
+
+func _on_main_menu() -> void:
+	GameManager.go_to_main_menu()

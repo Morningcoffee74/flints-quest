@@ -98,14 +98,16 @@ func set_lives(lives: int) -> void:
 	_lives_label.text = "Levens: %d" % lives
 
 ## Live voortgang richting de cabin-eis, zodat de speler altijd ziet wat er nog
-## moet gebeuren i.p.v. te concluderen dat het huisje kapot is.
-func set_cabin_progress(coins_got_pct: int, coins_needed_pct: int, enemies_killed: int, enemies_needed: int, cabin_open: bool) -> void:
-	if cabin_open or (coins_needed_pct <= 0 and enemies_needed <= 0):
+## moet gebeuren i.p.v. te concluderen dat het huisje kapot is. Toont aantallen
+## (net als bij vijanden), geen percentages — die zeggen een speler niets over
+## hoeveel munten er nog te vinden zijn.
+func set_cabin_progress(coins_got: int, coins_needed: int, enemies_killed: int, enemies_needed: int, cabin_open: bool) -> void:
+	if cabin_open or (coins_needed <= 0 and enemies_needed <= 0):
 		_cabin_progress_label.text = ""
 		return
 	var parts: Array[String] = []
-	if coins_needed_pct > 0:
-		parts.append("Munten %d%%/%d%%" % [coins_got_pct, coins_needed_pct])
+	if coins_needed > 0:
+		parts.append("Munten %d/%d" % [coins_got, coins_needed])
 	if enemies_needed > 0:
 		parts.append("Vijanden %d/%d" % [enemies_killed, enemies_needed])
 	_cabin_progress_label.text = " · ".join(parts)
@@ -132,7 +134,8 @@ func _on_powerup_activated(kind: String) -> void:
 	label.size = Vector2(300.0, 48.0)
 	$Control.add_child(label)
 
+	var duration := Player.POWERUP_DURATION
 	var tween := create_tween()
-	tween.tween_property(label, "position:y", label.position.y - 30.0, 1.0)
-	tween.parallel().tween_property(label, "modulate:a", 0.0, 1.0)
+	tween.tween_property(label, "position:y", label.position.y - 30.0, duration)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, duration)
 	tween.tween_callback(label.queue_free)

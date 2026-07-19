@@ -62,8 +62,24 @@ custom_minimum_size = Vector2(0.0, 0.0)
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="RichTextLabel" type="RichTextLabel" parent="ContentPanel/VBox/ScrollContainer"]
+[node name="ContentVBox" type="VBoxContainer" parent="ContentPanel/VBox/ScrollContainer"]
 custom_minimum_size = Vector2(912.0, 0.0)
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="TextBefore" type="RichTextLabel" parent="ContentPanel/VBox/ScrollContainer/ContentVBox"]
+size_flags_horizontal = 3
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+theme_override_colors/default_color = Color(1.0, 1.0, 1.0, 1.0)
+theme_override_font_sizes/normal_font_size = 16
+
+[node name="PowerupBox" type="VBoxContainer" parent="ContentPanel/VBox/ScrollContainer/ContentVBox"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="TextAfter" type="RichTextLabel" parent="ContentPanel/VBox/ScrollContainer/ContentVBox"]
 size_flags_horizontal = 3
 bbcode_enabled = true
 fit_content = true

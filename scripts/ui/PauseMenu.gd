@@ -4,6 +4,7 @@ func _ready() -> void:
 	$Panel/VBox/ResumeButton.pressed.connect(_on_resume)
 	$Panel/VBox/RestartButton.pressed.connect(_on_restart)
 	$Panel/VBox/MapButton.pressed.connect(_on_map)
+	$Panel/VBox/MainMenuButton.pressed.connect(_on_main_menu)
 
 func _on_resume() -> void:
 	hide()
@@ -15,3 +16,6 @@ func _on_restart() -> void:
 
 func _on_map() -> void:
 	GameManager.go_to_world_map()
+
+func _on_main_menu() -> void:
+	GameManager.go_to_main_menu()

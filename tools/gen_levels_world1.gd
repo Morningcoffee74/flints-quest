@@ -26,6 +26,11 @@ const MAX_UP := 3
 const MAX_GAP_FLAT := 5
 const MAX_GAP_DOWN := 6
 
+## Levels voelden 20% te lang aan bij het doorspelen; schaalt de lengte-
+## parameters van elke sectie (niet de dichtheid van vijanden/munten erin) i.p.v.
+## alle ontwerpdata hieronder met de hand te herschrijven.
+const LENGTH_SCALE := 0.8
+
 var L: Dictionary = {}
 var _cx := 0
 var _g_start := 0
@@ -54,7 +59,8 @@ func _reset(spec: Dictionary) -> void:
 	_cx = 0
 	_g_start = 0
 
-func _fl(len_t: int, o: Dictionary = {}) -> void:
+func _fl(len_t_raw: int, o: Dictionary = {}) -> void:
+	var len_t: int = maxi(6, roundi(len_t_raw * LENGTH_SCALE))
 	var x0 := _cx
 	for i: int in o.get("rats", 0):
 		L["rats"].append(x0 + (i + 1) * len_t / (o.get("rats", 0) + 1))
@@ -89,14 +95,16 @@ func _st(rows: Array, o: Dictionary = {}) -> void:
 		x += plen + 3
 	_cx = x - 3 + 2
 
-func _gp(w: int, pillars: int = 0) -> void:
+func _gp(w_raw: int, pillars: int = 0) -> void:
+	var w: int = maxi(2, roundi(w_raw * LENGTH_SCALE))
 	L["ground"].append([_g_start, _cx])
 	for i: int in pillars:
 		L["pillars"].append([_cx + (i + 1) * w / (pillars + 1), 18])
 	_cx += w
 	_g_start = _cx
 
-func _hr(len_t: int, row: int, o: Dictionary = {}) -> void:
+func _hr(len_t_raw: int, row: int, o: Dictionary = {}) -> void:
+	var len_t: int = maxi(16, roundi(len_t_raw * LENGTH_SCALE))
 	var x0 := _cx
 	L["ladders"].append([x0 + 1, row])
 	L["plats"].append([x0 + 3, row, len_t - 6])
@@ -108,23 +116,34 @@ func _hr(len_t: int, row: int, o: Dictionary = {}) -> void:
 		L["spikes_g"].append([x0 + 6, len_t - 10, o.get("variant", "small_wood")])
 	_cx += len_t
 
-func _sr(periods: int, variant: String = "small_wood") -> void:
+func _sr(periods_raw: int, variant: String = "small_wood") -> void:
+	var periods: int = maxi(2, roundi(periods_raw * LENGTH_SCALE))
 	for i: int in periods:
 		var p := _cx + i * 7
 		L["spikes_g"].append([p + 4, 3, variant])
-		# munt op sprong-hoogte boven de stekels i.p.v. op grondniveau ernaast
-		# (anders overlapt hij met de stekel-hitbox, zie _validate check 6)
-		L["coin_rows"].append([p + 5, 16, 1])
+		# munt-plek varieert i.p.v. steeds hetzelfde midden op sprong-hoogte
+		# (dat was te lastig te timen): om-en-om boven de eerste stekel, boven
+		# de laatste stekel (beide een stuk lager, dus vroeg/laat in de sprong
+		# al te pakken), of iets hoger in het midden voor wat afwisseling.
+		var coin_x: int
+		var coin_row: int
+		match i % 3:
+			0: coin_x = p + 4; coin_row = 17
+			1: coin_x = p + 6; coin_row = 17
+			_: coin_x = p + 5; coin_row = 16
+		L["coin_rows"].append([coin_x, coin_row, 1])
 	_cx += periods * 7 + 2
 
-func _ba(len_t: int, n: int) -> void:
+func _ba(len_t_raw: int, n: int) -> void:
+	var len_t: int = maxi(4 * (n + 1), roundi(len_t_raw * LENGTH_SCALE))
 	var x0 := _cx
 	for i: int in n:
 		L["bats"].append([x0 + (i + 1) * len_t / (n + 1), 8])
 	L["coin_rows"].append([x0 + 2, 19, mini(6, len_t / 4)])
 	_cx += len_t
 
-func _finish(tail: int, boss: bool = false) -> void:
+func _finish(tail_raw: int, boss: bool = false) -> void:
+	var tail: int = maxi(12, roundi(tail_raw * LENGTH_SCALE))
 	if boss:
 		L["boss"] = _cx + tail / 2
 	L["cabin"] = _cx + tail - 6
