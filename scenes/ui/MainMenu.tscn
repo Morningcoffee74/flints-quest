@@ -59,13 +59,13 @@ offset_right = 100.0
 offset_bottom = 204.0
 theme_override_constants/separation = 16
 
-[node name="NewGameButton" type="Button" parent="VBoxContainer"]
+[node name="PlayButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200.0, 52.0)
-text = "Nieuw Spel"
+text = "Spel Spelen"
 
-[node name="LoadGameButton" type="Button" parent="VBoxContainer"]
+[node name="HelpButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200.0, 52.0)
-text = "Profiel Laden"
+text = "Uitleg"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(200.0, 52.0)
