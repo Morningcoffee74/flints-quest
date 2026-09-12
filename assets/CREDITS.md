@@ -64,3 +64,28 @@ hoort deze lijst (of de CC-BY-regels eruit) in de credits van het spel.
   Licentie volgens de pack: vrij te gebruiken (ook commercieel), naamsvermelding gewenst.
 - **Enemy Galore I** (zie Wereld 2) → Slime (`Slime_Spiked_*`) en Deceased
   (`Deceased_*`) als grotslijm en grotzombie, vleermuis als zwerm.
+
+## Wereld 4 (Jungle)
+
+- **OPP2017 Jungle and Temple set** — Open Pixel Project, CC0 (publiek domein)
+  https://opengameart.org/content/opp2017-jungle-and-temple-set
+  → `assets/sprites/tiles/world4_jungle/src/*.png` (grond, wanden, tempelsteen;
+    basis voor de tileset-varianten jungle/moss/temple/swamp),
+    `assets/sprites/tiles/world4_jungle/decor/*.png` (planten, lianen, boomtakken,
+    bomen, brug), `assets/sprites/enemies/common/Toucan/*.png` (toekan, uit de
+    `spr_toucan_*`-animaties) en `assets/sprites/enemies/common/Monkey/*.png`
+    (hangende aap + bananen).
+  NB: de `guide_*.png`-bestanden uit dat pakket zijn **niet** gebruikt — het
+  pakket waarschuwt zelf dat die verouderde tegels kunnen bevatten die niet in
+  het publiek domein zijn.
+
+## Nog te crediteren / herkomst onduidelijk
+
+- **Minotaur v1.1 FREE** (chierit, itch.io) — `assets/sprites/enemies/common/Endboss/mino_v1.1_free/`;
+  omgekleurd tot de Gorilla-eindbaas van Wereld 4 via `tools/build_gorilla.gd`.
+  Licentie volgens de pack: vrij te gebruiken (ook commercieel), naamsvermelding gewenst.
+- `Living Voyage.mp3` (muziek Wereld 1) en `music-theme.mp3` (menu) — bron niet vastgelegd.
+- De 48×48-vijandenset (Snake/Hyena/Scorpio/Mummy/Vulture/Deceased) — bron niet vastgelegd.
+- `Endboss/CloudMonster.png`, `CursedSpirit.png`, `Pumpkin.png` — bron niet vastgelegd.
+- De tien wereldkaart-achtergronden (`backgrounds/worldmap/world*.png`) — AI-gegenereerd,
+  zie `docs/worldmap-achtergrond-prompt.md`.
