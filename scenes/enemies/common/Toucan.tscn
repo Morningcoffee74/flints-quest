@@ -1,0 +1,75 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/DiveEnemy.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/common/Toucan/Toucan_Fly.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="fly0"]
+atlas = ExtResource("2")
+region = Rect2(9, 7, 53, 37)
+
+[sub_resource type="AtlasTexture" id="fly1"]
+atlas = ExtResource("2")
+region = Rect2(73, 7, 53, 37)
+
+[sub_resource type="AtlasTexture" id="fly2"]
+atlas = ExtResource("2")
+region = Rect2(137, 7, 53, 37)
+
+[sub_resource type="AtlasTexture" id="fly3"]
+atlas = ExtResource("2")
+region = Rect2(201, 7, 53, 37)
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("fly0")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly1")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly2")
+}, {
+"duration": 1.0,
+"texture": SubResource("fly3")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 7.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="body"]
+radius = 14.0
+height = 36.0
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(62.0, 40.0)
+
+[node name="Toucan" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+base_health = 1
+base_speed = 60.0
+sine_amplitude = 30.0
+sine_frequency = 2.0
+patrol_range = 190.0
+dive_range = 160.0
+sprite_faces_right = true
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("frames")
+animation = &"fly"
+autoplay = "fly"
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("body")
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 18
+
+[node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("hurt")

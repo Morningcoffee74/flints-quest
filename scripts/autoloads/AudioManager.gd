@@ -20,6 +20,10 @@ const MUSIC_PATHS: Dictionary = {
 	"world1": "res://assets/audio/music/Living Voyage.mp3",
 	"world2": "res://assets/audio/music/watery_cave_loop.ogg",
 	"world3": "res://assets/audio/music/cave_in_game.ogg",
+	# Wereld 4 heeft nog geen muziekbestand. `_load_music()` geeft netjes null
+	# terug als het pad niet bestaat (dan blijft het stil, geen crash), dus het
+	# volstaat om het juiste bestand onder deze exacte naam neer te zetten.
+	"world4": "res://assets/audio/music/jungle_in_game.ogg",
 	"menu":   "res://assets/audio/music/music-theme.mp3",
 }
 

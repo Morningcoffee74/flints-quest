@@ -149,10 +149,27 @@ func _die(_stomper: Player = null) -> void:
 	if has_node("HurtBox"):
 		($HurtBox as Area2D).monitoring = false
 	modulate = Color.WHITE
-	if _sprite != null:
+	if _sprite != null and _sprite.sprite_frames != null \
+			and _sprite.sprite_frames.has_animation("death"):
 		_sprite.play("death")
 		await _sprite.animation_finished
+	else:
+		# Niet elk bronvel heeft een dood-animatie (de Gorilla komt uit een
+		# pakket met alleen idle/walk/attack). Dan kantelt de baas om en
+		# vervaagt hij, zodat er altijd zichtbaar iets gebeurt.
+		await _death_tween()
 	queue_free()
+
+## Terugval als er geen "death"-animatie in de SpriteFrames zit.
+func _death_tween() -> void:
+	if _sprite != null:
+		_sprite.stop()
+	var tween := create_tween()
+	tween.set_parallel(true)
+	var tip: float = -PI / 2.0 if (_sprite != null and _sprite.flip_h) else PI / 2.0
+	tween.tween_property(self, "rotation", tip, 0.7).set_ease(Tween.EASE_IN)
+	tween.tween_property(self, "modulate", Color(0.4, 0.4, 0.4, 0.0), 0.8).set_delay(0.2)
+	await tween.finished
 
 func _get_player() -> Player:
 	var nodes := get_tree().get_nodes_in_group("player")
