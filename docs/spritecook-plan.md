@@ -42,8 +42,9 @@ Use SpriteCook to generate a swimming animation sprite sheet for my 2D
 platformer character, using docs/spritecook/flint-ref.png as the style
 reference.
 
-Keep his EXACT art style, proportions and palette: small chibi pixel-art boy,
-big spiky blond hair, dark navy jacket, dark trousers, black outline.
+Stay close to the reference in spirit — small chibi pixel-art boy, big spiky
+blond hair, dark navy jacket, dark trousers, black outline — but a slightly
+different rendering is fine; it does not have to match pixel for pixel.
 
 Pose: side view facing RIGHT, body horizontal, front crawl — arms reaching
 forward and pulling back, legs kicking behind him, head turned so the face
@@ -57,6 +58,11 @@ shadow, no text, no frame borders.
 
 Save it to assets/sprites/player/ as a transparent PNG.
 ```
+
+Let op waar de vrijheid zit: de **stijl** mag afwijken (besluit 2026-09-12 —
+een mooie zwemsprite die er iets anders uitziet is beter dan lang pielen aan
+een perfecte match; de hele set kan later in één keer gelijkgetrokken worden).
+De **technische spec** hieronder is wél hard, want daar hangt de inbouw aan.
 
 Waarom deze getallen: in de referentie is Flint ~43 breed × 72 hoog binnen een
 128×128-cel. Zwemmend ligt hij horizontaal, dus die maten draaien om. Houdt
