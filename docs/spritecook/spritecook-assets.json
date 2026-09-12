@@ -1,0 +1,24 @@
+{
+  "note": "SpriteCook-assets die in dit project gebruikt zijn. asset_id is de stabiele verwijzing; sha12 is de eerste 12 tekens van de SHA-256 van het lokale bestand.",
+  "assets": [
+    {
+      "asset_id": "26d74e04-d051-42f4-a83d-1baed309e849",
+      "label": "Flint referentie (idle) - stijlreferentie",
+      "local_file": "docs/spritecook/flint-ref.png",
+      "sha12": "7e62426b4b29"
+    },
+    {
+      "asset_id": "9311e8e0-5cf0-4513-af8c-41dcf13d712d",
+      "label": "Flint zwempose (bron voor de animatie)",
+      "local_file": null,
+      "sha12": null
+    },
+    {
+      "asset_id": "e556a52f-e806-41af-a47e-9d1909eb9a48",
+      "label": "Flint zwem-animatie, 4 frames",
+      "local_file": "assets/sprites/player/SwimFlint.png",
+      "sha12": "f7bb5722eeef",
+      "note": "Lokale versie is nabewerkt met tools/prep_swim_sheet.gd (waterspatten weg, frames uitgelijnd in 128x128-cellen)."
+    }
+  ]
+}

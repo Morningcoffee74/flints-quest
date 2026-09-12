@@ -6,6 +6,9 @@ extends TileMapLayer
 ## Tegelgrenzen: 1 tegel = 16px × schaal van deze node (standaard 2 → 32px).
 
 @export var solid_rects: Array[Rect2i] = []
+## Binnen deze rechthoeken krijgen tegels zonder buur erboven géén gras-/kap-
+## tegel maar een gewone binnentegel (voor tunnels en grotten ín de grond).
+@export var no_grass_rects: Array[Rect2i] = []
 
 # Atlas-coördinaten in world1_tileset.tres
 const TOP_LEFT   := Vector2i(1, 5)
@@ -54,6 +57,10 @@ func _pick_atlas(c: Vector2i, cells: Dictionary) -> Vector2i:
 
 	match depth:
 		0:
+			if _in_no_grass(c):
+				if not left:  return MID_LEFT
+				if not right: return MID_RIGHT
+				return MID_MID
 			if not left:  return TOP_LEFT
 			if not right: return TOP_RIGHT
 			return TOP_MID
@@ -67,3 +74,9 @@ func _pick_atlas(c: Vector2i, cells: Dictionary) -> Vector2i:
 			return LOW_MID
 		_:
 			return SOLID
+
+func _in_no_grass(c: Vector2i) -> bool:
+	for r in no_grass_rects:
+		if r.has_point(c):
+			return true
+	return false

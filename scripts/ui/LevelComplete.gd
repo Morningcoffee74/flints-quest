@@ -5,12 +5,13 @@ func _ready() -> void:
 	$Panel/VBox/PlayLabel.text      = "Gameplay:       %d" % bd["play"]
 	$Panel/VBox/CompleteLabel.text  = "Level voltooid: +%d" % bd["complete_bonus"]
 	var no_dmg: int = bd["no_damage_bonus"]
-	$Panel/VBox/NoDmgLabel.text     = "Geen schade:    +%d" % no_dmg
+	$Panel/VBox/NoDmgLabel.text     = ("Zonder schade:  +%d" % no_dmg) if no_dmg > 0 else "Schade gehad:   geen bonus"
 	$Panel/VBox/TotalLabel.text     = "Totaal:         %d" % bd["total"]
 
 	var world := GameManager.current_world
 	var level := GameManager.current_level
-	var has_next := level < 10 and FileAccess.file_exists(
+	var max_level: int = WorldConfig.WORLDS[world - 1]["levels"]
+	var has_next := level < max_level and FileAccess.file_exists(
 		"res://scenes/levels/world%d/W%dL%d.tscn" % [world, world, level + 1]
 	)
 	$Panel/VBox/NextButton.visible = has_next

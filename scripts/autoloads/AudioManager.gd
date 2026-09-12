@@ -13,10 +13,12 @@ const SFX_PATHS: Dictionary = {
 	"enemy_die": "res://assets/audio/sfx/enemy_die.ogg",
 	"level_win": "res://assets/audio/sfx/level_win.ogg",
 	"game_over": "res://assets/audio/sfx/game_over.ogg",
+	"explosion": "res://assets/audio/sfx/explosion.mp3",
 }
 
 const MUSIC_PATHS: Dictionary = {
 	"world1": "res://assets/audio/music/Living Voyage.mp3",
+	"world2": "res://assets/audio/music/watery_cave_loop.ogg",
 	"menu":   "res://assets/audio/music/music-theme.mp3",
 }
 

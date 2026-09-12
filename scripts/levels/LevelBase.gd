@@ -8,6 +8,15 @@ extends Node2D
 @export var enemies_needed: int = 0
 ## Als true moeten BEIDE eisen gehaald worden (indien > 0); anders is één genoeg.
 @export var require_both: bool = false
+## Wereld/level waar deze scene bij hoort (0 = onbekend). Wordt door de
+## generators ingevuld zodat de scene ook los (F6 in de editor, ShotRunner)
+## de juiste difficulty/muziek krijgt; via GameManager.go_to_level() staan
+## current_world/current_level toch al goed en verandert er niets.
+@export var world_number: int = 0
+@export var level_number: int = 0
+## Korte uitleg die bij de start van het level even in beeld komt (bv. de
+## zwem-intro van W2L1). Leeg = geen hint.
+@export var intro_hint: String = ""
 
 const FALL_MARGIN := 120.0
 
@@ -25,6 +34,13 @@ var _start_position: Vector2 = Vector2.ZERO
 ## True zolang er een nog-niet-verslagen eindbaas in het level staat. Dan blijft
 ## het huisje dicht — een boss-level is pas uit als de boss verslagen is.
 var _boss_active: bool = false
+
+func _enter_tree() -> void:
+	# Vóór de _ready van de kinderen (vijanden lezen daar hun difficulty), zodat
+	# een los gestarte scene niet stiekem op W1L1-sterkte draait.
+	if world_number > 0 and level_number > 0:
+		GameManager.current_world = world_number
+		GameManager.current_level = level_number
 
 func _ready() -> void:
 	# Score/coin-telling wordt gereset in GameManager.go_to_level() (een echt
@@ -60,7 +76,10 @@ func _ready() -> void:
 	_setup_boss_bar()
 	_update_cabin()
 	_setup_pause_menu()
+	_add_edge_walls()
 	AudioManager.play_music_by_name("world%d" % GameManager.current_world)
+	if not intro_hint.is_empty() and not _boss_active:
+		hud.show_hint(intro_hint, 7.0)
 
 func _physics_process(_delta: float) -> void:
 	if _level_done:
@@ -68,6 +87,21 @@ func _physics_process(_delta: float) -> void:
 	if player.state != Player.State.DEAD \
 			and player.global_position.y > level_height + FALL_MARGIN:
 		_on_player_fell()
+
+## Onzichtbare muren op de linker- en rechterrand van het level: naar links
+## lopen vlak na de start eindigde anders in het ravijn buiten beeld.
+func _add_edge_walls() -> void:
+	for x: float in [-16.0, level_width + 16.0]:
+		var wall := StaticBody2D.new()
+		wall.collision_layer = 1
+		wall.collision_mask = 0
+		wall.position = Vector2(x, level_height / 2.0)
+		var shape := CollisionShape2D.new()
+		var rect := RectangleShape2D.new()
+		rect.size = Vector2(32.0, level_height + 800.0)
+		shape.shape = rect
+		wall.add_child(shape)
+		add_child(wall)
 
 func _on_player_fell() -> void:
 	player.take_damage()

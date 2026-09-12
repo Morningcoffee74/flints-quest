@@ -22,3 +22,4 @@ func _physics_process(delta: float) -> void:
 		_patrol_dir *= -1.0
 
 	move_and_slide()
+	_update_facing()

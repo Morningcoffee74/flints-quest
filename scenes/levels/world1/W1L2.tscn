@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script"      path="res://scripts/levels/LevelBase.gd"             id="1"]
 [ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"               id="2"]
@@ -12,12 +12,20 @@
 [ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockPurple.tscn"    id="10"]
 [ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockBlue.tscn"      id="11"]
 [ext_resource type="PackedScene" path="res://scenes/objects/ParallaxBG.tscn"          id="12"]
-[ext_resource type="TileSet"     path="res://scenes/levels/world1_tileset.tres"       id="13"]
+[ext_resource type="TileSet"     path="res://scenes/levels/world1_tileset_sunny.tres"       id="13"]
 [ext_resource type="Script"      path="res://scripts/levels/Terrain.gd"               id="14"]
 [ext_resource type="PackedScene" path="res://scenes/objects/Spikes.tscn"              id="15"]
 [ext_resource type="PackedScene" path="res://scenes/objects/Ladder.tscn"              id="16"]
 [ext_resource type="PackedScene" path="res://scenes/objects/Checkpoint.tscn"          id="17"]
 [ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockOrange.tscn"    id="18"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/world1/ForestBoss.tscn"    id="19"]
+[ext_resource type="PackedScene" path="res://scenes/objects/FallingPlatform.tscn"     id="20"]
+[ext_resource type="PackedScene" path="res://scenes/objects/MovingPlatform.tscn"      id="21"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Spring.tscn"              id="22"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Water.tscn"               id="23"]
+[ext_resource type="Texture2D"   path="res://assets/sprites/tiles/world1_forest/decor/sl_sign.png" id="30"]
+[ext_resource type="Texture2D"   path="res://assets/sprites/tiles/world1_forest/decor/sl_bush.png" id="31"]
+[ext_resource type="Texture2D"   path="res://assets/sprites/tiles/world1_forest/decor/sl_tree.png" id="32"]
 
 [sub_resource type="RectangleShape2D" id="1"]
 size = Vector2(32.0, 300.0)
@@ -27,8 +35,10 @@ script = ExtResource("1")
 level_width = 10624
 level_height = 720
 coins_needed_pct = 50
-enemies_needed = 4
+enemies_needed = 6
 require_both = false
+world_number = 1
+level_number = 2
 
 [node name="ParallaxBG" parent="." instance=ExtResource("12")]
 
@@ -37,11 +47,139 @@ require_both = false
 [node name="Player" parent="." instance=ExtResource("2")]
 position = Vector2(120.0, 640.0)
 
+[node name="Decor" type="Node2D" parent="."]
+
+[node name="Prop1" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("30")
+position = Vector2(544.0, 604.0)
+
+[node name="Prop2" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("30")
+position = Vector2(64.0, 604.0)
+
+[node name="Prop3" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("31")
+position = Vector2(1504.0, 588.0)
+
+[node name="Prop4" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("30")
+position = Vector2(1824.0, 604.0)
+
+[node name="Prop5" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("31")
+position = Vector2(2592.0, 588.0)
+
+[node name="Prop6" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("30")
+position = Vector2(2400.0, 604.0)
+
+[node name="Prop7" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("32")
+position = Vector2(4064.0, 458.0)
+
+[node name="Prop8" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("32")
+position = Vector2(4256.0, 458.0)
+
+[node name="Prop9" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("30")
+position = Vector2(5536.0, 604.0)
+
+[node name="Prop10" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("32")
+position = Vector2(5568.0, 458.0)
+
+[node name="Prop11" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("32")
+position = Vector2(6176.0, 458.0)
+
+[node name="Prop12" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("31")
+position = Vector2(6144.0, 588.0)
+
+[node name="Prop13" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("30")
+position = Vector2(7392.0, 604.0)
+
+[node name="Prop14" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("30")
+position = Vector2(7424.0, 604.0)
+
+[node name="Prop15" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("31")
+position = Vector2(8608.0, 588.0)
+
+[node name="Prop16" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("32")
+position = Vector2(8864.0, 458.0)
+
+[node name="Prop17" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("32")
+position = Vector2(9760.0, 458.0)
+
+[node name="Prop18" type="Sprite2D" parent="Decor"]
+z_index = -1
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("32")
+position = Vector2(9504.0, 458.0)
+
 [node name="Terrain" type="TileMapLayer" parent="."]
 scale = Vector2(2.0, 2.0)
 tile_set = ExtResource("13")
 script = ExtResource("14")
-solid_rects = Array[Rect2i]([Rect2i(0, 20, 66, 4), Rect2i(69, 20, 111, 4), Rect2i(183, 20, 106, 4), Rect2i(293, 20, 39, 4), Rect2i(31, 17, 4, 1), Rect2i(38, 14, 4, 1), Rect2i(96, 12, 21, 1), Rect2i(209, 17, 4, 1), Rect2i(216, 14, 4, 1)])
+solid_rects = Array[Rect2i]([Rect2i(0, 20, 66, 1), Rect2i(69, 20, 111, 1), Rect2i(183, 20, 106, 1), Rect2i(293, 20, 39, 1), Rect2i(0, 21, 66, 1), Rect2i(69, 21, 111, 1), Rect2i(183, 21, 106, 1), Rect2i(293, 21, 39, 1), Rect2i(0, 22, 66, 1), Rect2i(69, 22, 111, 1), Rect2i(183, 22, 106, 1), Rect2i(293, 22, 39, 1), Rect2i(0, 23, 66, 1), Rect2i(69, 23, 111, 1), Rect2i(183, 23, 106, 1), Rect2i(293, 23, 39, 1), Rect2i(0, 24, 66, 1), Rect2i(69, 24, 111, 1), Rect2i(183, 24, 106, 1), Rect2i(293, 24, 39, 1), Rect2i(0, 25, 66, 1), Rect2i(69, 25, 111, 1), Rect2i(183, 25, 106, 1), Rect2i(293, 25, 39, 1), Rect2i(0, 26, 66, 1), Rect2i(69, 26, 111, 1), Rect2i(183, 26, 106, 1), Rect2i(293, 26, 39, 1), Rect2i(31, 17, 4, 1), Rect2i(38, 14, 4, 1), Rect2i(96, 12, 21, 1), Rect2i(209, 17, 4, 1), Rect2i(216, 14, 4, 1)])
 
 [node name="Enemies" type="Node2D" parent="."]
 

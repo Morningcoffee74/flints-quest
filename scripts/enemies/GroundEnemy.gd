@@ -12,6 +12,16 @@ const CHASE_DEAD_ZONE := 8.0
 
 ## Als true sprint de vijand kort op de speler af zodra die gezien wordt.
 @export var lunge_enabled: bool = false
+## Maximale afstand (px) van de startpositie tijdens patrouilleren; 0 = geen
+## grens (alleen randen). Gebruikt op W2-eilanden zodat een krab niet precies
+## op de oever staat waar je uit het water klimt.
+@export var patrol_limit: float = 0.0
+
+var _start_x := 0.0
+
+func _ready() -> void:
+	super._ready()
+	_start_x = global_position.x
 
 var _patrol_dir := 1.0
 var _lunge_timer := 0.0
@@ -58,6 +68,8 @@ func _physics_process(delta: float) -> void:
 		else:
 			if not _ground_ahead(_patrol_dir):
 				_patrol_dir *= -1.0
+			elif patrol_limit > 0.0 and absf(global_position.x - _start_x) > patrol_limit:
+				_patrol_dir = -signf(global_position.x - _start_x)
 			velocity.x = _patrol_dir * speed
 
 	move_and_slide()

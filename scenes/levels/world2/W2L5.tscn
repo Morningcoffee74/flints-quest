@@ -1,0 +1,459 @@
+[gd_scene load_steps=26 format=3]
+
+[ext_resource type="Script"      path="res://scripts/levels/LevelBase.gd"             id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"               id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn"                      id="3"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/Crab.tscn"         id="4"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/Piranha.tscn"      id="5"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/BigFish.tscn"      id="6"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Coin.tscn"                id="7"]
+[ext_resource type="PackedScene" path="res://scenes/objects/SpecialBlock.tscn"        id="8"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Cabin.tscn"               id="9"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockPurple.tscn"    id="10"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockBlue.tscn"      id="11"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ParallaxBGWater.tscn"     id="12"]
+[ext_resource type="TileSet"     path="res://scenes/levels/world2_tileset_reef.tres"       id="13"]
+[ext_resource type="Script"      path="res://scripts/levels/Terrain.gd"               id="14"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Spikes.tscn"              id="15"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Mine.tscn"                id="16"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Checkpoint.tscn"          id="17"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockOrange.tscn"    id="18"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Water.tscn"               id="19"]
+[ext_resource type="Texture2D"   path="res://assets/sprites/tiles/world2_water/props_source.png" id="20"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/LeapFish.tscn"     id="21"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Current.tscn"             id="22"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Spring.tscn"              id="23"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/world2/Octopus.tscn"      id="24"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(32.0, 300.0)
+
+[node name="W2L5" type="Node2D"]
+script = ExtResource("1")
+level_width = 8160
+level_height = 1200
+coins_needed_pct = 55
+enemies_needed = 11
+require_both = true
+world_number = 2
+level_number = 5
+intro_hint = "Niet elke rotswand is dicht… zoek de opening onder het eiland."
+
+[node name="ParallaxBGWater" parent="." instance=ExtResource("12")]
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(120.0, 608.0)
+
+[node name="Sea" parent="." instance=ExtResource("19")]
+position = Vector2(4080.0, 890.0)
+size = Vector2(8160.0, 524.0)
+
+[node name="Decor" type="Node2D" parent="."]
+z_index = -1
+
+[node name="Prop1" type="Sprite2D" parent="Decor"]
+position = Vector2(64.0, 480.0)
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("20")
+region_enabled = true
+region_rect = Rect2(614, 317, 52, 67)
+
+[node name="Prop2" type="Sprite2D" parent="Decor"]
+position = Vector2(64.0, 502.0)
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("20")
+region_enabled = true
+region_rect = Rect2(514, 327, 48, 56)
+
+[node name="Prop3" type="Sprite2D" parent="Decor"]
+position = Vector2(1728.0, 383.0)
+scale = Vector2(1.0, 1.0)
+centered = false
+texture = ExtResource("20")
+region_enabled = true
+region_rect = Rect2(596, 41, 120, 231)
+
+[node name="Prop4" type="Sprite2D" parent="Decor"]
+position = Vector2(1728.0, 480.0)
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("20")
+region_enabled = true
+region_rect = Rect2(614, 317, 52, 67)
+
+[node name="Prop5" type="Sprite2D" parent="Decor"]
+position = Vector2(4192.0, 480.0)
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("20")
+region_enabled = true
+region_rect = Rect2(614, 317, 52, 67)
+
+[node name="Prop6" type="Sprite2D" parent="Decor"]
+position = Vector2(4000.0, 383.0)
+scale = Vector2(1.0, 1.0)
+centered = false
+texture = ExtResource("20")
+region_enabled = true
+region_rect = Rect2(596, 41, 120, 231)
+
+[node name="Prop7" type="Sprite2D" parent="Decor"]
+position = Vector2(5952.0, 502.0)
+scale = Vector2(2.0, 2.0)
+centered = false
+texture = ExtResource("20")
+region_enabled = true
+region_rect = Rect2(514, 327, 48, 56)
+
+[node name="Terrain" type="TileMapLayer" parent="."]
+scale = Vector2(2.0, 2.0)
+tile_set = ExtResource("13")
+script = ExtResource("14")
+solid_rects = Array[Rect2i]([Rect2i(20, 17, 2, 1), Rect2i(36, 17, 2, 1), Rect2i(82, 17, 3, 1), Rect2i(94, 17, 3, 1), Rect2i(106, 17, 3, 1), Rect2i(210, 17, 3, 1), Rect2i(224, 17, 3, 1), Rect2i(20, 18, 2, 1), Rect2i(36, 18, 2, 1), Rect2i(82, 18, 3, 1), Rect2i(94, 18, 3, 1), Rect2i(106, 18, 3, 1), Rect2i(210, 18, 3, 1), Rect2i(224, 18, 3, 1), Rect2i(0, 19, 16, 1), Rect2i(20, 19, 2, 1), Rect2i(36, 19, 2, 1), Rect2i(51, 19, 21, 1), Rect2i(82, 19, 3, 1), Rect2i(94, 19, 3, 1), Rect2i(106, 19, 3, 1), Rect2i(120, 19, 33, 1), Rect2i(185, 19, 14, 1), Rect2i(210, 19, 3, 1), Rect2i(224, 19, 3, 1), Rect2i(237, 19, 18, 1), Rect2i(0, 20, 16, 1), Rect2i(20, 20, 2, 1), Rect2i(36, 20, 2, 1), Rect2i(51, 20, 21, 1), Rect2i(82, 20, 3, 1), Rect2i(94, 20, 3, 1), Rect2i(106, 20, 3, 1), Rect2i(120, 20, 33, 1), Rect2i(185, 20, 14, 1), Rect2i(210, 20, 3, 1), Rect2i(224, 20, 3, 1), Rect2i(237, 20, 18, 1), Rect2i(0, 21, 16, 1), Rect2i(20, 21, 2, 1), Rect2i(36, 21, 2, 1), Rect2i(51, 21, 21, 1), Rect2i(82, 21, 3, 1), Rect2i(94, 21, 3, 1), Rect2i(106, 21, 3, 1), Rect2i(120, 21, 33, 1), Rect2i(185, 21, 14, 1), Rect2i(210, 21, 3, 1), Rect2i(224, 21, 3, 1), Rect2i(237, 21, 18, 1), Rect2i(0, 22, 16, 1), Rect2i(20, 22, 2, 1), Rect2i(36, 22, 2, 1), Rect2i(51, 22, 21, 1), Rect2i(82, 22, 3, 1), Rect2i(94, 22, 3, 1), Rect2i(106, 22, 3, 1), Rect2i(120, 22, 33, 1), Rect2i(185, 22, 14, 1), Rect2i(237, 22, 18, 1), Rect2i(0, 23, 16, 1), Rect2i(20, 23, 2, 1), Rect2i(36, 23, 2, 1), Rect2i(51, 23, 21, 1), Rect2i(82, 23, 3, 1), Rect2i(94, 23, 3, 1), Rect2i(106, 23, 3, 1), Rect2i(120, 23, 33, 1), Rect2i(185, 23, 14, 1), Rect2i(237, 23, 18, 1), Rect2i(0, 24, 16, 1), Rect2i(20, 24, 2, 1), Rect2i(36, 24, 2, 1), Rect2i(51, 24, 21, 1), Rect2i(120, 24, 33, 1), Rect2i(185, 24, 14, 1), Rect2i(237, 24, 18, 1), Rect2i(0, 25, 16, 1), Rect2i(20, 25, 2, 1), Rect2i(28, 25, 2, 1), Rect2i(36, 25, 2, 1), Rect2i(44, 25, 2, 1), Rect2i(51, 25, 21, 1), Rect2i(120, 25, 33, 1), Rect2i(185, 25, 14, 1), Rect2i(237, 25, 18, 1), Rect2i(0, 26, 16, 1), Rect2i(20, 26, 2, 1), Rect2i(28, 26, 2, 1), Rect2i(36, 26, 2, 1), Rect2i(44, 26, 2, 1), Rect2i(51, 26, 21, 1), Rect2i(120, 26, 33, 1), Rect2i(185, 26, 14, 1), Rect2i(237, 26, 18, 1), Rect2i(0, 27, 16, 1), Rect2i(20, 27, 2, 1), Rect2i(28, 27, 2, 1), Rect2i(36, 27, 2, 1), Rect2i(44, 27, 2, 1), Rect2i(51, 27, 21, 1), Rect2i(120, 27, 33, 1), Rect2i(157, 27, 2, 1), Rect2i(173, 27, 2, 1), Rect2i(185, 27, 14, 1), Rect2i(237, 27, 18, 1), Rect2i(0, 28, 16, 1), Rect2i(20, 28, 2, 1), Rect2i(28, 28, 2, 1), Rect2i(36, 28, 2, 1), Rect2i(44, 28, 2, 1), Rect2i(51, 28, 21, 1), Rect2i(76, 28, 2, 1), Rect2i(88, 28, 2, 1), Rect2i(100, 28, 2, 1), Rect2i(112, 28, 2, 1), Rect2i(120, 28, 33, 1), Rect2i(157, 28, 2, 1), Rect2i(173, 28, 2, 1), Rect2i(185, 28, 14, 1), Rect2i(203, 28, 3, 1), Rect2i(237, 28, 18, 1), Rect2i(0, 29, 16, 1), Rect2i(20, 29, 2, 1), Rect2i(28, 29, 2, 1), Rect2i(36, 29, 2, 1), Rect2i(44, 29, 2, 1), Rect2i(51, 29, 21, 1), Rect2i(76, 29, 2, 1), Rect2i(88, 29, 2, 1), Rect2i(100, 29, 2, 1), Rect2i(112, 29, 2, 1), Rect2i(120, 29, 33, 1), Rect2i(157, 29, 2, 1), Rect2i(173, 29, 2, 1), Rect2i(185, 29, 14, 1), Rect2i(203, 29, 3, 1), Rect2i(237, 29, 18, 1), Rect2i(0, 30, 16, 1), Rect2i(28, 30, 2, 1), Rect2i(44, 30, 2, 1), Rect2i(51, 30, 21, 1), Rect2i(76, 30, 2, 1), Rect2i(88, 30, 2, 1), Rect2i(100, 30, 2, 1), Rect2i(112, 30, 2, 1), Rect2i(120, 30, 33, 1), Rect2i(157, 30, 2, 1), Rect2i(165, 30, 2, 1), Rect2i(173, 30, 2, 1), Rect2i(185, 30, 14, 1), Rect2i(203, 30, 3, 1), Rect2i(237, 30, 18, 1), Rect2i(0, 31, 16, 1), Rect2i(28, 31, 2, 1), Rect2i(44, 31, 2, 1), Rect2i(57, 31, 15, 1), Rect2i(76, 31, 2, 1), Rect2i(88, 31, 2, 1), Rect2i(100, 31, 2, 1), Rect2i(112, 31, 2, 1), Rect2i(120, 31, 33, 1), Rect2i(157, 31, 2, 1), Rect2i(165, 31, 2, 1), Rect2i(173, 31, 2, 1), Rect2i(185, 31, 14, 1), Rect2i(217, 31, 3, 1), Rect2i(237, 31, 18, 1), Rect2i(0, 32, 16, 1), Rect2i(28, 32, 2, 1), Rect2i(44, 32, 2, 1), Rect2i(57, 32, 15, 1), Rect2i(76, 32, 2, 1), Rect2i(88, 32, 2, 1), Rect2i(100, 32, 2, 1), Rect2i(112, 32, 2, 1), Rect2i(120, 32, 33, 1), Rect2i(157, 32, 2, 1), Rect2i(165, 32, 2, 1), Rect2i(173, 32, 2, 1), Rect2i(185, 32, 14, 1), Rect2i(217, 32, 3, 1), Rect2i(237, 32, 18, 1), Rect2i(0, 33, 16, 1), Rect2i(28, 33, 2, 1), Rect2i(44, 33, 2, 1), Rect2i(57, 33, 15, 1), Rect2i(76, 33, 2, 1), Rect2i(88, 33, 2, 1), Rect2i(100, 33, 2, 1), Rect2i(112, 33, 2, 1), Rect2i(120, 33, 33, 1), Rect2i(157, 33, 2, 1), Rect2i(165, 33, 2, 1), Rect2i(173, 33, 2, 1), Rect2i(185, 33, 14, 1), Rect2i(217, 33, 3, 1), Rect2i(237, 33, 18, 1), Rect2i(0, 34, 16, 1), Rect2i(28, 34, 2, 1), Rect2i(44, 34, 2, 1), Rect2i(57, 34, 15, 1), Rect2i(76, 34, 2, 1), Rect2i(88, 34, 2, 1), Rect2i(100, 34, 2, 1), Rect2i(112, 34, 2, 1), Rect2i(120, 34, 33, 1), Rect2i(157, 34, 2, 1), Rect2i(165, 34, 2, 1), Rect2i(173, 34, 2, 1), Rect2i(185, 34, 14, 1), Rect2i(237, 34, 18, 1), Rect2i(0, 35, 16, 1), Rect2i(28, 35, 2, 1), Rect2i(44, 35, 2, 1), Rect2i(51, 35, 21, 1), Rect2i(76, 35, 2, 1), Rect2i(88, 35, 2, 1), Rect2i(100, 35, 2, 1), Rect2i(112, 35, 2, 1), Rect2i(120, 35, 33, 1), Rect2i(157, 35, 2, 1), Rect2i(165, 35, 2, 1), Rect2i(173, 35, 2, 1), Rect2i(185, 35, 14, 1), Rect2i(237, 35, 18, 1), Rect2i(0, 36, 255, 1), Rect2i(0, 37, 255, 1), Rect2i(0, 38, 255, 1), Rect2i(0, 39, 255, 1), Rect2i(140, 16, 4, 1), Rect2i(147, 13, 4, 1)])
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Crab1" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(256.0, 608.0)
+patrol_limit = 160.0
+
+[node name="Crab2" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(1952.0, 608.0)
+patrol_limit = 224.0
+
+[node name="Crab3" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(4128.0, 608.0)
+patrol_limit = 192.0
+
+[node name="Crab4" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(6144.0, 608.0)
+patrol_limit = 128.0
+
+[node name="Piranha1" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(880.0, 784.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="Piranha2" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(1264.0, 1008.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="Piranha3" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(2832.0, 784.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="Piranha4" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(3344.0, 1008.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="BigFish1" parent="Enemies" instance=ExtResource("6")]
+position = Vector2(2832.0, 848.0)
+patrol_range = 80.0
+water_top_y = 640.0
+
+[node name="BigFish2" parent="Enemies" instance=ExtResource("6")]
+position = Vector2(3344.0, 880.0)
+patrol_range = 80.0
+water_top_y = 640.0
+
+[node name="Piranha5" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(5232.0, 784.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="Piranha6" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(5584.0, 816.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="Piranha7" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(6768.0, 784.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="Piranha8" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(7184.0, 1008.0)
+patrol_range = 96.0
+water_top_y = 640.0
+
+[node name="BigFish3" parent="Enemies" instance=ExtResource("6")]
+position = Vector2(6992.0, 880.0)
+patrol_range = 80.0
+water_top_y = 640.0
+
+[node name="LeapFish1" parent="Enemies" instance=ExtResource("21")]
+position = Vector2(3760.0, 688.0)
+water_top_y = 640.0
+
+[node name="LeapFish2" parent="Enemies" instance=ExtResource("21")]
+position = Vector2(5008.0, 688.0)
+water_top_y = 640.0
+
+[node name="LeapFish3" parent="Enemies" instance=ExtResource("21")]
+position = Vector2(5840.0, 688.0)
+water_top_y = 640.0
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="Coin1" parent="Objects" instance=ExtResource("7")]
+position = Vector2(80.0, 584.0)
+
+[node name="Coin2" parent="Objects" instance=ExtResource("7")]
+position = Vector2(144.0, 584.0)
+
+[node name="Coin3" parent="Objects" instance=ExtResource("7")]
+position = Vector2(208.0, 584.0)
+
+[node name="Coin4" parent="Objects" instance=ExtResource("7")]
+position = Vector2(272.0, 584.0)
+
+[node name="Coin5" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1712.0, 584.0)
+
+[node name="Coin6" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1776.0, 584.0)
+
+[node name="Coin7" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1840.0, 584.0)
+
+[node name="Coin8" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1904.0, 584.0)
+
+[node name="Coin9" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4496.0, 456.0)
+
+[node name="Coin10" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4560.0, 456.0)
+
+[node name="Coin11" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4720.0, 360.0)
+
+[node name="Coin12" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4784.0, 360.0)
+
+[node name="Coin13" parent="Objects" instance=ExtResource("7")]
+position = Vector2(656.0, 1040.0)
+
+[node name="Coin14" parent="Objects" instance=ExtResource("7")]
+position = Vector2(688.0, 1072.0)
+
+[node name="Coin15" parent="Objects" instance=ExtResource("7")]
+position = Vector2(912.0, 720.0)
+
+[node name="Coin16" parent="Objects" instance=ExtResource("7")]
+position = Vector2(944.0, 688.0)
+
+[node name="Coin17" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1168.0, 1040.0)
+
+[node name="Coin18" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1200.0, 1072.0)
+
+[node name="Coin19" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1424.0, 720.0)
+
+[node name="Coin20" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1456.0, 688.0)
+
+[node name="Coin21" parent="Objects" instance=ExtResource("7")]
+position = Vector2(592.0, 880.0)
+
+[node name="Coin22" parent="Objects" instance=ExtResource("7")]
+position = Vector2(688.0, 976.0)
+
+[node name="Coin23" parent="Objects" instance=ExtResource("7")]
+position = Vector2(784.0, 1008.0)
+
+[node name="Coin24" parent="Objects" instance=ExtResource("7")]
+position = Vector2(880.0, 944.0)
+
+[node name="Coin25" parent="Objects" instance=ExtResource("7")]
+position = Vector2(976.0, 816.0)
+
+[node name="Coin26" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1072.0, 752.0)
+
+[node name="Coin27" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1168.0, 976.0)
+
+[node name="Coin28" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1264.0, 880.0)
+
+[node name="Coin29" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1712.0, 1040.0)
+
+[node name="Coin30" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1744.0, 1072.0)
+
+[node name="Coin31" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2448.0, 816.0)
+
+[node name="Coin32" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2672.0, 880.0)
+
+[node name="Coin33" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2832.0, 816.0)
+
+[node name="Coin34" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3056.0, 880.0)
+
+[node name="Coin35" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3216.0, 816.0)
+
+[node name="Coin36" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3440.0, 880.0)
+
+[node name="Coin37" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3600.0, 816.0)
+
+[node name="Coin38" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2384.0, 880.0)
+
+[node name="Coin39" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2512.0, 976.0)
+
+[node name="Coin40" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2640.0, 1008.0)
+
+[node name="Coin41" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2768.0, 944.0)
+
+[node name="Coin42" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2896.0, 816.0)
+
+[node name="Coin43" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3024.0, 784.0)
+
+[node name="Coin44" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3152.0, 784.0)
+
+[node name="Coin45" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3280.0, 880.0)
+
+[node name="Coin46" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3408.0, 976.0)
+
+[node name="Coin47" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3536.0, 1008.0)
+
+[node name="Coin48" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5040.0, 816.0)
+
+[node name="Coin49" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5296.0, 912.0)
+
+[node name="Coin50" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5552.0, 816.0)
+
+[node name="Coin51" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4976.0, 880.0)
+
+[node name="Coin52" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5104.0, 976.0)
+
+[node name="Coin53" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5232.0, 1008.0)
+
+[node name="Coin54" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5360.0, 944.0)
+
+[node name="Coin55" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5488.0, 816.0)
+
+[node name="Coin56" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5616.0, 752.0)
+
+[node name="Coin57" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6544.0, 848.0)
+
+[node name="Coin58" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6768.0, 784.0)
+
+[node name="Coin59" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6992.0, 944.0)
+
+[node name="Coin60" parent="Objects" instance=ExtResource("7")]
+position = Vector2(7216.0, 784.0)
+
+[node name="Coin61" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6448.0, 880.0)
+
+[node name="Coin62" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6576.0, 1008.0)
+
+[node name="Coin63" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6704.0, 1008.0)
+
+[node name="Coin64" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6832.0, 944.0)
+
+[node name="Coin65" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6960.0, 816.0)
+
+[node name="Coin66" parent="Objects" instance=ExtResource("7")]
+position = Vector2(7088.0, 752.0)
+
+[node name="Coin67" parent="Objects" instance=ExtResource("7")]
+position = Vector2(7216.0, 784.0)
+
+[node name="Coin68" parent="Objects" instance=ExtResource("7")]
+position = Vector2(7344.0, 880.0)
+
+[node name="SpecialBlock1" parent="Objects" instance=ExtResource("8")]
+position = Vector2(4032.0, 592.0)
+
+[node name="Power1" parent="Objects" instance=ExtResource("18")]
+position = Vector2(1760.0, 1040.0)
+
+[node name="Power2" parent="Objects" instance=ExtResource("11")]
+position = Vector2(6208.0, 528.0)
+
+[node name="Spikes1" parent="Objects" instance=ExtResource("15")]
+position = Vector2(6096.0, 608.0)
+width = 96
+variant = "small_metal"
+
+[node name="Mine1" parent="Objects" instance=ExtResource("16")]
+position = Vector2(784.0, 976.0)
+
+[node name="Mine2" parent="Objects" instance=ExtResource("16")]
+position = Vector2(1296.0, 848.0)
+
+[node name="Mine3" parent="Objects" instance=ExtResource("16")]
+position = Vector2(2544.0, 1104.0)
+
+[node name="Mine4" parent="Objects" instance=ExtResource("16")]
+position = Vector2(2928.0, 976.0)
+
+[node name="Mine5" parent="Objects" instance=ExtResource("16")]
+position = Vector2(3312.0, 1104.0)
+
+[node name="Mine6" parent="Objects" instance=ExtResource("16")]
+position = Vector2(6672.0, 848.0)
+
+[node name="Mine7" parent="Objects" instance=ExtResource("16")]
+position = Vector2(7120.0, 816.0)
+
+[node name="Checkpoint1" parent="." instance=ExtResource("17")]
+position = Vector2(1952.0, 608.0)
+
+[node name="Checkpoint2" parent="." instance=ExtResource("17")]
+position = Vector2(4128.0, 608.0)
+
+[node name="Cabin" parent="." instance=ExtResource("9")]
+position = Vector2(7968.0, 608.0)
+
+[node name="CabinWall" type="StaticBody2D" parent="."]
+position = Vector2(8032.0, 458.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CabinWall"]
+shape = SubResource("1")

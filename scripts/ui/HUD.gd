@@ -108,20 +108,50 @@ func set_lives(lives: int) -> void:
 func set_cabin_progress(coins_got: int, coins_needed: int, enemies_killed: int, enemies_needed: int, cabin_open: bool, boss_active: bool = false) -> void:
 	if cabin_open:
 		_cabin_progress_label.text = ""
+		_update_enemy_icons(0, 0)
 		return
 	# Een levende eindbaas is de enige eis die telt zolang die er staat.
 	if boss_active:
 		_cabin_progress_label.text = "Versla de eindbaas!"
+		_update_enemy_icons(0, 0)
 		return
 	if coins_needed <= 0 and enemies_needed <= 0:
 		_cabin_progress_label.text = ""
+		_update_enemy_icons(0, 0)
 		return
 	var parts: Array[String] = []
 	if coins_needed > 0:
 		parts.append("Munten %d/%d" % [coins_got, coins_needed])
-	if enemies_needed > 0:
-		parts.append("Vijanden %d/%d" % [enemies_killed, enemies_needed])
 	_cabin_progress_label.text = " · ".join(parts)
+	_update_enemy_icons(enemies_killed, enemies_needed)
+
+## Vijanden-eis als rij icoontjes: gevulde (rode) schedel = al verslagen,
+## grijze = nog te doen. Leesbaarder dan een kaal getal.
+var _enemy_icon_box: HBoxContainer = null
+const ENEMY_ICON: Texture2D = preload("res://assets/sprites/ui/enemy_icon.png")
+
+func _update_enemy_icons(killed: int, needed: int) -> void:
+	if _enemy_icon_box == null:
+		_enemy_icon_box = HBoxContainer.new()
+		_enemy_icon_box.position = Vector2(12.0, 224.0)
+		_enemy_icon_box.add_theme_constant_override("separation", 3)
+		$Control.add_child(_enemy_icon_box)
+	for c in _enemy_icon_box.get_children():
+		c.queue_free()
+	if needed <= 0:
+		return
+	var lbl := Label.new()
+	lbl.text = "Vijanden "
+	lbl.add_theme_font_size_override("font_size", 20)
+	_enemy_icon_box.add_child(lbl)
+	for i in needed:
+		var icon := TextureRect.new()
+		icon.texture = ENEMY_ICON
+		icon.custom_minimum_size = Vector2(22, 22)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.modulate = Color(1.0, 0.35, 0.3) if i < killed else Color(0.55, 0.55, 0.6, 0.7)
+		_enemy_icon_box.add_child(icon)
 
 ## Levensbalk voor de eindbaas, midden bovenin. Wordt lui opgebouwd en pas
 ## getoond zodra LevelBase een boss in het level vindt.

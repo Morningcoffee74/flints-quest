@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/SwimEnemy.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/common/Piranha/BigFish_Swim.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="swim0"]
+atlas = ExtResource("2")
+region = Rect2(4, 3, 46, 41)
+
+[sub_resource type="AtlasTexture" id="swim1"]
+atlas = ExtResource("2")
+region = Rect2(58, 3, 46, 41)
+
+[sub_resource type="AtlasTexture" id="swim2"]
+atlas = ExtResource("2")
+region = Rect2(112, 3, 46, 41)
+
+[sub_resource type="AtlasTexture" id="swim3"]
+atlas = ExtResource("2")
+region = Rect2(166, 3, 46, 41)
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("swim0")
+}, {
+"duration": 1.0,
+"texture": SubResource("swim1")
+}, {
+"duration": 1.0,
+"texture": SubResource("swim2")
+}, {
+"duration": 1.0,
+"texture": SubResource("swim3")
+}],
+"loop": true,
+"name": &"swim",
+"speed": 6.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="body"]
+radius = 22.0
+height = 76.0
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(84.0, 60.0)
+
+[node name="BigFish" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+base_health = 2
+base_speed = 45.0
+sine_amplitude = 18.0
+sine_frequency = 1.4
+patrol_range = 140.0
+hunter = true
+sprite_faces_right = true
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2.0, 2.0)
+sprite_frames = SubResource("frames")
+animation = &"swim"
+autoplay = "swim"
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("body")
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 18
+
+[node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
+shape = SubResource("hurt")

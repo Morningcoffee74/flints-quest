@@ -19,7 +19,7 @@ const SWIM_SPEED        := 130.0   # horizontale topsnelheid in water
 const SWIM_ACCEL        := 600.0   # hoe snel je op snelheid komt (dempend)
 const SWIM_DRAG         := 300.0   # afremmen zonder invoer
 const SWIM_STROKE       := -230.0  # opwaartse zet bij een druk op springen
-const SWIM_VERTICAL     := 110.0   # omhoog/omlaag sturen met W/S
+const SWIM_VERTICAL     := 190.0   # omhoog/omlaag sturen met W/S (snel genoeg om de bodem te halen)
 const WATER_GRAVITY     := 220.0   # veel lichter dan de gewone 980
 const WATER_SINK_SPEED  := 60.0    # maximale zaksnelheid als je niets doet
 
@@ -37,6 +37,8 @@ var _speed_timer        := 0.0   # blauwe power-up: sneller lopen
 var _strong_punch_timer := 0.0   # oranje power-up: hard slaan
 var _on_ladder          := false
 var _in_water           := false
+## Stroming (Current.gd) die de zwemsnelheid verschuift zolang je in de zone zit.
+var water_push          := Vector2.ZERO
 var _speed_difficulty   := 1.0   # samengestelde wereld/level-opbouw, zie GameManager.get_speed_difficulty()
 
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -215,9 +217,9 @@ func _state_swim(delta: float) -> void:
 	if dir != 0.0:
 		facing_right = dir > 0.0
 		anim_sprite.flip_h = not facing_right
-		velocity.x = move_toward(velocity.x, dir * SWIM_SPEED, SWIM_ACCEL * delta)
+		velocity.x = move_toward(velocity.x, dir * SWIM_SPEED + water_push.x, SWIM_ACCEL * delta)
 	else:
-		velocity.x = move_toward(velocity.x, 0.0, SWIM_DRAG * delta)
+		velocity.x = move_toward(velocity.x, water_push.x, SWIM_DRAG * delta)
 
 	# Verticaal: springknop = korte zet omhoog; omhoog/omlaag = rustig sturen;
 	# niets = langzaam zakken door drijfvermogen.
@@ -257,7 +259,8 @@ func _transition(new_state: State) -> void:
 			_invincible_timer = INVINCIBLE_DURATION
 			is_invincible = true
 			var dir := -1.0 if facing_right else 1.0
-			velocity = Vector2(dir * 180.0, -200.0)
+			# Onder water een zachtere terugslag (geen sprong-achtige knal omhoog).
+			velocity = Vector2(dir * 120.0, -60.0) if _in_water else Vector2(dir * 180.0, -200.0)
 		State.DEAD:
 			velocity = Vector2.ZERO
 			set_physics_process(false)
@@ -274,7 +277,13 @@ func _jump() -> void:
 	_transition(State.JUMP)
 
 func _apply_gravity(delta: float) -> void:
-	if not is_on_floor():
+	if is_on_floor():
+		return
+	if _in_water:
+		# Ook tijdens slaan/geraakt-worden onder water niet als een baksteen
+		# zinken: zelfde lichte zwaartekracht en zaksnelheid als bij het zwemmen.
+		velocity.y = move_toward(velocity.y, WATER_SINK_SPEED, WATER_GRAVITY * delta)
+	else:
 		velocity.y += GRAVITY * delta
 
 func _move_horizontal() -> void:
@@ -359,11 +368,18 @@ func enter_water() -> void:
 	if state != State.DEAD and state != State.HURT and state != State.PUNCH:
 		_transition(State.SWIM)
 
+## Extra zet omhoog bij het uit het water springen: zo kom je betrouwbaar op
+## een oever die ~20px boven de waterlijn ligt (feet-top ≈ 46px boven water),
+## maar niet op rotsen die verder boven water uitsteken.
+const WATER_EXIT_BOOST := -300.0
+
 func exit_water() -> void:
 	_in_water = false
 	if state == State.SWIM:
 		# Bij het verlaten van het water de opwaartse snelheid behouden (uit het
 		# water springen); de gewone zwaartekracht neemt het weer over.
+		if velocity.y < -80.0:
+			velocity.y = minf(velocity.y, WATER_EXIT_BOOST)
 		_transition(State.FALL)
 
 func enter_ladder() -> void:

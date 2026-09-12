@@ -11,6 +11,11 @@ const PROJECTILE_SCENE := preload("res://scenes/enemies/BossProjectile.tscn")
 ## De HUD toont hierop een levensbalk (huidige/max leven).
 signal boss_health_changed(current: int, max_health: int)
 
+## Arena-grenzen (wereld-x): de boss loopt hier niet voorbij (bv. niet van
+## het eiland de zee in). 0/0 = geen grens.
+@export var arena_left: float = 0.0
+@export var arena_right: float = 0.0
+
 var max_health: int = 1
 
 var _phase2    := false
@@ -58,6 +63,11 @@ func _physics_process(delta: float) -> void:
 				velocity.x = sign(dx) * speed
 				_play_anim("walk")
 
+	if arena_right > arena_left:
+		if global_position.x <= arena_left and velocity.x < 0.0:
+			velocity.x = 0.0
+		elif global_position.x >= arena_right and velocity.x > 0.0:
+			velocity.x = 0.0
 	move_and_slide()
 
 ## Draait de sprite naar de speler (de tekening kijkt standaard naar rechts).
