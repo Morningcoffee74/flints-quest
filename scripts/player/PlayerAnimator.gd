@@ -16,6 +16,7 @@ func _process(_delta: float) -> void:
 		Player.State.CLIMB:  anim = &"climb"
 		Player.State.PUNCH:  anim = &"punch"
 		Player.State.HURT:   anim = &"hurt"
+		Player.State.SWIM:   anim = &"swim"
 		Player.State.DEAD:   anim = &"dead"
 		_:                   anim = &"idle"
 	if sprite_frames.has_animation(anim) and animation != anim:

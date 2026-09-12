@@ -22,21 +22,13 @@ De vijanden zijn nu gekleurde blokjes. Nodig: spritesheets (zoals de speler:
 Sites: https://craftpix.net/freebies/ · https://itch.io/game-assets · https://opengameart.org
 Kies pixel-art die past bij de speler (frames van ±64–128px).
 
-### 2. Ontbrekende geluidseffecten (5 stuks)
+### 2. Ontbrekende geluidseffecten (5 stuks) — INGEVULD met placeholders (sep 2026)
 
-De code roept ze al aan; zodra het bestand er staat, doet het geluid het.
-Site: https://kenney.nl/assets (bijv. "Interface Sounds" / "Impact Sounds") of https://freesound.org
-
-```
-assets/audio/sfx/jump.ogg        (springen)
-assets/audio/sfx/hurt.ogg        (speler geraakt)
-assets/audio/sfx/enemy_die.ogg   (vijand verslagen)
-assets/audio/sfx/level_win.ogg   (level voltooid)
-assets/audio/sfx/game_over.ogg   (game over)
-```
-
-Let op: exact deze bestandsnamen (of pas `SFX_PATHS` aan in
-`scripts/autoloads/AudioManager.gd`).
+De 5 geluiden staan er nu als eenvoudige, synthetisch gegenereerde .ogg's
+(jump/hurt/enemy_die/level_win/game_over). Ze klinken, maar zijn bewust simpel.
+Vervang t.z.t. door mooiere via https://kenney.nl/assets ("Interface Sounds" /
+"Impact Sounds", allemaal CC0) of https://freesound.org — behoud exact deze
+bestandsnamen, dan hoeft er niets in de code te wijzigen.
 
 ### 3. Later vervangen (stijlbreuk, werkt wel)
 
@@ -79,3 +71,7 @@ Zelfde mappenstructuur: `assets/sprites/tiles/world2_water/`,
 - [x] Power-ups → `assets/sprites/items/extra-speed.png` (ster), `extra-strong.png` (gem), `extra-life.png`
 - [x] Muziek wereld 1 → `assets/audio/music/Living Voyage.mp3`
 - [x] SFX: `coin.ogg`, `punch.ogg`, `powerup.ogg`, `footstep_wood_001.ogg`
+- [x] SFX (placeholder, sep 2026): `jump.ogg`, `hurt.ogg`, `enemy_die.ogg`, `level_win.ogg`, `game_over.ogg`
+- [x] Zwem-sprite Flint (placeholder uit eigen frames) → `assets/sprites/player/SwimFlint.png`; optioneel mooiere versie via `tools/generate_swim.py` (Gemini)
+- [x] Water-parallax (3 lagen) → `assets/sprites/backgrounds/world2/back|far|middle.png` + `scenes/objects/ParallaxBGWater.tscn`
+- [x] Zwemmechaniek → SWIM-state in `Player.gd`, `scenes/objects/Water.tscn` + `Water.gd`; testscène `scenes/levels/W2_SwimTest.tscn`

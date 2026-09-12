@@ -1,7 +1,7 @@
 class_name Player
 extends CharacterBody2D
 
-enum State { IDLE, RUN, JUMP, FALL, CROUCH, CLIMB, PUNCH, HURT, DEAD }
+enum State { IDLE, RUN, JUMP, FALL, CROUCH, CLIMB, PUNCH, HURT, DEAD, SWIM }
 
 const SPEED             := 180.0
 const JUMP_VELOCITY     := -550.0
@@ -12,6 +12,16 @@ const HURT_DURATION     := 0.5
 const INVINCIBLE_DURATION := 1.5
 const POWERUP_DURATION  := 14.0
 const SPEED_BOOST_MULT  := 1.5
+
+# Zwemmen (Wereld 2): trager en dempend, langzaam zakken door drijfvermogen,
+# stroke omhoog met de springknop. Zie enter_water()/exit_water().
+const SWIM_SPEED        := 130.0   # horizontale topsnelheid in water
+const SWIM_ACCEL        := 600.0   # hoe snel je op snelheid komt (dempend)
+const SWIM_DRAG         := 300.0   # afremmen zonder invoer
+const SWIM_STROKE       := -230.0  # opwaartse zet bij een druk op springen
+const SWIM_VERTICAL     := 110.0   # omhoog/omlaag sturen met W/S
+const WATER_GRAVITY     := 220.0   # veel lichter dan de gewone 980
+const WATER_SINK_SPEED  := 60.0    # maximale zaksnelheid als je niets doet
 
 var state: State = State.IDLE
 var facing_right      := true
@@ -26,6 +36,7 @@ var _star_timer         := 0.0   # ster-power-up: onkwetsbaar
 var _speed_timer        := 0.0   # blauwe power-up: sneller lopen
 var _strong_punch_timer := 0.0   # oranje power-up: hard slaan
 var _on_ladder          := false
+var _in_water           := false
 var _speed_difficulty   := 1.0   # samengestelde wereld/level-opbouw, zie GameManager.get_speed_difficulty()
 
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -77,6 +88,9 @@ func _spawn_punch_fx() -> void:
 
 func _physics_process(delta: float) -> void:
 	_tick_timers(delta)
+	# In het water dwingt alles behalve slaan/geraakt/dood naar de zwem-state.
+	if _in_water and state in [State.IDLE, State.RUN, State.JUMP, State.FALL, State.CROUCH, State.CLIMB]:
+		_transition(State.SWIM)
 	match state:
 		State.IDLE:   _state_idle(delta)
 		State.RUN:    _state_run(delta)
@@ -86,6 +100,7 @@ func _physics_process(delta: float) -> void:
 		State.CLIMB:  _state_climb(delta)
 		State.PUNCH:  _state_punch(delta)
 		State.HURT:   _state_hurt(delta)
+		State.SWIM:   _state_swim(delta)
 		State.DEAD:   return
 	move_and_slide()
 
@@ -94,12 +109,18 @@ func _tick_timers(delta: float) -> void:
 		_punch_timer -= delta
 		if _punch_timer <= 0.0:
 			punch_hitbox.monitoring = false
-			_transition(State.IDLE if is_on_floor() else State.FALL)
+			if _in_water:
+				_transition(State.SWIM)
+			else:
+				_transition(State.IDLE if is_on_floor() else State.FALL)
 
 	if _hurt_timer > 0.0:
 		_hurt_timer -= delta
 		if _hurt_timer <= 0.0 and state == State.HURT:
-			_transition(State.IDLE if is_on_floor() else State.FALL)
+			if _in_water:
+				_transition(State.SWIM)
+			else:
+				_transition(State.IDLE if is_on_floor() else State.FALL)
 
 	_invincible_timer   = maxf(0.0, _invincible_timer - delta)
 	_star_timer         = maxf(0.0, _star_timer - delta)
@@ -187,6 +208,31 @@ func _state_punch(delta: float) -> void:
 func _state_hurt(delta: float) -> void:
 	_apply_gravity(delta)
 	velocity.x = move_toward(velocity.x, 0.0, SPEED * 5.0 * delta)
+
+func _state_swim(delta: float) -> void:
+	# Horizontaal: dempend sturen naar links/rechts.
+	var dir := Input.get_axis("move_left", "move_right")
+	if dir != 0.0:
+		facing_right = dir > 0.0
+		anim_sprite.flip_h = not facing_right
+		velocity.x = move_toward(velocity.x, dir * SWIM_SPEED, SWIM_ACCEL * delta)
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, SWIM_DRAG * delta)
+
+	# Verticaal: springknop = korte zet omhoog; omhoog/omlaag = rustig sturen;
+	# niets = langzaam zakken door drijfvermogen.
+	if Input.is_action_just_pressed("jump"):
+		velocity.y = SWIM_STROKE
+		AudioManager.play_sfx_by_name("jump")
+	elif Input.is_action_pressed("move_up"):
+		velocity.y = move_toward(velocity.y, -SWIM_VERTICAL, SWIM_ACCEL * delta)
+	elif Input.is_action_pressed("move_down"):
+		velocity.y = move_toward(velocity.y, SWIM_VERTICAL, SWIM_ACCEL * delta)
+	else:
+		velocity.y = move_toward(velocity.y, WATER_SINK_SPEED, WATER_GRAVITY * delta)
+
+	if Input.is_action_just_pressed("punch"):
+		_transition(State.PUNCH)
 
 func _transition(new_state: State) -> void:
 	if state == new_state:
@@ -302,6 +348,23 @@ func _update_powerup_tint() -> void:
 func grant_spawn_invincibility(duration: float = INVINCIBLE_DURATION) -> void:
 	_invincible_timer = maxf(_invincible_timer, duration)
 	is_invincible = true
+
+## Aangeroepen door het Water-object (Water.gd) als de speler het water in/uit gaat.
+func enter_water() -> void:
+	if _in_water:
+		return
+	_in_water = true
+	# Splash-demping: een snelle val niet door het water heen laten schieten.
+	velocity.y = clampf(velocity.y, -120.0, 90.0)
+	if state != State.DEAD and state != State.HURT and state != State.PUNCH:
+		_transition(State.SWIM)
+
+func exit_water() -> void:
+	_in_water = false
+	if state == State.SWIM:
+		# Bij het verlaten van het water de opwaartse snelheid behouden (uit het
+		# water springen); de gewone zwaartekracht neemt het weer over.
+		_transition(State.FALL)
 
 func enter_ladder() -> void:
 	_on_ladder = true

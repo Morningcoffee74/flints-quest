@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"            id="1"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Water.tscn"            id="2"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ParallaxBGWater.tscn"  id="3"]
+
+[sub_resource type="RectangleShape2D" id="ground"]
+size = Vector2(4000, 200)
+
+[node name="W2_SwimTest" type="Node2D"]
+
+[node name="ParallaxBGWater" parent="." instance=ExtResource("3")]
+
+[node name="Player" parent="." instance=ExtResource("1")]
+position = Vector2(400, 500)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+position = Vector2(1000, 700)
+collision_layer = 1
+collision_mask = 0
+
+[node name="GroundShape" type="CollisionShape2D" parent="Ground"]
+shape = SubResource("ground")
+
+[node name="WaterPool" parent="." instance=ExtResource("2")]
+position = Vector2(1000, 470)
+scale = Vector2(2.2, 1.3)
