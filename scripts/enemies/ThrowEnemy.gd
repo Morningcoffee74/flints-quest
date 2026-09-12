@@ -72,14 +72,15 @@ func _target() -> Player:
 	return player
 
 func _throw_at(target: Vector2) -> void:
-	var banana := PROJECTILE.instantiate()
-	banana.global_position = global_position + Vector2(0.0, 6.0)
+	var banana := PROJECTILE.instantiate() as Node2D
+	var from: Vector2 = global_position + Vector2(0.0, 6.0)
+	banana.global_position = from
 	# Ballistiek: kies een vaste vluchttijd en reken daar de beginsnelheid bij
 	# uit, dan komt de banaan netjes in een boog bij de speler uit.
-	var d := target - banana.global_position
-	banana.velocity = Vector2(
+	var d: Vector2 = target - from
+	banana.set("velocity", Vector2(
 		d.x / THROW_TIME,
-		(d.y - 0.5 * 900.0 * THROW_TIME * THROW_TIME) / THROW_TIME)
+		(d.y - 0.5 * 900.0 * THROW_TIME * THROW_TIME) / THROW_TIME))
 	if _sprite != null:
 		_sprite.flip_h = (d.x > 0.0) != sprite_faces_right
 	get_parent().add_child(banana)

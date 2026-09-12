@@ -1,0 +1,81 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"             id="1"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Vine.tscn"              id="2"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Quicksand.tscn"         id="3"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ParallaxBGJungle.tscn"  id="4"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/Monkey.tscn"     id="5"]
+
+[sub_resource type="RectangleShape2D" id="slab"]
+size = Vector2(600, 240)
+
+; Testscene voor de twee nieuwe Wereld 4-mechanieken: eerst een gat van 600px
+; met drie lianen erboven (slingeren), daarna een drijfzandkuil tussen twee
+; oevers. Een aap hangt boven het gat en gooit bananen.
+; Draaien: Godot --path . res://scenes/levels/W4_JungleTest.tscn
+
+[node name="W4_JungleTest" type="Node2D"]
+
+[node name="ParallaxBGJungle" parent="." instance=ExtResource("4")]
+
+[node name="Player" parent="." instance=ExtResource("1")]
+position = Vector2(200, 600)
+
+[node name="GroundA" type="StaticBody2D" parent="."]
+position = Vector2(300, 760)
+collision_layer = 1
+collision_mask = 0
+
+[node name="ShapeA" type="CollisionShape2D" parent="GroundA"]
+shape = SubResource("slab")
+
+[node name="GroundB" type="StaticBody2D" parent="."]
+position = Vector2(1500, 760)
+collision_layer = 1
+collision_mask = 0
+
+[node name="ShapeB" type="CollisionShape2D" parent="GroundB"]
+shape = SubResource("slab")
+
+[node name="GroundC" type="StaticBody2D" parent="."]
+position = Vector2(2400, 760)
+collision_layer = 1
+collision_mask = 0
+
+[node name="ShapeC" type="CollisionShape2D" parent="GroundC"]
+shape = SubResource("slab")
+
+[node name="Vine1" parent="." instance=ExtResource("2")]
+position = Vector2(700, 360)
+length = 190.0
+period = 2.4
+amplitude_deg = 42.0
+
+[node name="Vine2" parent="." instance=ExtResource("2")]
+position = Vector2(1000, 360)
+length = 190.0
+period = 2.4
+amplitude_deg = 42.0
+phase = 1.2
+
+[node name="Vine3" parent="." instance=ExtResource("2")]
+position = Vector2(1300, 360)
+length = 190.0
+period = 2.4
+amplitude_deg = 42.0
+phase = 2.4
+
+[node name="Monkey" parent="." instance=ExtResource("5")]
+position = Vector2(1010, 420)
+
+[node name="Sand" parent="." instance=ExtResource("3")]
+position = Vector2(2000, 720)
+size = Vector2(300, 160)
+
+[node name="SandFloor" type="StaticBody2D" parent="."]
+position = Vector2(2000, 930)
+collision_layer = 1
+collision_mask = 0
+
+[node name="SandFloorShape" type="CollisionShape2D" parent="SandFloor"]
+shape = SubResource("slab")

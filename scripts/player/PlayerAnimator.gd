@@ -20,6 +20,9 @@ func _process(_delta: float) -> void:
 		Player.State.PUNCH:  anim = &"punch"
 		Player.State.HURT:   anim = &"hurt"
 		Player.State.SWIM:   anim = &"swim"
+		# Geen aparte slinger-sprite: de spring-pose (armen omhoog) leest prima
+		# als "hangt aan een liaan", net zoals bukken de spring-pose hergebruikt.
+		Player.State.SWING:  anim = &"jump"
 		Player.State.DEAD:   anim = &"dead"
 		_:                   anim = &"idle"
 	if sprite_frames.has_animation(anim) and animation != anim:

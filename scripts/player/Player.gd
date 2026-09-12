@@ -1,7 +1,7 @@
 class_name Player
 extends CharacterBody2D
 
-enum State { IDLE, RUN, JUMP, FALL, CROUCH, CLIMB, PUNCH, HURT, DEAD, SWIM }
+enum State { IDLE, RUN, JUMP, FALL, CROUCH, CLIMB, PUNCH, HURT, DEAD, SWIM, SWING }
 
 const SPEED             := 180.0
 const JUMP_VELOCITY     := -550.0
@@ -23,6 +23,20 @@ const SWIM_VERTICAL     := 190.0   # omhoog/omlaag sturen met W/S (snel genoeg o
 const WATER_GRAVITY     := 220.0   # veel lichter dan de gewone 980
 const WATER_SINK_SPEED  := 60.0    # maximale zaksnelheid als je niets doet
 
+# Liaan-slingeren (Wereld 4)
+const VINE_HANG_OFFSET  := 54.0    # hoeveel lager de voeten hangen dan het grijppunt
+const VINE_RELEASE_MULT := 1.25    # extra vaart mee bij loslaten
+const VINE_RELEASE_LIFT := -210.0  # zetje omhoog, zodat loslaten altijd een sprong is
+const VINE_REGRAB_DELAY := 0.35    # niet meteen terugplakken aan dezelfde liaan
+const VINE_LAUNCH_TIME  := 0.9     # hoelang de zwaai-vaart blijft staan na loslaten
+const VINE_LAUNCH_DECAY := 150.0   # hoe snel die vaart uitdooft (px/s per seconde)
+const VINE_AIR_CONTROL  := 0.35    # hoeveel je tijdens die vlucht nog kunt bijsturen
+
+# Drijfzand (Wereld 4)
+const SAND_SPEED_MULT   := 0.45    # je komt er nog wel doorheen, maar traag
+const SAND_SINK_SPEED   := 42.0    # zo langzaam dat er tijd is om eruit te springen
+const SAND_JUMP_MULT    := 0.72    # springen kan, maar minder hoog
+
 var state: State = State.IDLE
 var facing_right      := true
 var health            := 5
@@ -37,6 +51,11 @@ var _speed_timer        := 0.0   # blauwe power-up: sneller lopen
 var _strong_punch_timer := 0.0   # oranje power-up: hard slaan
 var _on_ladder          := false
 var _in_water           := false
+var _vine: Vine         = null   # liaan waar je nu aan hangt (Wereld 4)
+var _vine_cooldown      := 0.0   # voorkomt dat je meteen terugplakt na loslaten
+var _launch_timer       := 0.0   # loopt na het loslaten van een liaan
+var _launch_vx          := 0.0   # meegekregen horizontale zwaai-vaart
+var _in_quicksand       := false
 ## Stroming (Current.gd) die de zwemsnelheid verschuift zolang je in de zone zit.
 var water_push          := Vector2.ZERO
 var _speed_difficulty   := 1.0   # samengestelde wereld/level-opbouw, zie GameManager.get_speed_difficulty()
@@ -103,6 +122,7 @@ func _physics_process(delta: float) -> void:
 		State.PUNCH:  _state_punch(delta)
 		State.HURT:   _state_hurt(delta)
 		State.SWIM:   _state_swim(delta)
+		State.SWING:  _state_swing(delta)
 		State.DEAD:   return
 	move_and_slide()
 
@@ -124,6 +144,7 @@ func _tick_timers(delta: float) -> void:
 			else:
 				_transition(State.IDLE if is_on_floor() else State.FALL)
 
+	_vine_cooldown      = maxf(0.0, _vine_cooldown - delta)
 	_invincible_timer   = maxf(0.0, _invincible_timer - delta)
 	_star_timer         = maxf(0.0, _star_timer - delta)
 	_speed_timer        = maxf(0.0, _speed_timer - delta)
@@ -151,7 +172,7 @@ func _state_idle(delta: float) -> void:
 
 func _state_run(delta: float) -> void:
 	_apply_gravity(delta)
-	_move_horizontal()
+	_move_horizontal(delta)
 	if not is_on_floor():
 		_transition(State.FALL)
 		return
@@ -168,17 +189,21 @@ func _state_run(delta: float) -> void:
 
 func _state_jump(delta: float) -> void:
 	_apply_gravity(delta)
-	_move_horizontal()
+	_move_horizontal(delta)
 	if Input.is_action_just_pressed("punch"):
 		_transition(State.PUNCH)
+	elif _in_quicksand and Input.is_action_just_pressed("jump"):
+		_jump()   # spartelen: in drijfzand mag je ook zonder vaste grond afzetten
 	if velocity.y >= 0.0:
 		_transition(State.FALL)
 
 func _state_fall(delta: float) -> void:
 	_apply_gravity(delta)
-	_move_horizontal()
+	_move_horizontal(delta)
 	if Input.is_action_just_pressed("punch"):
 		_transition(State.PUNCH)
+	elif _in_quicksand and Input.is_action_just_pressed("jump"):
+		_jump()
 	if is_on_floor():
 		_transition(State.IDLE)
 	elif _on_ladder and Input.is_action_pressed("move_up"):
@@ -236,6 +261,28 @@ func _state_swim(delta: float) -> void:
 	if Input.is_action_just_pressed("punch"):
 		_transition(State.PUNCH)
 
+## Aan een liaan hangen (Wereld 4). De liaan zwaait zelf; de speler wordt aan
+## het grijppunt meegevoerd, stuurt met links/rechts de uitslag groter of
+## kleiner, en laat los met de springknop.
+func _state_swing(delta: float) -> void:
+	if _vine == null:
+		_transition(State.FALL)
+		return
+	var dir := Input.get_axis("move_left", "move_right")
+	_vine.pump(dir, delta)
+
+	var tip := _vine.get_tip_velocity()
+	if absf(tip.x) > 1.0:
+		facing_right = tip.x > 0.0
+		anim_sprite.flip_h = not facing_right
+
+	# Handen aan het grijppunt: de speler hangt er met zijn lijf onder.
+	global_position = _vine.get_grab_position() + Vector2(0.0, VINE_HANG_OFFSET)
+	velocity = Vector2.ZERO
+
+	if Input.is_action_just_pressed("jump"):
+		release_vine()
+
 func _transition(new_state: State) -> void:
 	if state == new_state:
 		return
@@ -272,7 +319,7 @@ func _play_death_animation() -> void:
 	tween.tween_callback(died.emit)
 
 func _jump() -> void:
-	velocity.y = JUMP_VELOCITY
+	velocity.y = JUMP_VELOCITY * (SAND_JUMP_MULT if _in_quicksand else 1.0)
 	AudioManager.play_sfx_by_name("jump")
 	_transition(State.JUMP)
 
@@ -283,15 +330,32 @@ func _apply_gravity(delta: float) -> void:
 		# Ook tijdens slaan/geraakt-worden onder water niet als een baksteen
 		# zinken: zelfde lichte zwaartekracht en zaksnelheid als bij het zwemmen.
 		velocity.y = move_toward(velocity.y, WATER_SINK_SPEED, WATER_GRAVITY * delta)
+	elif _in_quicksand:
+		# In drijfzand zak je traag maar gestaag; snel vallen bestaat er niet.
+		velocity.y = move_toward(velocity.y, SAND_SINK_SPEED, GRAVITY * delta)
 	else:
 		velocity.y += GRAVITY * delta
 
-func _move_horizontal() -> void:
+func _move_horizontal(delta: float = 0.0) -> void:
 	var dir := Input.get_axis("move_left", "move_right")
 	var top_speed := SPEED * _speed_difficulty * (SPEED_BOOST_MULT if _speed_timer > 0.0 else 1.0)
+	if _in_quicksand:
+		top_speed *= SAND_SPEED_MULT
 	if dir != 0.0:
 		facing_right = dir > 0.0
 		anim_sprite.flip_h = not facing_right
+
+	# Net van een liaan losgelaten: de zwaai-vaart moet blijven staan. Zou hier
+	# gewoon `velocity.x = dir * top_speed` gebeuren, dan wist de loopsnelheid de
+	# lancering meteen uit en kwam je nooit verder dan een gewone sprong.
+	if _launch_timer > 0.0 and not is_on_floor():
+		_launch_timer -= delta
+		_launch_vx = move_toward(_launch_vx, 0.0, VINE_LAUNCH_DECAY * delta)
+		velocity.x = _launch_vx + dir * top_speed * VINE_AIR_CONTROL
+		return
+	_launch_timer = 0.0
+
+	if dir != 0.0:
 		velocity.x = dir * top_speed
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, top_speed)
@@ -391,3 +455,49 @@ func exit_ladder() -> void:
 	_on_ladder = false
 	if state == State.CLIMB:
 		_transition(State.FALL)
+
+## --- Liaan (Wereld 4) ---
+
+## Aangeroepen door Vine.gd zodra de speler het grijppunt raakt. Vastpakken kan
+## alleen vanuit de lucht of vanaf de grond — niet tijdens slaan, geraakt
+## worden, zwemmen of klimmen — en niet vlak nadat je losliet.
+func grab_vine(vine: Vine) -> void:
+	if _vine != null or _vine_cooldown > 0.0 or _in_water:
+		return
+	if state in [State.PUNCH, State.HURT, State.DEAD, State.CLIMB]:
+		return
+	_vine = vine
+	_transition(State.SWING)
+
+## Loslaten: je vertrekt met de baansnelheid van de liaanpunt, dus op het
+## uiterste punt van de zwaai kom je het verst.
+func release_vine() -> void:
+	if _vine == null:
+		return
+	var tip := _vine.get_tip_velocity()
+	_vine = null
+	_vine_cooldown = VINE_REGRAB_DELAY
+	_launch_vx = tip.x * VINE_RELEASE_MULT
+	_launch_timer = VINE_LAUNCH_TIME
+	velocity = Vector2(_launch_vx, minf(tip.y, 0.0) + VINE_RELEASE_LIFT)
+	AudioManager.play_sfx_by_name("jump")
+	_transition(State.JUMP)
+
+## Valt de liaan weg (level herladen), dan gewoon vallen.
+func drop_vine() -> void:
+	if _vine == null:
+		return
+	_vine = null
+	_vine_cooldown = VINE_REGRAB_DELAY
+	_transition(State.FALL)
+
+## --- Drijfzand (Wereld 4) ---
+
+func enter_quicksand() -> void:
+	_in_quicksand = true
+
+func exit_quicksand() -> void:
+	_in_quicksand = false
+
+func is_in_quicksand() -> bool:
+	return _in_quicksand

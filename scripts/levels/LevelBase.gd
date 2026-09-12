@@ -104,11 +104,22 @@ func _add_edge_walls() -> void:
 		add_child(wall)
 
 func _on_player_fell() -> void:
+	hazard_respawn()
+
+## Een hartje kwijt en terug naar het checkpoint. Gebruikt door de val in een
+## ravijn én door het drijfzand in Wereld 4 (Quicksand.gd), zodat er maar één
+## plek is die weet hoe zo'n "opnieuw beginnen"-gevaar afloopt.
+func hazard_respawn() -> void:
+	if _level_done:
+		return
 	player.take_damage()
 	if player.state == Player.State.DEAD:
 		return
+	player.drop_vine()
+	player.exit_quicksand()
 	player.global_position = _respawn_position()
 	player.velocity = Vector2.ZERO
+	player.grant_spawn_invincibility()
 
 func _respawn_position() -> Vector2:
 	if GameManager.respawn_point.is_finite():
