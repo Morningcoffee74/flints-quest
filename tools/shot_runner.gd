@@ -23,6 +23,10 @@ func _run() -> void:
 		xs.append(part.to_float())
 	if xs.is_empty():
 		xs = [600.0]
+	# Optioneel per shot een eigen y (klim-/daallevels); anders 560.
+	var ys: Array = []
+	for part: String in OS.get_environment("SHOT_YS").split(",", false):
+		ys.append(part.to_float())
 
 	var level: Node = (load(scene_path) as PackedScene).instantiate()
 	add_child(level)
@@ -32,7 +36,7 @@ func _run() -> void:
 	var camera: Camera2D = player.get_node("Camera2D")
 	var idx := 1
 	for x: float in xs:
-		player.global_position = Vector2(x, 560.0)
+		player.global_position = Vector2(x, ys[idx - 1] if idx - 1 < ys.size() else 560.0)
 		player.velocity = Vector2.ZERO
 		camera.reset_smoothing()
 		if idx == xs.size():

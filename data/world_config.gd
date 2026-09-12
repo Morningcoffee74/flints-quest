@@ -21,7 +21,7 @@ const WORLDS: Array = [
 	{
 		"id": 3, "name": "Grot", "theme": "cave", "music": "world3",
 		"direction": "up_right", "levels": 11,
-		"enemies": ["Bat", "Troll", "Spider"],
+		"enemies": ["Bat", "Slime", "Zombie"],
 		"boss": "StoneGolem",
 	},
 	{

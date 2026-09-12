@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/world3/back.png" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/world3/far.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/backgrounds/world3/middle.png" id="3"]
+
+; Grot-achtergrond (ansimuz "Warped: Super Grotto Escape", CC0): dekkende
+; donkerpaarse verte met kristallen, ruïne-silhouetten en rotsclusters die
+; boven en onder in beeld hangen. Schermvast in de hoogte (motion_scale.y = 0)
+; zodat hij ook in klim-/daallevels altijd het hele beeld vult. Elke sprite
+; herhaalt zijn textuur tot 2× breedte (ParallaxLayer spiegelt maar één keer).
+
+[node name="ParallaxBGCave" type="ParallaxBackground"]
+
+[node name="BackLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.15, 0.0)
+motion_mirroring = Vector2(1824.0, 0.0)
+
+[node name="BackSprite" type="Sprite2D" parent="BackLayer"]
+texture_repeat = 2
+scale = Vector2(3.0, 3.0)
+centered = false
+texture = ExtResource("1")
+region_enabled = true
+region_rect = Rect2(0, 0, 608, 240)
+
+[node name="FarLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.4, 0.0)
+motion_mirroring = Vector2(2112.0, 0.0)
+
+[node name="FarSprite" type="Sprite2D" parent="FarLayer"]
+texture_repeat = 2
+scale = Vector2(3.0, 3.0)
+centered = false
+texture = ExtResource("2")
+region_enabled = true
+region_rect = Rect2(0, 0, 704, 240)
+
+[node name="MiddleLayer" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.7, 0.0)
+motion_mirroring = Vector2(2208.0, 0.0)
+
+[node name="MiddleSprite" type="Sprite2D" parent="MiddleLayer"]
+texture_repeat = 2
+scale = Vector2(3.0, 3.0)
+centered = false
+texture = ExtResource("3")
+region_enabled = true
+region_rect = Rect2(0, 0, 736, 240)

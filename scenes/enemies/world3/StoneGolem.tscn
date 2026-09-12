@@ -1,0 +1,271 @@
+[gd_scene load_steps=53 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/StoneGolem.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/world3/StoneGolem.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="w0"]
+atlas = ExtResource("2")
+region = Rect2(0, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w1"]
+atlas = ExtResource("2")
+region = Rect2(192, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w2"]
+atlas = ExtResource("2")
+region = Rect2(384, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w3"]
+atlas = ExtResource("2")
+region = Rect2(576, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w4"]
+atlas = ExtResource("2")
+region = Rect2(768, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w5"]
+atlas = ExtResource("2")
+region = Rect2(960, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w6"]
+atlas = ExtResource("2")
+region = Rect2(1152, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w7"]
+atlas = ExtResource("2")
+region = Rect2(1344, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w8"]
+atlas = ExtResource("2")
+region = Rect2(1536, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="w9"]
+atlas = ExtResource("2")
+region = Rect2(1728, 128, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a0"]
+atlas = ExtResource("2")
+region = Rect2(0, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a1"]
+atlas = ExtResource("2")
+region = Rect2(192, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a2"]
+atlas = ExtResource("2")
+region = Rect2(384, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a3"]
+atlas = ExtResource("2")
+region = Rect2(576, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a4"]
+atlas = ExtResource("2")
+region = Rect2(768, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a5"]
+atlas = ExtResource("2")
+region = Rect2(960, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a6"]
+atlas = ExtResource("2")
+region = Rect2(1152, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a7"]
+atlas = ExtResource("2")
+region = Rect2(1344, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a8"]
+atlas = ExtResource("2")
+region = Rect2(1536, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a9"]
+atlas = ExtResource("2")
+region = Rect2(1728, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a10"]
+atlas = ExtResource("2")
+region = Rect2(1920, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a11"]
+atlas = ExtResource("2")
+region = Rect2(2112, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a12"]
+atlas = ExtResource("2")
+region = Rect2(2304, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="a13"]
+atlas = ExtResource("2")
+region = Rect2(2496, 256, 192, 128)
+
+[sub_resource type="AtlasTexture" id="h0"]
+atlas = ExtResource("2")
+region = Rect2(0, 384, 192, 128)
+
+[sub_resource type="AtlasTexture" id="h1"]
+atlas = ExtResource("2")
+region = Rect2(192, 384, 192, 128)
+
+[sub_resource type="AtlasTexture" id="h2"]
+atlas = ExtResource("2")
+region = Rect2(384, 384, 192, 128)
+
+[sub_resource type="AtlasTexture" id="h3"]
+atlas = ExtResource("2")
+region = Rect2(576, 384, 192, 128)
+
+[sub_resource type="AtlasTexture" id="h4"]
+atlas = ExtResource("2")
+region = Rect2(768, 384, 192, 128)
+
+[sub_resource type="AtlasTexture" id="h5"]
+atlas = ExtResource("2")
+region = Rect2(960, 384, 192, 128)
+
+[sub_resource type="AtlasTexture" id="h6"]
+atlas = ExtResource("2")
+region = Rect2(1152, 384, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d0"]
+atlas = ExtResource("2")
+region = Rect2(0, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d1"]
+atlas = ExtResource("2")
+region = Rect2(192, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d2"]
+atlas = ExtResource("2")
+region = Rect2(384, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d3"]
+atlas = ExtResource("2")
+region = Rect2(576, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d4"]
+atlas = ExtResource("2")
+region = Rect2(768, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d5"]
+atlas = ExtResource("2")
+region = Rect2(960, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d6"]
+atlas = ExtResource("2")
+region = Rect2(1152, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d7"]
+atlas = ExtResource("2")
+region = Rect2(1344, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d8"]
+atlas = ExtResource("2")
+region = Rect2(1536, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d9"]
+atlas = ExtResource("2")
+region = Rect2(1728, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d10"]
+atlas = ExtResource("2")
+region = Rect2(1920, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d11"]
+atlas = ExtResource("2")
+region = Rect2(2112, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d12"]
+atlas = ExtResource("2")
+region = Rect2(2304, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d13"]
+atlas = ExtResource("2")
+region = Rect2(2496, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d14"]
+atlas = ExtResource("2")
+region = Rect2(2688, 512, 192, 128)
+
+[sub_resource type="AtlasTexture" id="d15"]
+atlas = ExtResource("2")
+region = Rect2(2880, 512, 192, 128)
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("w0")}, {"duration": 1.0, "texture": SubResource("w1")}, {"duration": 1.0, "texture": SubResource("w2")}, {"duration": 1.0, "texture": SubResource("w3")}, {"duration": 1.0, "texture": SubResource("w4")}, {"duration": 1.0, "texture": SubResource("w5")}, {"duration": 1.0, "texture": SubResource("w6")}, {"duration": 1.0, "texture": SubResource("w7")}, {"duration": 1.0, "texture": SubResource("w8")}, {"duration": 1.0, "texture": SubResource("w9")}],
+"loop": true,
+"name": &"walk",
+"speed": 9.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("a0")}, {"duration": 1.0, "texture": SubResource("a1")}, {"duration": 1.0, "texture": SubResource("a2")}, {"duration": 1.0, "texture": SubResource("a3")}, {"duration": 1.0, "texture": SubResource("a4")}, {"duration": 1.0, "texture": SubResource("a5")}, {"duration": 1.0, "texture": SubResource("a6")}, {"duration": 1.0, "texture": SubResource("a7")}, {"duration": 1.0, "texture": SubResource("a8")}, {"duration": 1.0, "texture": SubResource("a9")}, {"duration": 1.0, "texture": SubResource("a10")}, {"duration": 1.0, "texture": SubResource("a11")}, {"duration": 1.0, "texture": SubResource("a12")}, {"duration": 1.0, "texture": SubResource("a13")}],
+"loop": false,
+"name": &"attack",
+"speed": 16.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("h0")}, {"duration": 1.0, "texture": SubResource("h1")}, {"duration": 1.0, "texture": SubResource("h2")}, {"duration": 1.0, "texture": SubResource("h3")}, {"duration": 1.0, "texture": SubResource("h4")}, {"duration": 1.0, "texture": SubResource("h5")}, {"duration": 1.0, "texture": SubResource("h6")}],
+"loop": false,
+"name": &"hurt",
+"speed": 12.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("d0")}, {"duration": 1.0, "texture": SubResource("d1")}, {"duration": 1.0, "texture": SubResource("d2")}, {"duration": 1.0, "texture": SubResource("d3")}, {"duration": 1.0, "texture": SubResource("d4")}, {"duration": 1.0, "texture": SubResource("d5")}, {"duration": 1.0, "texture": SubResource("d6")}, {"duration": 1.0, "texture": SubResource("d7")}, {"duration": 1.0, "texture": SubResource("d8")}, {"duration": 1.0, "texture": SubResource("d9")}, {"duration": 1.0, "texture": SubResource("d10")}, {"duration": 1.0, "texture": SubResource("d11")}, {"duration": 1.0, "texture": SubResource("d12")}, {"duration": 1.0, "texture": SubResource("d13")}, {"duration": 1.0, "texture": SubResource("d14")}, {"duration": 1.0, "texture": SubResource("d15")}],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="body"]
+size = Vector2(120.0, 230.0)
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(120.0, 230.0)
+
+[sub_resource type="RectangleShape2D" id="arm"]
+size = Vector2(130.0, 70.0)
+
+; Stenen Golem: omgekleurde "Frost Guardian" (cel 192×128, voeten op cel-y 110
+; → sprite 46px × schaal omhoog). Figuur ≈ 205×240 px op schaal 2.6.
+[node name="StoneGolem" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+base_health = 9
+base_speed = 50.0
+sprite_faces_right = false
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0.0, -115.0)
+shape = SubResource("body")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0.0, -120.0)
+scale = Vector2(2.6, 2.6)
+sprite_frames = SubResource("frames")
+animation = &"walk"
+autoplay = "walk"
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 18
+
+[node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(0.0, -115.0)
+shape = SubResource("hurt")
+
+[node name="LeftArm" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+
+[node name="LeftArmShape" type="CollisionShape2D" parent="LeftArm"]
+position = Vector2(-120.0, -110.0)
+shape = SubResource("arm")
+
+[node name="RightArm" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = false
+
+[node name="RightArmShape" type="CollisionShape2D" parent="RightArm"]
+position = Vector2(120.0, -110.0)
+shape = SubResource("arm")

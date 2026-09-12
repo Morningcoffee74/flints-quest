@@ -19,6 +19,7 @@ const SFX_PATHS: Dictionary = {
 const MUSIC_PATHS: Dictionary = {
 	"world1": "res://assets/audio/music/Living Voyage.mp3",
 	"world2": "res://assets/audio/music/watery_cave_loop.ogg",
+	"world3": "res://assets/audio/music/cave_in_game.ogg",
 	"menu":   "res://assets/audio/music/music-theme.mp3",
 }
 

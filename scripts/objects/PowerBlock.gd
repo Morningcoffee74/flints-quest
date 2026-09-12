@@ -6,6 +6,7 @@ enum Type { PURPLE, BLUE, ORANGE }
 @export var type: Type = Type.PURPLE
 
 func _ready() -> void:
+	add_to_group("powerups")
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node2D) -> void:

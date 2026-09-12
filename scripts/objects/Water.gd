@@ -18,6 +18,14 @@ extends Area2D
 
 const SHADER := preload("res://scripts/objects/water.gdshader")
 
+## De speler telt pas als "in het water" wanneer zijn voeten zóveel px onder
+## het wateroppervlak zijn. Zijn hitbox-oorsprong ligt bij de voeten en de
+## capsule is 66px hoog: zonder deze marge ging hij al zwemmen zodra alleen
+## zijn voeten nat waren, en dreef hij met zijn hele lijf bóven het water.
+## 33px = het capsule-midden op de waterlijn. Het uiterlijk (shader, waas,
+## bellen) gebruikt gewoon de volledige `size`.
+@export var submerge: float = 33.0
+
 var _built: Array[Node] = []
 
 func _ready() -> void:
@@ -32,7 +40,12 @@ func _build() -> void:
 
 	var shape_node := get_node_or_null("CollisionShape2D") as CollisionShape2D
 	if shape_node != null and shape_node.shape is RectangleShape2D:
-		(shape_node.shape as RectangleShape2D).size = size
+		var sub: float = clampf(submerge, 0.0, maxf(0.0, size.y - 16.0))
+		# Eigen kopie: de shape uit Water.tscn wordt anders gedeeld door alle
+		# vijvers in een level en krijgt de maat van de laatst gebouwde.
+		shape_node.shape = shape_node.shape.duplicate()
+		(shape_node.shape as RectangleShape2D).size = Vector2(size.x, size.y - sub)
+		shape_node.position = Vector2(0.0, sub / 2.0)
 
 	# Achterste laag: het eigenlijke water (kleurverloop + oppervlak + caustics).
 	var body := ColorRect.new()

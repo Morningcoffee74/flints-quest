@@ -1,0 +1,432 @@
+[gd_scene load_steps=30 format=3]
+
+[ext_resource type="Script"      path="res://scripts/levels/LevelBase.gd"             id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player/Player.tscn"               id="2"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn"                      id="3"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/Slime.tscn"        id="4"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/Zombie.tscn"       id="5"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/Bat.tscn"          id="6"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Coin.tscn"                id="7"]
+[ext_resource type="PackedScene" path="res://scenes/objects/SpecialBlock.tscn"        id="8"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Cabin.tscn"               id="9"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockPurple.tscn"    id="10"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockBlue.tscn"      id="11"]
+[ext_resource type="PackedScene" path="res://scenes/objects/ParallaxBGCave.tscn"      id="12"]
+[ext_resource type="TileSet"     path="res://scenes/levels/world3_tileset_rock.tres"       id="13"]
+[ext_resource type="Script"      path="res://scripts/levels/Terrain.gd"               id="14"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Spikes.tscn"              id="15"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Ladder.tscn"              id="16"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Checkpoint.tscn"          id="17"]
+[ext_resource type="PackedScene" path="res://scenes/objects/PowerBlockOrange.tscn"    id="18"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/world3/StoneGolem.tscn"   id="19"]
+[ext_resource type="PackedScene" path="res://scenes/objects/FallingPlatform.tscn"     id="20"]
+[ext_resource type="PackedScene" path="res://scenes/objects/MovingPlatform.tscn"      id="21"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Spring.tscn"              id="22"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Water.tscn"               id="23"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/SwarmBat.tscn"     id="24"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/common/Piranha.tscn"      id="25"]
+[ext_resource type="PackedScene" path="res://scenes/objects/HintTrigger.tscn"         id="26"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Darkness.tscn"            id="27"]
+[ext_resource type="Texture2D"   path="res://assets/sprites/tiles/world3_cave/rotting_source.png" id="30"]
+
+[sub_resource type="RectangleShape2D" id="1"]
+size = Vector2(32.0, 300.0)
+
+[node name="W3L6" type="Node2D"]
+script = ExtResource("1")
+level_width = 7360
+level_height = 720
+coins_needed_pct = 60
+enemies_needed = 6
+require_both = true
+world_number = 3
+level_number = 6
+intro_hint = "Het is hier stikdonker… loop voorzichtig en volg de lichtjes."
+
+[node name="ParallaxBGCave" parent="." instance=ExtResource("12")]
+
+[node name="HUD" parent="." instance=ExtResource("3")]
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(120.0, 640.0)
+
+[node name="Decor" type="Node2D" parent="."]
+
+[node name="Prop1" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 128, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(576.0, 612.0)
+
+[node name="Prop2" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(32, 144, 16, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(576.0, 612.0)
+
+[node name="Prop3" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(112, 128, 16, 32)
+scale = Vector2(2.0, 2.0)
+position = Vector2(128.0, 60.0)
+
+[node name="Prop4" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 144, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(928.0, 612.0)
+
+[node name="Prop5" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(32, 144, 16, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(896.0, 612.0)
+
+[node name="Prop6" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(112, 128, 16, 32)
+scale = Vector2(2.0, 2.0)
+position = Vector2(832.0, 60.0)
+
+[node name="Prop7" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 144, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(1728.0, 612.0)
+
+[node name="Prop8" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 128, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(2016.0, 612.0)
+
+[node name="Prop9" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(112, 128, 16, 32)
+scale = Vector2(2.0, 2.0)
+position = Vector2(1952.0, 60.0)
+
+[node name="Prop10" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(32, 144, 16, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(3360.0, 612.0)
+
+[node name="Prop11" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(32, 144, 16, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(2912.0, 612.0)
+
+[node name="Prop12" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(112, 128, 16, 32)
+scale = Vector2(2.0, 2.0)
+position = Vector2(3136.0, 60.0)
+
+[node name="Prop13" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(32, 144, 16, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(4256.0, 612.0)
+
+[node name="Prop14" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 128, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(4192.0, 612.0)
+
+[node name="Prop15" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(112, 128, 16, 32)
+scale = Vector2(2.0, 2.0)
+position = Vector2(3904.0, 60.0)
+
+[node name="Prop16" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 128, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(5344.0, 612.0)
+
+[node name="Prop17" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 128, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(4864.0, 612.0)
+
+[node name="Prop18" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(112, 128, 16, 32)
+scale = Vector2(2.0, 2.0)
+position = Vector2(5216.0, 60.0)
+
+[node name="Prop19" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 144, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(6464.0, 612.0)
+
+[node name="Prop20" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(80, 144, 32, 16)
+scale = Vector2(2.0, 2.0)
+position = Vector2(6240.0, 612.0)
+
+[node name="Prop21" type="Sprite2D" parent="Decor"]
+z_index = -1
+centered = false
+texture = ExtResource("30")
+region_enabled = true
+region_rect = Rect2(112, 128, 16, 32)
+scale = Vector2(2.0, 2.0)
+position = Vector2(6528.0, 60.0)
+
+[node name="Terrain" type="TileMapLayer" parent="."]
+scale = Vector2(2.0, 2.0)
+tile_set = ExtResource("13")
+script = ExtResource("14")
+solid_rects = Array[Rect2i]([Rect2i(0, -8, 230, 1), Rect2i(0, -7, 230, 1), Rect2i(0, -6, 230, 1), Rect2i(0, -5, 230, 1), Rect2i(0, -4, 230, 1), Rect2i(0, -3, 230, 1), Rect2i(0, -2, 230, 1), Rect2i(0, -1, 230, 1), Rect2i(0, 0, 230, 1), Rect2i(0, 1, 230, 1), Rect2i(0, 20, 22, 1), Rect2i(24, 20, 85, 1), Rect2i(116, 20, 21, 1), Rect2i(151, 20, 79, 1), Rect2i(0, 21, 22, 1), Rect2i(24, 21, 85, 1), Rect2i(116, 21, 21, 1), Rect2i(151, 21, 79, 1), Rect2i(0, 22, 22, 1), Rect2i(24, 22, 85, 1), Rect2i(116, 22, 21, 1), Rect2i(151, 22, 79, 1), Rect2i(0, 23, 22, 1), Rect2i(24, 23, 85, 1), Rect2i(116, 23, 21, 1), Rect2i(151, 23, 79, 1), Rect2i(0, 24, 22, 1), Rect2i(24, 24, 85, 1), Rect2i(116, 24, 21, 1), Rect2i(151, 24, 79, 1), Rect2i(0, 25, 22, 1), Rect2i(24, 25, 85, 1), Rect2i(116, 25, 21, 1), Rect2i(151, 25, 79, 1), Rect2i(0, 26, 22, 1), Rect2i(24, 26, 85, 1), Rect2i(116, 26, 21, 1), Rect2i(151, 26, 79, 1), Rect2i(0, 27, 22, 1), Rect2i(24, 27, 85, 1), Rect2i(116, 27, 21, 1), Rect2i(151, 27, 79, 1), Rect2i(0, 28, 22, 1), Rect2i(24, 28, 85, 1), Rect2i(116, 28, 21, 1), Rect2i(151, 28, 79, 1), Rect2i(0, 29, 22, 1), Rect2i(24, 29, 85, 1), Rect2i(116, 29, 21, 1), Rect2i(151, 29, 79, 1), Rect2i(47, 17, 4, 1), Rect2i(112, 18, 1, 12)])
+no_grass_rects = Array[Rect2i]([Rect2i(0, -8, 230, 10)])
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Slime1" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(352.0, 640.0)
+
+[node name="Slime2" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(2016.0, 640.0)
+
+[node name="Slime3" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(4032.0, 640.0)
+
+[node name="Slime4" parent="Enemies" instance=ExtResource("4")]
+position = Vector2(6464.0, 640.0)
+
+[node name="Zombie1" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(1152.0, 640.0)
+
+[node name="Zombie2" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(3232.0, 640.0)
+
+[node name="Zombie3" parent="Enemies" instance=ExtResource("5")]
+position = Vector2(5216.0, 640.0)
+
+[node name="Bat1" parent="Enemies" instance=ExtResource("6")]
+position = Vector2(5728.0, 256.0)
+
+[node name="Bat2" parent="Enemies" instance=ExtResource("6")]
+position = Vector2(5952.0, 256.0)
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="Coin1" parent="Objects" instance=ExtResource("7")]
+position = Vector2(80.0, 616.0)
+
+[node name="Coin2" parent="Objects" instance=ExtResource("7")]
+position = Vector2(144.0, 616.0)
+
+[node name="Coin3" parent="Objects" instance=ExtResource("7")]
+position = Vector2(208.0, 616.0)
+
+[node name="Coin4" parent="Objects" instance=ExtResource("7")]
+position = Vector2(272.0, 616.0)
+
+[node name="Coin5" parent="Objects" instance=ExtResource("7")]
+position = Vector2(848.0, 616.0)
+
+[node name="Coin6" parent="Objects" instance=ExtResource("7")]
+position = Vector2(912.0, 616.0)
+
+[node name="Coin7" parent="Objects" instance=ExtResource("7")]
+position = Vector2(976.0, 616.0)
+
+[node name="Coin8" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1040.0, 616.0)
+
+[node name="Coin9" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1520.0, 488.0)
+
+[node name="Coin10" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1584.0, 488.0)
+
+[node name="Coin11" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1776.0, 616.0)
+
+[node name="Coin12" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1840.0, 616.0)
+
+[node name="Coin13" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1904.0, 616.0)
+
+[node name="Coin14" parent="Objects" instance=ExtResource("7")]
+position = Vector2(1968.0, 616.0)
+
+[node name="Coin15" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2512.0, 552.0)
+
+[node name="Coin16" parent="Objects" instance=ExtResource("7")]
+position = Vector2(2800.0, 552.0)
+
+[node name="Coin17" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3792.0, 616.0)
+
+[node name="Coin18" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3856.0, 616.0)
+
+[node name="Coin19" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3920.0, 616.0)
+
+[node name="Coin20" parent="Objects" instance=ExtResource("7")]
+position = Vector2(3984.0, 616.0)
+
+[node name="Coin21" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4912.0, 616.0)
+
+[node name="Coin22" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4976.0, 616.0)
+
+[node name="Coin23" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5040.0, 616.0)
+
+[node name="Coin24" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5104.0, 616.0)
+
+[node name="Coin25" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5584.0, 616.0)
+
+[node name="Coin26" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5648.0, 616.0)
+
+[node name="Coin27" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5712.0, 616.0)
+
+[node name="Coin28" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5776.0, 616.0)
+
+[node name="Coin29" parent="Objects" instance=ExtResource("7")]
+position = Vector2(5840.0, 616.0)
+
+[node name="Coin30" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6256.0, 616.0)
+
+[node name="Coin31" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6320.0, 616.0)
+
+[node name="Coin32" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6384.0, 616.0)
+
+[node name="Coin33" parent="Objects" instance=ExtResource("7")]
+position = Vector2(6448.0, 616.0)
+
+[node name="Coin34" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4496.0, 592.0)
+
+[node name="Coin35" parent="Objects" instance=ExtResource("7")]
+position = Vector2(4720.0, 592.0)
+
+[node name="SpecialBlock1" parent="Objects" instance=ExtResource("8")]
+position = Vector2(992.0, 624.0)
+
+[node name="SpecialBlock2" parent="Objects" instance=ExtResource("8")]
+position = Vector2(5056.0, 624.0)
+
+[node name="Power1" parent="Objects" instance=ExtResource("10")]
+position = Vector2(3264.0, 560.0)
+
+[node name="Power2" parent="Objects" instance=ExtResource("18")]
+position = Vector2(6560.0, 560.0)
+
+[node name="Spikes1" parent="Objects" instance=ExtResource("15")]
+position = Vector2(2544.0, 640.0)
+width = 96
+variant = "small_metal"
+
+[node name="Spikes2" parent="Objects" instance=ExtResource("15")]
+position = Vector2(2768.0, 640.0)
+width = 96
+variant = "small_metal"
+
+[node name="FallingPlatform1" parent="Objects" instance=ExtResource("20")]
+position = Vector2(4496.0, 628.0)
+
+[node name="FallingPlatform2" parent="Objects" instance=ExtResource("20")]
+position = Vector2(4720.0, 628.0)
+
+[node name="Checkpoint1" parent="." instance=ExtResource("17")]
+position = Vector2(2016.0, 640.0)
+
+[node name="Checkpoint2" parent="." instance=ExtResource("17")]
+position = Vector2(4032.0, 640.0)
+
+[node name="Cabin" parent="." instance=ExtResource("9")]
+position = Vector2(7168.0, 640.0)
+
+[node name="CabinWall" type="StaticBody2D" parent="."]
+position = Vector2(7232.0, 490.0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CabinWall"]
+shape = SubResource("1")
+
+[node name="Darkness" parent="." instance=ExtResource("27")]

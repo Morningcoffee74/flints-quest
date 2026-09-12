@@ -369,9 +369,11 @@ func enter_water() -> void:
 		_transition(State.SWIM)
 
 ## Extra zet omhoog bij het uit het water springen: zo kom je betrouwbaar op
-## een oever die ~20px boven de waterlijn ligt (feet-top ≈ 46px boven water),
-## maar niet op rotsen die verder boven water uitsteken.
-const WATER_EXIT_BOOST := -300.0
+## een oever die ~20px boven de waterlijn ligt, maar niet op rotsen die verder
+## boven water uitsteken (W2: vanaf rij 17 = 84px boven water). De waterzone
+## begint pas `Water.submerge` (33px) onder het oppervlak, dus de zet vertrekt
+## van dáár: −400 ≈ 82px stijgen → voeten tot ~49px boven de waterlijn.
+const WATER_EXIT_BOOST := -400.0
 
 func exit_water() -> void:
 	_in_water = false

@@ -42,3 +42,25 @@ hoort deze lijst (of de CC-BY-regels eruit) in de credits van het spel.
     één sheet van 64×64-cellen). Naamsvermelding verplicht.
 - **Chunky Explosion** — CC0, https://opengameart.org/content/chunky-explosion
   → `assets/audio/sfx/explosion.mp3` (zeemijn).
+
+## Wereld 3 (Grot)
+
+- **Warped: Super Grotto Escape Pack** — Luis Zuno (@ansimuz), CC0
+  https://opengameart.org/content/warped-super-grotto-escape-pack
+  → `assets/sprites/tiles/world3_cave/grotto_source.png` (blauw steen, pilaar,
+    tempelpoort, stalagmieten; tileset-varianten "grotto" en "crystal"),
+    `props/plant.png`, `plant-big.png`, `palm.png`,
+    `assets/sprites/backgrounds/world3/back.png`, `far.png`, `middle.png`.
+- **2D Cave Platformer Tileset [16x16]** — RottingPixels, CC0
+  https://opengameart.org/content/2d-cave-platformer-tileset-16x16
+  → `assets/sprites/tiles/world3_cave/rotting_source.png` (tileset-varianten
+    "rock" en "brick", paddenstoelen, kettingen, edelstenen, bordje).
+- **Mysterious Cave Theme Loop** — beardalaxy, CC0
+  https://opengameart.org/content/mysterious-cave-theme-loop
+  → `assets/audio/music/cave_in_game.ogg` (muziek Wereld 3).
+- **Frost Guardian FREE v1.0** (chierit, itch.io) — zat al in
+  `assets/sprites/enemies/common/Endboss/`; omgekleurd tot Stenen Golem via
+  `tools/build_stone_golem.gd` → `assets/sprites/enemies/world3/StoneGolem.png`.
+  Licentie volgens de pack: vrij te gebruiken (ook commercieel), naamsvermelding gewenst.
+- **Enemy Galore I** (zie Wereld 2) → Slime (`Slime_Spiked_*`) en Deceased
+  (`Deceased_*`) als grotslijm en grotzombie, vleermuis als zwerm.

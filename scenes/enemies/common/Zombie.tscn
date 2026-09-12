@@ -1,0 +1,91 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/enemies/GroundEnemy.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/common/Deceased/Deceased_walk.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="w0"]
+atlas = ExtResource("2")
+region = Rect2(18, 8, 30, 40)
+
+[sub_resource type="AtlasTexture" id="w1"]
+atlas = ExtResource("2")
+region = Rect2(66, 8, 30, 40)
+
+[sub_resource type="AtlasTexture" id="w2"]
+atlas = ExtResource("2")
+region = Rect2(114, 8, 30, 40)
+
+[sub_resource type="AtlasTexture" id="w3"]
+atlas = ExtResource("2")
+region = Rect2(162, 8, 30, 40)
+
+[sub_resource type="AtlasTexture" id="w4"]
+atlas = ExtResource("2")
+region = Rect2(210, 8, 30, 40)
+
+[sub_resource type="AtlasTexture" id="w5"]
+atlas = ExtResource("2")
+region = Rect2(258, 8, 30, 40)
+
+[sub_resource type="SpriteFrames" id="frames"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("w0")
+}, {
+"duration": 1.0,
+"texture": SubResource("w1")
+}, {
+"duration": 1.0,
+"texture": SubResource("w2")
+}, {
+"duration": 1.0,
+"texture": SubResource("w3")
+}, {
+"duration": 1.0,
+"texture": SubResource("w4")
+}, {
+"duration": 1.0,
+"texture": SubResource("w5")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 7.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="body"]
+radius = 13.0
+height = 70.0
+
+[sub_resource type="RectangleShape2D" id="hurt"]
+size = Vector2(40.0, 72.0)
+
+; Grotzombie ("Deceased", Enemy Galore): taai (2 klappen), sprint kort op je af
+; (lunge) zoals de rat; wél te pletten door op z'n kop te springen.
+[node name="Zombie" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+base_health = 2
+base_speed = 38.0
+lunge_enabled = true
+sprite_faces_right = true
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0.0, -40.0)
+scale = Vector2(2.0, 2.0)
+sprite_frames = SubResource("frames")
+animation = &"walk"
+autoplay = "walk"
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0.0, -35.0)
+shape = SubResource("body")
+
+[node name="HurtBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 18
+
+[node name="HurtBoxShape" type="CollisionShape2D" parent="HurtBox"]
+position = Vector2(0.0, -36.0)
+shape = SubResource("hurt")
