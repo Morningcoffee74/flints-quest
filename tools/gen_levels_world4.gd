@@ -62,7 +62,7 @@ const MAX_UP := 3
 const MAX_GAP_FLAT := 5
 const MAX_GAP_DOWN := 6
 const LENGTH_SCALE := 0.8
-const N_LEVELS := 11
+const N_LEVELS := 12
 
 const P := "res://assets/sprites/tiles/world4_jungle/decor/plants_objects.png"
 const TD := "res://assets/sprites/tiles/world4_jungle/decor/tree_dark.png"
@@ -1337,9 +1337,33 @@ func _levels() -> Array:
 			],
 		},
 		{
-			# L10 — De grote jungle: bonus-level waar alles terugkomt — lianen,
-			# bladerdak, moeras, zwerm, tunnel en liften.
+			# L10 — Het kreupelhout: springveren en klimtorens. Hier stuiter je
+			# omhoog in plaats van te klimmen of te slingeren — het eigen "ding"
+			# van dit level, en de laatste nieuwe smaak vóór het bonus-level.
 			"n": 10, "pct": 80, "both": true, "staart": 22,
+			"tileset": "jungle",
+			"decor": ["bush_big", "stalk", "flower_yel", "fern2", "tree"],
+			"hint": "Springveren in het kreupelhout: laat je omhoog stuiteren naar de takken.",
+			"secties": [
+				["fl", 26, {"coins": 4, "snakes": 1}],
+				["sp", 20, {"power": "purple"}],
+				["fl", 22, {"monkeys": 1, "coins": 4, "checkpoint": true}],
+				["tw", {"toucan": true}],
+				["fl", 22, {"snakes": 1, "coins": 4, "block": true}],
+				["sp", 22, {"snakes": 1}],
+				["fl", 24, {"toucans": 1, "coins": 4}],
+				["st", [3, 6, 9], {"power": "blue"}],
+				["fl", 22, {"monkeys": 1, "coins": 4, "checkpoint": true}],
+				["sp", 20, {"power": "orange"}],
+				["fl", 22, {"snakes": 1, "coins": 4}],
+				["tw", {}],
+				["fl", 24, {"monkeys": 1, "toucans": 1, "coins": 5}],
+			],
+		},
+		{
+			# L11 — De grote jungle: bonus-level waar alles terugkomt — lianen,
+			# bladerdak, moeras, zwerm, tunnel en liften.
+			"n": 11, "pct": 80, "both": true, "staart": 22,
 			"tileset": "jungle",
 			"decor": ["fern", "bush_big", "flower_red", "flower_yel", "frond", "tree", "ruin_block"],
 			"hint": "De grote jungle. Alles wat je geleerd hebt, komt hier terug.",
@@ -1368,8 +1392,8 @@ func _levels() -> Array:
 			],
 		},
 		{
-			# L11 — De Gorilla: korte aanloop door de tempelruïne, dan de arena.
-			"n": 11, "pct": 0, "both": false, "staart": 70, "boss": true,
+			# L12 — De Gorilla: korte aanloop door de tempelruïne, dan de arena.
+			"n": 12, "pct": 0, "both": false, "staart": 70, "boss": true,
 			"tileset": "temple",
 			"decor": ["ruin_pillar", "ruin_block", "crystal_p", "fern"],
 			"secties": [

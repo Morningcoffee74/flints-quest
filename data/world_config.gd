@@ -26,7 +26,9 @@ const WORLDS: Array = [
 	},
 	{
 		"id": 4, "name": "Jungle", "theme": "jungle", "music": "world4",
-		"direction": "right", "levels": 11,
+		# 12 open plekken, nageteld op de wereldkaart met de uitvergrote-crops-
+		# methode (de eerdere 11 was een ruwe schatting).
+		"direction": "right", "levels": 12,
 		"enemies": ["Monkey", "Snake", "Toucan"],
 		"boss": "Gorilla",
 	},

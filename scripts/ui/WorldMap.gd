@@ -20,10 +20,12 @@ const LEVEL_POSITIONS: Dictionary = {
 		Vector2(488, 361), Vector2(591, 431), Vector2(703, 473), Vector2(811, 506),
 		Vector2(938, 431), Vector2(1050, 352), Vector2(1177, 291),
 	],
+	# Wereld 4 is nauwkeurig afgelezen van world4.png (1376×768) met uitvergrote
+	# crops, daarna omgerekend naar viewport-ruimte (×0.9375, 5px crop links).
 	4: [
-		Vector2(136, 619), Vector2(150, 234), Vector2(267, 248), Vector2(384, 270),
-		Vector2(497, 300), Vector2(591, 375), Vector2(689, 445), Vector2(792, 488),
-		Vector2(914, 403), Vector2(1031, 319), Vector2(1139, 164),
+		Vector2(143, 627), Vector2(150, 235), Vector2(270, 246), Vector2(391, 277),
+		Vector2(501, 312), Vector2(597, 380), Vector2(689, 447), Vector2(793, 499),
+		Vector2(911, 479), Vector2(1020, 439), Vector2(1133, 401), Vector2(1138, 163),
 	],
 	5: [
 		Vector2(153, 180), Vector2(265, 211), Vector2(382, 242), Vector2(495, 300),
