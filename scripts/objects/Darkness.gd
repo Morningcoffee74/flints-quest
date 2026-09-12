@@ -35,7 +35,13 @@ func _ready() -> void:
 		level.get_node("Cabin").add_child(l)
 
 	# Achtergrond dimmen (eigen CanvasLayer → buiten bereik van de CanvasModulate).
-	var bg := level.get_node_or_null("ParallaxBGCave")
+	# Elke wereld heeft zijn eigen achtergrond-scene (ParallaxBGCave,
+	# ParallaxBGJungle, …), dus zoeken op type in plaats van op naam.
+	var bg: Node = null
+	for child in level.get_children():
+		if child is ParallaxBackground:
+			bg = child
+			break
 	if bg != null:
 		for layer in bg.get_children():
 			for spr in layer.get_children():
