@@ -7,7 +7,7 @@ extends SceneTree
 ## ligt. In ParallaxBGWater.tscn staat hij op schaal 4 (1024×896) van y=-256..640.
 ## Draaien: Godot --headless --script tools/build_w2_sky.gd ; daarna --import.
 
-const OUT := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/backgrounds/world2/sky.png"
+const OUT := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/backgrounds/world2/sky.png"
 const W := 256
 const H := 224
 

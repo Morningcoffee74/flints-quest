@@ -44,7 +44,7 @@ extends SceneTree
 ## 1-2 omhoog, ≤3 bij 3 omhoog, ≤6 omlaag. Validatiepas dwingt ze af.
 ## Draaien: Godot --headless --path . --script tools/gen_levels_world4.gd
 
-const OUT_DIR := "/Users/wb-antal/claude-projecten/Flint-Game/scenes/levels/world4/"
+const OUT_DIR := "/Users/wb-antal/Claude-Private/Flint-Game/scenes/levels/world4/"
 const BASE_ROW := 20
 const BOTTOM := 34              # aarde t/m rij 33
 const CEIL_TOP := -8

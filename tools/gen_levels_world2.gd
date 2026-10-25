@@ -31,7 +31,7 @@ extends SceneTree
 ## mijnen/munten/vissen niet in rots, enz. Bij een fout wordt niets weggeschreven.
 ## Draaien: Godot --headless --path . --script tools/gen_levels_world2.gd
 
-const OUT_DIR := "/Users/wb-antal/claude-projecten/Flint-Game/scenes/levels/world2/"
+const OUT_DIR := "/Users/wb-antal/Claude-Private/Flint-Game/scenes/levels/world2/"
 const SURF := 20
 const ISLAND_Y := 19
 const BED := 36

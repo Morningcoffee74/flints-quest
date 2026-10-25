@@ -9,7 +9,7 @@ extends SceneTree
 ## Draaien: Godot --headless --path . --script tools/build_stone_golem.gd ; daarna --import.
 
 const SRC := "res://assets/sprites/enemies/common/Endboss/Frost_Guardian_FREE_v1.0/frost_guardian_free_192x128_SpriteSheet.png"
-const OUT := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/enemies/world3/StoneGolem.png"
+const OUT := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/enemies/world3/StoneGolem.png"
 
 func _init() -> void:
 	var src := Image.load_from_file(ProjectSettings.globalize_path(SRC))

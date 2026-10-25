@@ -13,7 +13,7 @@ extends SceneTree
 ## Daarna: Godot --headless --path . --import
 
 const SRC := "res://assets/sprites/tiles/world2_water/coral_source.png"
-const OUT := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/tiles/world2_water/tileset.png"
+const OUT := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/tiles/world2_water/tileset.png"
 const T := 16
 
 var _src: Image

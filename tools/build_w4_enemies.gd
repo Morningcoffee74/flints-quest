@@ -18,7 +18,7 @@ extends SceneTree
 ## Draaien: Godot --headless --path . --script tools/build_w4_enemies.gd
 ## Daarna:  Godot --headless --path . --import
 
-const ROOT := "/Users/wb-antal/claude-projecten/Flint-Game/"
+const ROOT := "/Users/wb-antal/Claude-Private/Flint-Game/"
 const MONKEY_SRC := ROOT + "assets/sprites/enemies/common/Monkey/Monkey_Source.png"
 const MONKEY_DIR := ROOT + "assets/sprites/enemies/common/Monkey/"
 const MINO_SRC := ROOT + "assets/sprites/enemies/common/Endboss/mino_v1.1_free/animations/minotaur_288x160_SpriteSheet.png"

@@ -17,8 +17,8 @@ extends SceneTree
 ## Daarna: Godot --headless --path . --import
 
 const T := 16
-const W1 := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/tiles/world1_forest/"
-const W2 := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/tiles/world2_water/"
+const W1 := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/tiles/world1_forest/"
+const W2 := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/tiles/world2_water/"
 
 ## Per variant: bron + bronvenster (x, y) per tegel-rol.
 const VARIANTS: Dictionary = {

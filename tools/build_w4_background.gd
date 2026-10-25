@@ -12,7 +12,7 @@ extends SceneTree
 ## Draaien: Godot --headless --path . --script tools/build_w4_background.gd
 ## Daarna:  Godot --headless --path . --import
 
-const DIR := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/"
+const DIR := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/"
 const OUT := DIR + "backgrounds/world4/"
 const H := 240
 

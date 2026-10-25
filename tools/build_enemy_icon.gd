@@ -5,7 +5,7 @@ extends SceneTree
 ## doen ingekleurd via modulate, dus het icoon zelf is wit).
 ## Draaien: Godot --headless --path . --script tools/build_enemy_icon.gd ; daarna --import
 
-const OUT := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/ui/enemy_icon.png"
+const OUT := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/ui/enemy_icon.png"
 
 func _init() -> void:
 	var img := Image.create(16, 16, false, Image.FORMAT_RGBA8)

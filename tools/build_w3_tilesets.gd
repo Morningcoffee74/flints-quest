@@ -19,7 +19,7 @@ extends SceneTree
 ## Daarna:  Godot --headless --path . --import
 
 const T := 16
-const DIR := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/tiles/world3_cave/"
+const DIR := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/tiles/world3_cave/"
 
 const VARIANTS: Dictionary = {
 	"grotto": {

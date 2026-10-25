@@ -24,7 +24,7 @@ extends SceneTree
 const T := 32
 const SHEET_W := 224
 const SHEET_H := 288
-const DIR := "/Users/wb-antal/claude-projecten/Flint-Game/assets/sprites/tiles/world4_jungle/"
+const DIR := "/Users/wb-antal/Claude-Private/Flint-Game/assets/sprites/tiles/world4_jungle/"
 
 const VARIANTS: Dictionary = {
 	"jungle": {

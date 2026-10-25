@@ -39,7 +39,7 @@ extends SceneTree
 ##   horizontaal gat: ≤5 vlak, ≤4 bij 1-2 omhoog, ≤3 bij 3 omhoog, ≤6 omlaag
 ## Een validatiepas dwingt deze regels af; bij een fout wordt niets weggeschreven.
 
-const OUT_DIR := "/Users/wb-antal/claude-projecten/Flint-Game/scenes/levels/world1/"
+const OUT_DIR := "/Users/wb-antal/Claude-Private/Flint-Game/scenes/levels/world1/"
 const GROUND_Y := 20
 ## 7 rijen diep (was 4): zo blijft er grond in beeld als de camera in een
 ## vijver of tunnel iets zakt.
